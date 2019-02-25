@@ -26,7 +26,7 @@ cc_test(
     data = glob(
         ["testdata/**"],
     ) + [
-        "@api_common_protos//:google_api_annotations_proto",
+        "@api_common_protos//google/api:client_proto",
     ],
 )
 

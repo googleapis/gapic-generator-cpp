@@ -16,9 +16,10 @@ package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])  # Apache 2.0
 
+# TODO(michaelbausor) move this rule into api-common-protos
 cc_proto_library(
-    name = "cc_google_api_annotations_proto",
-    deps = ["@api_common_protos//:google_api_annotations_proto"],
+    name = "cc_google_api_client_proto",
+    deps = ["@api_common_protos//google/api:client_proto"],
 )
 
 cc_library(
@@ -36,7 +37,7 @@ cc_library(
         "@absl//absl/base",
         "@absl//absl/strings",
         "@com_google_protobuf//:protoc_lib",
-        ":cc_google_api_annotations_proto",
+        ":cc_google_api_client_proto",
     ],
 )
 

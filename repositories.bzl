@@ -20,8 +20,9 @@ def _protobuf():
     _maybe(
         http_archive,
         name = "com_google_protobuf",
-        strip_prefix = "protobuf-master",
-        urls = ["https://github.com/protocolbuffers/protobuf/archive/master.zip"]
+        sha256 = "73fdad358857e120fd0fa19e071a96e15c0f23bb25f85d3f7009abfd4f264a2a",
+        strip_prefix = "protobuf-3.6.1.3",
+        urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.6.1.3.tar.gz"]
     )
 
     _maybe(
@@ -46,6 +47,7 @@ def generator_dependencies():
     _maybe(
         http_archive,
         name = "absl",
+        sha256 = "e2b53bfb685f5d4130b84c4f3050c81bf48c497614dc85d91dbd3ed9129bce6d",
         strip_prefix = "abseil-cpp-20181200",
         urls = ["https://github.com/abseil/abseil-cpp/archive/20181200.tar.gz"]
     )
@@ -55,8 +57,9 @@ def generator_dependencies():
     _maybe(
         http_archive,
         name = "api_common_protos",
-        strip_prefix = "api-common-protos-input-contract",
-        urls = ["https://github.com/michaelbausor/api-common-protos/archive/input-contract.zip"]
+        # TODO(michaelbausor): point this at the master repo once it is ready
+        strip_prefix = "api-common-protos-b8dbe24345d380d6bfe8b5f05e910c7afa6562db",
+        urls = ["https://github.com/michaelbausor/api-common-protos/archive/b8dbe24345d380d6bfe8b5f05e910c7afa6562db.tar.gz"]
     )
 
 
@@ -64,8 +67,9 @@ def generated_client_dependencies():
     _maybe(
         http_archive,
         name = "com_github_grpc_grpc",
-        strip_prefix = "grpc-master",
-        urls = ["https://github.com/grpc/grpc/archive/master.zip"]
+        sha256 = "069a52a166382dd7b99bf8e7e805f6af40d797cfcee5f80e530ca3fc75fd06e2",
+        strip_prefix = "grpc-1.18.0",
+        urls = ["https://github.com/grpc/grpc/archive/v1.18.0.tar.gz"]
     )
 
 
@@ -73,8 +77,9 @@ def generator_test_dependencies():
     _maybe(
         http_archive,
         name = "gtest",
-        strip_prefix = "googletest-master",
-        urls = ["https://github.com/google/googletest/archive/master.zip"]
+        sha256 = "9bf1fe5182a604b4135edc1a425ae356c9ad15e9b23f9f12a02e80184c3a249c",
+        strip_prefix = "googletest-release-1.8.1",
+        urls = ["https://github.com/google/googletest/archive/release-1.8.1.tar.gz"]
     )
 
 

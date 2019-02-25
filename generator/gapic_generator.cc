@@ -22,7 +22,7 @@
 #include "generator/gapic_generator.h"
 #include "internal/gapic_utils.h"
 
-#include "google/api/annotations.pb.h"
+#include "google/api/client.pb.h"
 
 namespace pb = google::protobuf;
 

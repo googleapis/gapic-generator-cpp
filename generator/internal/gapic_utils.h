@@ -53,12 +53,6 @@ inline std::string ProtoName2CppName(const std::string &proto_name) {
     {".", "::"}});
 }
 
-std::string GetFileNameWithoutExtension(const std::string &full_file_name) {
-  std::vector<absl::string_view> components = absl::StrSplit(full_file_name, '/');
-  std::pair<std::string, std::string> p = absl::StrSplit(components.back(), '.');
-  return p.first;
-}
-
 } // internal
 } // codegen
 } // api

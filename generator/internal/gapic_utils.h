@@ -16,10 +16,12 @@
 
 #include <algorithm>
 #include <string>
+#include <cctype>
 
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_split.h"
+#include "absl/strings/str_replace.h"
 
 namespace google {
 namespace api {
@@ -27,16 +29,17 @@ namespace codegen {
 namespace internal {
 
 inline std::string CamelCaseToSnakeCase(const std::string& input) {
-  std::string output = "";
-  std::string join = "";
+  std::string output;
+  // Initialize prev_char_is_upper to true so that we omit a leading "_"
+  bool prev_char_is_upper = true;
   for (unsigned int i = 0; i < input.size(); i++) {
     char c = input[i];
-    if (c >= 'A' && c <= 'Z') {
-      absl::StrAppend(&output, join, std::string(1, c + 'a' - 'A'));
+    if (std::isupper(c) && !prev_char_is_upper) {
+      absl::StrAppend(&output, "_", std::string(1, std::tolower(c)));
     } else {
-      absl::StrAppend(&output, std::string(1, c));
+      absl::StrAppend(&output, std::string(1, std::tolower(c)));
     }
-    join = "_";
+    prev_char_is_upper = std::isupper(c);
   }
   return output;
 }

@@ -25,8 +25,6 @@
 #include "src/google/protobuf/descriptor.pb.h"
 #include "absl/strings/string_view.h"
 
-#include "internal/gapic_template.h"
-
 namespace pb = google::protobuf;
 
 namespace google {
@@ -35,21 +33,10 @@ namespace codegen {
 
 class GapicGenerator : public pb::compiler::CodeGenerator {
  public:
-  GapicGenerator()
-      : template_(internal::CreateDefaultGapicTemplate()) {}
-
   bool Generate(pb::FileDescriptor const* file,
                 std::string const& parameter,
                 pb::compiler::GeneratorContext* generator_context,
                 std::string* error) const override;
-
- private:
-  std::shared_ptr<internal::GapicTemplate> template_;
-  bool GenerateClientHeaderFile(
-      pb::ServiceDescriptor const* service,
-      std::map<std::string, std::string>& vars,
-      pb::io::Printer* printer,
-      std::string* error) const;
 };
 
 } // namespace codegen

@@ -21,6 +21,8 @@
 #include "absl/strings/str_replace.h"
 #include "generator/gapic_generator.h"
 #include "internal/gapic_utils.h"
+#include "internal/gapic_common_templates.h"
+#include "internal/gapic_header_templates.h"
 
 #include "google/api/client.pb.h"
 
@@ -29,8 +31,6 @@ namespace pb = google::protobuf;
 namespace google {
 namespace api {
 namespace codegen {
-
-constexpr char kNewLineTemplate[] = "\n";
 
 using Vars = std::map<std::string, std::string>;
 
@@ -74,41 +74,31 @@ void PrintMethods(
   }
 }
 
-bool GapicGenerator::GenerateClientHeaderFile(
+bool GenerateClientHeaderFile(
     pb::ServiceDescriptor const* service,
     Vars& vars,
     pb::io::Printer* p,
-    std::string* error) const {
+    std::string* error) {
   SetServiceVars(service, vars);
   auto includes = BuildIncludes(service);
   auto namespaces = BuildNamespaces(service);
 
-  p->Print(vars, template_->headerFileStart());
-  p->Print(vars, template_->headerGuardStart());
-  p->Print(vars, template_->headerKnownIncludes());
+  p->Print(vars, internal::kHeaderFileStartTemplate);
   for (auto include : includes) {
-    p->Print(template_->include(), "include", include);
+    p->Print(internal::kIncludeTemplate, "include", include);
   }
   for (auto nspace : namespaces) {
-    p->Print(template_->namespaceStart(), "namespace", nspace);
+    p->Print(internal::kNamespaceStartTemplate, "namespace", nspace);
   }
 
-  p->Print(vars, template_->headerPreClient());
-  p->Print(vars, template_->headerClientStart());
+  p->Print(vars, internal::kHeaderClientStartTemplate);
+  PrintMethods(service, vars, p, internal::kHeaderClientMethodTemplate);
 
-  p->Print(vars, template_->headerClientPublic());
-  PrintMethods(service, vars, p, template_->headerClientPublicMethod());
+  p->Print(vars, internal::kHeaderClientEndTemplate);
 
-  p->Print(vars, template_->headerClientProtected());
-  PrintMethods(service, vars, p, template_->headerClientProtectedMethod());
-
-  p->Print(vars, template_->headerClientPrivate());
-  PrintMethods(service, vars, p, template_->headerClientPrivateMethod());
-
-  p->Print(vars, template_->headerClientEnd());
-  p->Print(vars, template_->headerPostClient());
-  p->Print(vars, template_->headerGuardEnd());
-  p->Print(vars, template_->headerFileEnd());
+  for (auto nspace : namespaces) {
+    p->Print(internal::kNamespaceEndTemplate, "namespace", nspace);
+  }
   return true;
 }
 

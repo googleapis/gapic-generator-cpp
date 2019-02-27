@@ -14,8 +14,6 @@
 #ifndef GOOGLE_API_CODEGEN_INTERNAL_GAPIC_HEADER_TEMPLATES_H_
 #define GOOGLE_API_CODEGEN_INTERNAL_GAPIC_HEADER_TEMPLATES_H_
 
-#include <memory>
-
 namespace google {
 namespace api {
 namespace codegen {

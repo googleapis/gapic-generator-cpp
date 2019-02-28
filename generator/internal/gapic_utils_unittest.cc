@@ -35,6 +35,7 @@ TEST(GapicUtils, CamelCaseToSnakeCase) {
     { "ABcDEf", "abc_def" },
     { "Abc1De", "abc1_de" },
     { "Abc1de", "abc1de" },
+    { "A1B", "a1_b" },
   };
 
   for (auto test_case : test_cases) {

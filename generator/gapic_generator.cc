@@ -34,7 +34,7 @@ using Vars = std::map<std::string, std::string>;
 
 void SetServiceVars(
     pb::ServiceDescriptor const* service,
-    Vars& vars) {
+    std::map<std::string, std::string>& vars) {
   vars["class_name"] = service->name();
   vars["proto_file_name"] = service->file()->name();
   vars["header_include_guard_const"] = absl::StrCat(service->name(), "_H_");
@@ -45,7 +45,7 @@ void SetServiceVars(
 
 void SetMethodVars(
     pb::MethodDescriptor const* method,
-    Vars& vars) {
+    std::map<std::string, std::string>& vars) {
   vars["method_name"] = method->name();
   vars["request_object"] = internal::ProtoNameToCppName(method->input_type()->full_name());
   vars["response_object"] = internal::ProtoNameToCppName(method->output_type()->full_name());
@@ -68,7 +68,7 @@ std::vector<std::string> BuildNamespaces(
 
 void PrintMethods(
     pb::ServiceDescriptor const* service,
-    Vars vars,
+    std::map<std::string, std::string> vars,
     pb::io::Printer* p,
     char const* tmplt) {
   for (int i = 0; i < service->method_count(); i++) {
@@ -80,7 +80,7 @@ void PrintMethods(
 
 bool GenerateClientHeaderFile(
     pb::ServiceDescriptor const* service,
-    Vars const& vars,
+    std::map<std::string, std::string> const& vars,
     pb::io::Printer* p,
     std::string * /* error */) {
   auto includes = BuildHeaderIncludes(service);
@@ -120,7 +120,7 @@ bool GenerateClientHeaderFile(
 
 bool GenerateClientCCFile(
     pb::ServiceDescriptor const* service,
-    Vars const& vars,
+    std::map<std::string, std::string> const& vars,
     pb::io::Printer* p,
     std::string * /* error */) {
   auto includes = BuildCCIncludes(service);
@@ -162,13 +162,14 @@ bool GapicGenerator::Generate(pb::FileDescriptor const* file,
     return false;
   }
 
-  // TODO(michaelbausor): initialize Vars with cross-file-descriptor
-  // configuration, e.g. metadata annotation.
-  Vars vars;
-
   for (int i = 0; i < file->service_count(); i++) {
     pb::ServiceDescriptor const* service = file->service(i);
+
+    // TODO(michaelbausor): initialize Vars with cross-file-descriptor
+    // configuration, e.g. metadata annotation.
+    std::map<std::string, std::string> vars;
     SetServiceVars(service, vars);
+
     std::string service_file_path = internal::ServiceNameToFilePath(
         service->full_name());
 

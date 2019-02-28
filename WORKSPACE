@@ -12,16 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-workspace(name = "com_google_api_gapic_cpp_generator")
+workspace(name = "com_google_gapic_generator_cpp")
 
 load(
     "//:repositories.bzl",
-    "generator_dependencies",
-    "generator_test_dependencies"
+    "com_google_gapic_generator_cpp_repositories",
 )
 
-generator_dependencies()
-generator_test_dependencies()
+com_google_gapic_generator_cpp_repositories()
 
 bind(
     name = "zlib",

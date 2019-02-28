@@ -45,7 +45,7 @@ TEST(CppGapicPluginTest, GapicPluginTest) {
 
   std::string workspace_dir = ".";
   std::string external_dir = workspace_dir + "/..";
-  std::string test_dir = workspace_dir + "/generator/tests";
+  std::string test_dir = workspace_dir + "/generator";
   std::string test_data_dir = test_dir + "/testdata";
   std::string gapic_out_dir = workspace_dir;
 
@@ -85,7 +85,7 @@ TEST(CppGapicPluginTest, GapicPluginTest) {
 
   for (std::string const& f : files_to_check) {
     std::string actual_file = absl::StrCat(gapic_out_dir, "/", f);
-    std::string expected_file = absl::StrCat(test_data_dir, "/", f, ".golden");
+    std::string expected_file = absl::StrCat(test_data_dir, "/", f, ".baseline");
 
     std::string actual_file_content = LoadContent(actual_file);
     std::string expected_file_content = LoadContent(expected_file);

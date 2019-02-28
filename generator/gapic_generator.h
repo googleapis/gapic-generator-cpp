@@ -25,17 +25,18 @@
 #include "src/google/protobuf/descriptor.pb.h"
 #include "absl/strings/string_view.h"
 
-namespace pb = google::protobuf;
-
 namespace google {
 namespace api {
 namespace codegen {
 
-class GapicGenerator : public pb::compiler::CodeGenerator {
+/**
+ * Code generator that outputs a C++ GAPIC client from proto descriptors.
+ */
+class GapicGenerator : public google::protobuf::compiler::CodeGenerator {
  public:
-  bool Generate(pb::FileDescriptor const* file,
+  bool Generate(google::protobuf::FileDescriptor const* file,
                 std::string const& parameter,
-                pb::compiler::GeneratorContext* generator_context,
+                google::protobuf::compiler::GeneratorContext* generator_context,
                 std::string* error) const override;
 };
 

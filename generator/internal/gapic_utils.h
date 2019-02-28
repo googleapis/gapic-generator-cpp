@@ -28,12 +28,14 @@ namespace api {
 namespace codegen {
 namespace internal {
 
-inline std::string CamelCaseToSnakeCase(const std::string& input) {
+/**
+ * Convert a CamelCase string to snake_case.
+ */
+inline std::string CamelCaseToSnakeCase(std::string const& input) {
   std::string output;
   // Initialize prev_char_is_upper to true so that we omit a leading "_"
   bool prev_char_is_upper = true;
-  for (unsigned int i = 0; i < input.size(); i++) {
-    char c = input[i];
+  for (auto c : input) {
     if (std::isupper(c) && !prev_char_is_upper) {
       absl::StrAppend(&output, "_", std::string(1, std::tolower(c)));
     } else {
@@ -44,14 +46,30 @@ inline std::string CamelCaseToSnakeCase(const std::string& input) {
   return output;
 }
 
-inline std::string FileName(const std::string& service_name) {
+/**
+ * Convert a service name to a file path.
+ *
+ * service_name should consist of CamelCase pieces and "." separators.
+ * Each component of service_name will become part of the path, except
+ * the last component, which will become the file name. Components will
+ * be converted from CamelCase to snake_case.
+ *
+ * Example: "google.LibraryService" -> "google/library_service"
+ */
+inline std::string ServiceNameToFilePath(std::string const& service_name) {
   std::vector<std::string> components = absl::StrSplit(service_name, '.');
   std::transform(components.begin(), components.end(), components.begin(),
                  CamelCaseToSnakeCase);
-  return absl::StrCat(absl::StrJoin(components, "/"), ".gapic.h");
+  return absl::StrJoin(components, "/");
 }
 
-inline std::string ProtoName2CppName(const std::string &proto_name) {
+/**
+ * Convert a protobuf name to a fully qualified C++ name.
+ *
+ * proto_name should be a "." separated name, which we convert to a
+ * "::" separated C++ fully qualified name.
+ */
+inline std::string ProtoNameToCppName(std::string const& proto_name) {
   return "::" + absl::StrReplaceAll(proto_name, {
     {".", "::"}});
 }

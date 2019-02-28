@@ -15,10 +15,10 @@
 #include "src/google/protobuf/compiler/plugin.h"
 #include "gapic_generator.h"
 
-namespace pb = google::protobuf;
-namespace codegen = google::api::codegen;
-
+/**
+ * Entry point for C++ GAPIC generator protoc plugin.
+ */
 int main(int argc, char** argv) {
-  codegen::GapicGenerator generator;
-  return pb::compiler::PluginMain(argc, argv, &generator);
+  google::api::codegen::GapicGenerator generator;
+  return google::protobuf::compiler::PluginMain(argc, argv, &generator);
 }

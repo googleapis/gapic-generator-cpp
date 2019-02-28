@@ -76,10 +76,11 @@ TEST(CppGapicPluginTest, GapicPluginTest) {
     library_proto.c_str()
   };
 
-  EXPECT_EQ(0, cli.Run(sizeof(argv) / sizeof(argv[0]), argv));
+  EXPECT_EQ(0, cli.Run(sizeof(argv) / sizeof(argv[0]), argv)) << "cli.Run failed";
 
   std::vector<std::string> files_to_check {
-    "google/example/library/v1/library_service.gapic.h"
+    "google/example/library/v1/library_service.gapic.h",
+    "google/example/library/v1/library_service.gapic.cc"
   };
 
   for (std::string const& f : files_to_check) {

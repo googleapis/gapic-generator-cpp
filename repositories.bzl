@@ -53,6 +53,7 @@ def com_google_gapic_generator_cpp_repositories():
     _maybe(
         http_archive,
         name = "api_common_protos",
+        sha256 = "70f02f98cd48367359740dd73d0bef1020181ae85c1045bce6799ae35097ae70",
         strip_prefix = "api-common-protos-87185dfffad4afa5a33a8c153f0e1ea53b4f85dc",
         urls = ["https://github.com/googleapis/api-common-protos/archive/87185dfffad4afa5a33a8c153f0e1ea53b4f85dc.tar.gz"]
     )

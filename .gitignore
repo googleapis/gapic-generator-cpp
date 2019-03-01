@@ -1,0 +1,16 @@
+# Common build output directory names
+.build/
+_build/
+build-output/
+
+# Common bazel output directories
+bazel-*
+
+# Common editor files
+*~
+*.swp
+
+# Ignore IDEA / IntelliJ files
+.idea/
+cmake-build-*/
+

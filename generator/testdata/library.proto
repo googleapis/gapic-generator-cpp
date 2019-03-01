@@ -1,0 +1,232 @@
+syntax = "proto3";
+
+package google.example.library.v1;
+
+import "google/api/client.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "LibraryProto";
+option java_package = "com.google.example.library.v1";
+option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
+
+// This API represents a simple digital library.  It lets you manage Shelf
+// resources and Book resources in the library. It defines the following
+// resource model:
+//
+// - The API has a collection of [Shelf][google.example.library.v1.Shelf]
+//   resources, named ``bookShelves/*``
+//
+// - Each Shelf has a collection of [Book][google.example.library.v1.Book]
+//   resources, named `bookShelves/*/books/*`
+//
+// Check out [cloud docs!](/library/example/link).
+// This is [not a cloud link](http://www.google.com).
+//
+// Service comment may include special characters: <>&"`'@.
+//
+service LibraryService {
+  option (google.api.default_host) = "library.googleapis.com";
+
+  // Creates a book.
+  rpc CreateBook(CreateBookRequest) returns (Book) {
+    //option (google.api.http) = { post: "/v1/{name=bookShelves/*}/books" body: "book" };
+  }
+
+  // Gets a book.
+  rpc GetBook(GetBookRequest) returns (Book) {
+    //option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}" };
+  }
+
+  // Lists books in a shelf.
+  rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
+    //option (google.api.http) = { get: "/v1/{name=bookShelves/*}/books" };
+  }
+
+  // Deletes a book.
+  rpc DeleteBook(DeleteBookRequest) returns (Empty) {
+    //option (google.api.http) = { delete: "/v1/{name=bookShelves/*/books/*}" };
+  }
+
+  // Updates a book.
+  rpc UpdateBook(UpdateBookRequest) returns (Book) {
+    //option (google.api.http) = { put: "/v1/{name=bookShelves/*/books/*}" body: "book" };
+  }
+
+  // Test server streaming
+  rpc StreamShelves(StreamShelvesRequest) returns (stream StreamShelvesResponse) {
+    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+  }
+
+  // Test bidi-streaming.
+  rpc DiscussBook(stream DiscussBookRequest) returns (stream Comment) {
+    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+  }
+
+  // Test client streaming.
+  rpc MonologAboutBook(stream DiscussBookRequest) returns (Comment) {
+    // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+  }
+
+  // Test long-running operations
+  rpc GetBigBook(GetBookRequest) returns (/*google.longrunning.Operation*/Book) {
+    //option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}:big" };
+  }
+}
+
+// A single book in the library.
+// Message comment may include special characters: <>&"`'@.
+message Book {
+  // The resource name of the book.
+  // Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+  // Message field comment may include special characters: <>&"`'@.
+  string name = 1;
+
+  // The name of the book author.
+  string author = 2;
+
+  // The title of the book.
+  string title = 3;
+
+  // Value indicating whether the book has been read.
+  bool read = 4;
+
+
+  enum Rating {
+    GOOD = 0; // GOOD enum description
+    BAD = 1; // Enum description with special characters: <>&"`'@.
+  }
+
+  // For testing enums.
+  Rating rating = 5;
+}
+
+// Request message for LibraryService.CreateBook.
+message CreateBookRequest {
+  // The name of the shelf in which the book is created.
+  string name = 1;
+
+  // The book to create.
+  Book book = 2;
+}
+
+// Request message for LibraryService.GetBook.
+message GetBookRequest {
+  // The name of the book to retrieve.
+  string name = 1;
+}
+
+// Request message for LibraryService.ListBooks.
+message ListBooksRequest {
+  // The name of the shelf whose books we'd like to list.
+  string name = 1;
+
+  // Requested page size. Server may return fewer books than requested.
+  // If unspecified, server will pick an appropriate default.
+  int32 page_size = 2;
+
+  // A token identifying a page of results the server should return.
+  // Typically, this is the value of
+  // [ListBooksResponse.next_page_token][google.example.library.v1.ListBooksResponse.next_page_token].
+  // returned from the previous call to `ListBooks` method.
+  string page_token = 3;
+
+  // To test python built-in wrapping.
+  string filter = 4;
+}
+
+// Response message for LibraryService.ListBooks.
+message ListBooksResponse {
+  // The list of books.
+  repeated Book books = 1;
+
+  // A token to retrieve next page of results.
+  // Pass this value in the
+  // [ListBooksRequest.page_token][google.example.library.v1.ListBooksRequest.page_token]
+  // field in the subsequent call to `ListBooks` method to retrieve the next
+  // page of results.
+  string next_page_token = 2;
+}
+
+// Request message for LibraryService.StreamBooks.
+message StreamBooksRequest {
+  // The name of the shelf whose books we'd like to list.
+  string name = 1;
+}
+
+// Request message for LibraryService.UpdateBook.
+message UpdateBookRequest {
+  // The name of the book to update.
+  string name = 1;
+
+  // An optional foo.
+  string optional_foo = 2;
+
+  // The book to update with.
+  Book book = 3;
+}
+
+// Request message for LibraryService.DeleteBook.
+message DeleteBookRequest {
+  // The name of the book to delete.
+  string name = 1;
+}
+
+message DiscussBookRequest {
+  // The name of the book to be discussed. If this is in the middle
+  // of the stream and this is not specified, the name in the previous
+  // message will be reused.
+  string name = 1;
+
+  // The new comment.
+  Comment comment = 2;
+}
+
+// Metadata for a longrunning operation.
+message GetBigBookMetadata {
+  // Approximate percentage of the book processed thus far.
+  int32 progress_percent = 1;
+}
+
+message Comment {
+  // won't be filled in by the sample generator
+  string user_name = 1;
+
+  // should be filled in by the sample generator
+  bytes comment = 2;
+
+  enum Stage {
+    UNSET = 0;
+    DRAFT = 1;
+    PUBLISHED = 2;
+    DELETED = 3;
+  }
+
+  // should be filled in by the sample generator
+  Stage stage = 5;
+}
+
+// A Shelf contains a collection of books with a theme.
+message Shelf {
+  // The resource name of the shelf.
+  // Shelf names have the form `bookShelves/{shelf_id}`.
+  string name = 1;
+
+  // The theme of the shelf
+  string theme = 2;
+
+  // Internal theme that is visible to trusted testers only.
+  string internal_theme = 3;
+}
+
+// Request message for LibraryService.StreamShelves.
+message StreamShelvesRequest {
+}
+
+// Response message for LibraryService.StreamShelves.
+message StreamShelvesResponse {
+  // The list of shelves.
+  repeated Shelf shelves = 1;
+}
+
+message Empty {}
+

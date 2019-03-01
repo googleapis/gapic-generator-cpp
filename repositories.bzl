@@ -16,7 +16,15 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 
-def _protobuf():
+def com_google_gapic_generator_cpp_repositories():
+    _maybe(
+        http_archive,
+        name = "absl",
+        sha256 = "e2b53bfb685f5d4130b84c4f3050c81bf48c497614dc85d91dbd3ed9129bce6d",
+        strip_prefix = "abseil-cpp-20181200",
+        urls = ["https://github.com/abseil/abseil-cpp/archive/20181200.tar.gz"]
+    )
+
     _maybe(
         http_archive,
         name = "com_google_protobuf",
@@ -42,44 +50,29 @@ def _protobuf():
         urls = ["https://zlib.net/zlib-1.2.11.tar.gz"]
     )
 
-
-def generator_dependencies():
-    _maybe(
-        http_archive,
-        name = "absl",
-        sha256 = "e2b53bfb685f5d4130b84c4f3050c81bf48c497614dc85d91dbd3ed9129bce6d",
-        strip_prefix = "abseil-cpp-20181200",
-        urls = ["https://github.com/abseil/abseil-cpp/archive/20181200.tar.gz"]
-    )
-
-    _protobuf()
-
     _maybe(
         http_archive,
         name = "api_common_protos",
-        # TODO(michaelbausor): point this at the master repo once it is ready
-        strip_prefix = "api-common-protos-b8dbe24345d380d6bfe8b5f05e910c7afa6562db",
-        urls = ["https://github.com/michaelbausor/api-common-protos/archive/b8dbe24345d380d6bfe8b5f05e910c7afa6562db.tar.gz"]
+        strip_prefix = "api-common-protos-87185dfffad4afa5a33a8c153f0e1ea53b4f85dc",
+        urls = ["https://github.com/googleapis/api-common-protos/archive/87185dfffad4afa5a33a8c153f0e1ea53b4f85dc.tar.gz"]
     )
 
-
-def generated_client_dependencies():
-    _maybe(
-        http_archive,
-        name = "com_github_grpc_grpc",
-        sha256 = "069a52a166382dd7b99bf8e7e805f6af40d797cfcee5f80e530ca3fc75fd06e2",
-        strip_prefix = "grpc-1.18.0",
-        urls = ["https://github.com/grpc/grpc/archive/v1.18.0.tar.gz"]
-    )
-
-
-def generator_test_dependencies():
     _maybe(
         http_archive,
         name = "gtest",
         sha256 = "9bf1fe5182a604b4135edc1a425ae356c9ad15e9b23f9f12a02e80184c3a249c",
         strip_prefix = "googletest-release-1.8.1",
         urls = ["https://github.com/google/googletest/archive/release-1.8.1.tar.gz"]
+    )
+
+
+def com_google_gapic_generator_cpp_gax_repositories():
+    _maybe(
+        http_archive,
+        name = "com_github_grpc_grpc",
+        sha256 = "069a52a166382dd7b99bf8e7e805f6af40d797cfcee5f80e530ca3fc75fd06e2",
+        strip_prefix = "grpc-1.18.0",
+        urls = ["https://github.com/grpc/grpc/archive/v1.18.0.tar.gz"]
     )
 
 

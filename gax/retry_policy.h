@@ -18,6 +18,8 @@
 #include <chrono>
 #include <memory>
 
+#include "status.h"
+
 namespace google {
 namespace gax {
 
@@ -30,7 +32,6 @@ namespace gax {
  *
  * The application provides an instance of this class when the client is created.
  */
-template <typename StatusType, typename RetryablePolicy>
 class RetryPolicy {
  public:
   virtual ~RetryPolicy() = default;
@@ -38,23 +39,20 @@ class RetryPolicy {
   /**
    * Return a new copy of this object with the same retry criteria and fresh state.
    */
-  virtual std::unique_ptr<RetryPolicy<StatusType, RetryablePolicy>> clone() const = 0;
+  virtual std::unique_ptr<RetryPolicy> clone() const = 0;
 
   /**
    * Handle an RPC failure
    *
    * @return true if the RPC operation should be retried.
    */
-  virtual bool OnFailure(StatusType const& status) = 0;
+  virtual bool OnFailure(Status const& status) = 0;
 };
 
 /**
  * Implement a simple "count errors and then stop" retry policy.
  */
-template <typename StatusType, typename RetryablePolicy>
-class LimitedErrorCountRetryPolicy : RetryPolicy<StatusType, RetryablePolicy> {
-  using BaseType = RetryPolicy<StatusType, RetryablePolicy>;
-
+class LimitedErrorCountRetryPolicy : RetryPolicy {
  public:
   LimitedErrorCountRetryPolicy(int max_failures)
       : failure_count_(0), max_failures_(max_failures) {}
@@ -65,12 +63,12 @@ class LimitedErrorCountRetryPolicy : RetryPolicy<StatusType, RetryablePolicy> {
   LimitedErrorCountRetryPolicy(LimitedErrorCountRetryPolicy&& rhs) noexcept
       : LimitedErrorCountRetryPolicy(rhs.max_failures_) {}
 
-  std::unique_ptr<RetryPolicy<StatusType, RetryablePolicy>> clone() const override {
-    return std::unique_ptr<BaseType>(new LimitedErrorCountRetryPolicy<StatusType, RetryablePolicy>(*this));
+  std::unique_ptr<RetryPolicy> clone() const override {
+    return std::unique_ptr<RetryPolicy>(new LimitedErrorCountRetryPolicy(*this));
   }
 
-  bool OnFailure(StatusType const& status) override {
-    return (!RetryablePolicy::IsPermanentFailure(status) &&
+  bool OnFailure(Status const& status) override {
+    return (!status.IsPermanentFailure() &&
             (failure_count_++) < max_failures_);
   }
 
@@ -82,10 +80,8 @@ class LimitedErrorCountRetryPolicy : RetryPolicy<StatusType, RetryablePolicy> {
 /**
  * Implement a simple "keep trying for this time" retry policy.
  */
-template <typename StatusType, typename RetryablePolicy, typename Clock>
-class LimitedDurationRetryPolicy : RetryPolicy<StatusType, RetryablePolicy> {
-  using BaseType = RetryPolicy<StatusType, RetryablePolicy>;
-
+template <typename Clock>
+class LimitedDurationRetryPolicy : RetryPolicy {
  public:
   template <typename duration_t>
   LimitedDurationRetryPolicy(duration_t max_duration) : max_duration_(max_duration),
@@ -97,12 +93,12 @@ class LimitedDurationRetryPolicy : RetryPolicy<StatusType, RetryablePolicy> {
   LimitedDurationRetryPolicy(LimitedDurationRetryPolicy&& rhs) noexcept
       : LimitedDurationRetryPolicy(rhs.max_duration_) {}
 
-  std::unique_ptr<RetryPolicy<StatusType, RetryablePolicy>> clone() const override {
-    return std::unique_ptr<BaseType>(new LimitedDurationRetryPolicy<StatusType, RetryablePolicy, Clock>(*this));
+  std::unique_ptr<RetryPolicy> clone() const override {
+    return std::unique_ptr<RetryPolicy>(new LimitedDurationRetryPolicy<Clock>(*this));
   }
 
-  bool OnFailure(StatusType const & status) override {
-    return (!RetryablePolicy::IsPermanentFailure(status) &&
+  bool OnFailure(Status const & status) override {
+    return (!status.IsPermanentFailure() &&
             Clock::now() < deadline_);
   }
 

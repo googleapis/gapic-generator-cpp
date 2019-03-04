@@ -18,9 +18,12 @@ licenses(["notice"])  # Apache 2.0
 
 cc_library(
     name = "gax",
-    srcs = [],
+    srcs = [
+        "status.cc",
+    ],
     hdrs = [
         "retry_policy.h",
+        "status.h",
     ],
     deps = [
     ],
@@ -28,6 +31,7 @@ cc_library(
 
 gax_unit_tests = [
     "retry_policy_unittest.cc",
+    "status_unittest.cc",
 ]
 
 [cc_test(

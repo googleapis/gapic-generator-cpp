@@ -12,33 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "googletest/include/gtest/gtest.h"
-#include "retry_policy.h"
 #include <chrono>
 #include <memory>
+
+#include "googletest/include/gtest/gtest.h"
+#include "retry_policy.h"
+#include "status.h"
 
 namespace {
 using namespace ::google;
 
-class TestStatus {
- public:
-  bool const isPermanent;
-};
-
-class TestRetryablePolicy {
- public:
-  static bool IsPermanentFailure(TestStatus const& s) {
-    return s.isPermanent;
-  }
-};
-
-using RP = gax::RetryPolicy<TestStatus, TestRetryablePolicy>;
-
-using LECRP = gax::LimitedErrorCountRetryPolicy<TestStatus, TestRetryablePolicy>;
-
 TEST(LimitedErrorCountRetryPolicy, Basic) {
-  LECRP tested(3);
-  TestStatus s{false};
+  gax::LimitedErrorCountRetryPolicy tested(3);
+  gax::Status s;
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_TRUE(tested.OnFailure(s));
@@ -47,20 +33,20 @@ TEST(LimitedErrorCountRetryPolicy, Basic) {
 }
 
 TEST(LimitedErrorCountRetryPolicy, PermanentFailureCheck) {
-  LECRP tested(3);
-  TestStatus s{true};
+  gax::LimitedErrorCountRetryPolicy tested(3);
+  gax::Status s{gax::StatusCode::kCancelled, ""};
   EXPECT_FALSE(tested.OnFailure(s));
 }
 
 TEST(LimitedErrorCountRetryPolicy, CopyConstruct) {
-  LECRP tested(3);
-  TestStatus s{false};
+  gax::LimitedErrorCountRetryPolicy tested(3);
+  gax::Status s;
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_FALSE(tested.OnFailure(s));
 
-  LECRP copy(tested);
+  gax::LimitedErrorCountRetryPolicy copy(tested);
   EXPECT_TRUE(copy.OnFailure(s));
   EXPECT_TRUE(copy.OnFailure(s));
   EXPECT_TRUE(copy.OnFailure(s));
@@ -68,14 +54,14 @@ TEST(LimitedErrorCountRetryPolicy, CopyConstruct) {
 }
 
 TEST(LimitedErrorCountRetryPolicy, MoveConstruct) {
-  LECRP tested(3);
-  TestStatus s{false};
+  gax::LimitedErrorCountRetryPolicy tested(3);
+  gax::Status s;
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_FALSE(tested.OnFailure(s));
 
-  LECRP copy(std::move(tested));
+  gax::LimitedErrorCountRetryPolicy copy(std::move(tested));
   EXPECT_TRUE(copy.OnFailure(s));
   EXPECT_TRUE(copy.OnFailure(s));
   EXPECT_TRUE(copy.OnFailure(s));
@@ -83,21 +69,21 @@ TEST(LimitedErrorCountRetryPolicy, MoveConstruct) {
 }
 
 TEST(LimitedErrorCountRetryPolicy, Clone) {
-  LECRP tested(3);
-  TestStatus s{false};
+  gax::LimitedErrorCountRetryPolicy tested(3);
+  gax::Status s;
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_TRUE(tested.OnFailure(s));
   EXPECT_FALSE(tested.OnFailure(s));
 
-  std::unique_ptr<RP> clone = tested.clone();
+  std::unique_ptr<gax::RetryPolicy> clone = tested.clone();
   EXPECT_TRUE(clone->OnFailure(s));
   EXPECT_TRUE(clone->OnFailure(s));
   EXPECT_TRUE(clone->OnFailure(s));
   EXPECT_FALSE(clone->OnFailure(s));
 }
 
-static std::chrono::time_point<std::chrono::system_clock> now_point = std::chrono::system_clock::now();
+static std::chrono::time_point<std::chrono::system_clock> now_point;
 
 class TestClock {
  public:
@@ -106,11 +92,9 @@ class TestClock {
   }
 };
 
-using LDRP = gax::LimitedDurationRetryPolicy<TestStatus, TestRetryablePolicy, TestClock>;
-
 TEST(LimitedDurationRetryPolicy, Basic) {
-  LDRP tested(std::chrono::milliseconds(5));
-  TestStatus s{false};
+  gax::LimitedDurationRetryPolicy<TestClock> tested(std::chrono::milliseconds(5));
+  gax::Status s;
   EXPECT_TRUE(tested.OnFailure(s));
 
   now_point += std::chrono::milliseconds(2);
@@ -121,42 +105,42 @@ TEST(LimitedDurationRetryPolicy, Basic) {
 }
 
 TEST(LimitedDurationRetryPolicy, PermanentFailureCheck) {
-  LDRP tested(std::chrono::milliseconds(5));
-  TestStatus s{true};
+  gax::LimitedDurationRetryPolicy<TestClock> tested(std::chrono::milliseconds(5));
+  gax::Status s{gax::StatusCode::kCancelled, ""};
 
   EXPECT_FALSE(tested.OnFailure(s));
 }
 
 TEST(LimitedDurationRetryPolicy, CopyConstruct) {
-  LDRP tested(std::chrono::milliseconds(5));
-  TestStatus s{false};
+  gax::LimitedDurationRetryPolicy<TestClock> tested(std::chrono::milliseconds(5));
+  gax::Status s;
 
   now_point += std::chrono::milliseconds(10);
   EXPECT_FALSE(tested.OnFailure(s));
 
-  LDRP copy(tested);
+  gax::LimitedDurationRetryPolicy<TestClock> copy(tested);
   EXPECT_TRUE(copy.OnFailure(s));
 }
 
 TEST(LimitedDurationRetryPolicy, MoveConstruct) {
-  LDRP tested(std::chrono::milliseconds(5));
-  TestStatus s{false};
+  gax::LimitedDurationRetryPolicy<TestClock> tested(std::chrono::milliseconds(5));
+  gax::Status s;
 
   now_point += std::chrono::milliseconds(10);
   EXPECT_FALSE(tested.OnFailure(s));
 
-  LDRP copy(std::move(tested));
+  gax::LimitedDurationRetryPolicy<TestClock> copy(std::move(tested));
   EXPECT_TRUE(copy.OnFailure(s));
 }
 
 TEST(LimitedDurationRetryPolicy, Clone) {
-  LDRP tested(std::chrono::milliseconds(5));
-  TestStatus s{false};
+  gax::LimitedDurationRetryPolicy<TestClock> tested(std::chrono::milliseconds(5));
+  gax::Status s;
 
   now_point += std::chrono::milliseconds(10);
   EXPECT_FALSE(tested.OnFailure(s));
 
-  std::unique_ptr<RP> clone = tested.clone();
+  std::unique_ptr<gax::RetryPolicy> clone = tested.clone();
   EXPECT_TRUE(clone->OnFailure(s));
 }
 

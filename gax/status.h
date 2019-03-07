@@ -21,6 +21,11 @@
 namespace google {
 namespace gax {
 
+/**
+ * The underlying StatusCode is intended to closely resemble
+ * grpc::StatusCode, the semantics of which are documented in:
+ *    https://grpc.io/grpc/cpp/classgrpc_1_1_status.html
+ */
 enum class StatusCode {
   /// Not an error; returned on success.
   kOk = 0,
@@ -43,6 +48,12 @@ enum class StatusCode {
   kUnauthenticated = 16,
 };
 
+/**
+ * Reports error code and details from a remote request.
+ *
+ * This class is modeled after `grpc::Status`.
+ * It contains the status code and error message(if applicable) from an RPC.
+ */
 class Status {
  public:
   Status() : code_(StatusCode::kOk) {}

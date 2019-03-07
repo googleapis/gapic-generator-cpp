@@ -22,7 +22,7 @@ namespace {
 
 using namespace ::google;
 
-TEST(Status,Basic){
+TEST(Status,Basic) {
   {
     gax::Status s;  // sanity check for default construction
     EXPECT_TRUE(s.IsOk());
@@ -105,7 +105,7 @@ TEST(Status,Basic){
   }
 }
 
-TEST(Status,CodeOstream){
+TEST(Status,CodeOstream) {
   std::ostringstream output;
 
   output << gax::StatusCode::kOk;

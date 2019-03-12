@@ -36,18 +36,18 @@ inline std::string CamelCaseToSnakeCase(std::string const& input) {
     for (auto i = 0u; i < input.size(); ++i) {
         if (i + 2 < input.size()) {
             if (std::isupper(input[i + 1]) && std::islower(input[i + 2])) {
-                absl::StrAppend(&output, std::tolower(input[i]), "_");
+                absl::StrAppend(&output, std::string(1, std::tolower(input[i])), "_");
                 continue;
             }
         }
         if (i + 1 < input.size()) {
             if ((std::islower(input[i]) || std::isdigit(input[i]))
                     && std::isupper(input[i + 1])) {
-                absl::StrAppend(&output, std::tolower(input[i]), "_");
+                absl::StrAppend(&output, std::string(1, std::tolower(input[i])), "_");
                 continue;
             }
         }
-        absl::StrAppend(&output, std::tolower(input[i]));
+        absl::StrAppend(&output, std::string(1, std::tolower(input[i])));
     }
     return output;
 }

@@ -40,10 +40,12 @@ inline std::string CamelCaseToSnakeCase(std::string const& input) {
                 continue;
             }
         }
-        if ((std::islower(input[i]) || std::isdigit(input[i]))
-                && std::isupper(input[i + 1])) {
-            absl::StrAppend(&output, std::tolower(input[i]), "_");
-            continue;
+        if (i + 1 < input.size()) {
+            if ((std::islower(input[i]) || std::isdigit(input[i]))
+                    && std::isupper(input[i + 1])) {
+                absl::StrAppend(&output, std::tolower(input[i]), "_");
+                continue;
+            }
         }
         absl::StrAppend(&output, std::tolower(input[i]));
     }

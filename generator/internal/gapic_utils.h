@@ -32,18 +32,22 @@ namespace internal {
  * Convert a CamelCase string to snake_case.
  */
 inline std::string CamelCaseToSnakeCase(std::string const& input) {
-  std::string output;
-  // Initialize prev_char_is_upper to true so that we omit a leading "_"
-  bool prev_char_is_upper = true;
-  for (auto c : input) {
-    if (std::isupper(c) && !prev_char_is_upper) {
-      absl::StrAppend(&output, "_", std::string(1, std::tolower(c)));
-    } else {
-      absl::StrAppend(&output, std::string(1, std::tolower(c)));
+    std::string output;
+    for (auto i = 0u; i < input.size(); ++i) {
+        if (i + 2 < input.size()) {
+            if (std::isupper(input[i + 1]) && std::islower(input[i + 2])) {
+                absl::StrAppend(&output, std::tolower(input[i]), "_");
+                continue;
+            }
+        }
+        if ((std::islower(input[i]) || std::isdigit(input[i]))
+                && std::isupper(input[i + 1])) {
+            absl::StrAppend(&output, std::tolower(input[i]), "_");
+            continue;
+        }
+        absl::StrAppend(&output, std::tolower(input[i]));
     }
-    prev_char_is_upper = std::isupper(c);
-  }
-  return output;
+    return output;
 }
 
 /**

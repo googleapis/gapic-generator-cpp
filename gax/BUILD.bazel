@@ -24,6 +24,7 @@ cc_library(
     ],
     hdrs = [
         "backoff_policy.h",
+        "internal/gtest_prod.h",
         "retry_policy.h",
         "status.h",
     ],

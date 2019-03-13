@@ -19,11 +19,7 @@
 #include <memory>
 #include <random>
 
-// Note: gtest-1.8.1 doesn't have a separate target for gtest_prod.
-//       Rather than add an overlarge dependency on @gtest//:gtest,
-//       just define the necessary macro ourselves.
-#define FRIEND_TEST(test_case_name, test_name)\
-friend class test_case_name##_##test_name##_Test
+#include "internal/gtest_prod.h"
 
 namespace google {
 namespace gax {

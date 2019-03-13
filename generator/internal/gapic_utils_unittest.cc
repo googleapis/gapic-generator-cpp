@@ -31,11 +31,12 @@ TEST(GapicUtils, CamelCaseToSnakeCase) {
     { "Abc", "abc" },
     { "AbcDef", "abc_def" },
     { "abcDef", "abc_def" },
-    { "ABc", "abc" },
-    { "ABcDEf", "abc_def" },
+    { "ABc", "a_bc" },
+    { "ABcDEf", "a_bc_d_ef" },
     { "Abc1De", "abc1_de" },
     { "Abc1de", "abc1de" },
     { "A1B", "a1_b" },
+    { "SNMPParse", "snmp_parse" }
   };
 
   for (auto test_case : test_cases) {

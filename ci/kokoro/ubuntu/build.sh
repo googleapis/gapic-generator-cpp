@@ -32,6 +32,11 @@ echo "================================================================"
 readonly BAZEL_BIN="$HOME/bin/bazel"
 echo "Using Bazel in ${BAZEL_BIN}"
 
+# Kokoro does guarantee that g++-4.9 will be installed, but the default compiler
+# might be g++-4.8. Set the compiler version explicitly:
+export CC=/usr/bin/gcc-4.9
+export CXX=/usr/bin/g++-4.9
+
 echo "================================================================"
 echo "Compiling and running unit tests $(date)"
 echo "================================================================"

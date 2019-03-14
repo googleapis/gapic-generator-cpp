@@ -232,4 +232,14 @@ TEST(Status,Equality) {
   EXPECT_NE(ok1, cancelled2);
 }
 
+TEST(Status, CopyCtor) {
+  gax::Status ok1;
+  gax::Status ok2(ok1);
+  EXPECT_EQ(ok1, ok2);
+
+  gax::Status cancelled1(gax::StatusCode::kCancelled, "Because");
+  gax::Status cancelled2(cancelled1);
+  EXPECT_EQ(cancelled1, cancelled2);
+}
+
 }  // namespace

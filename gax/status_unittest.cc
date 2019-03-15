@@ -106,78 +106,96 @@ TEST(Status,Basic) {
 }
 
 TEST(Status,CodeOstream) {
-  std::ostringstream output;
-
-  output << gax::StatusCode::kOk;
-  EXPECT_EQ("OK", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kCancelled;
-  EXPECT_EQ("CANCELLED", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kUnknown;
-  EXPECT_EQ("UNKNOWN", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kInvalidArgument;
-  EXPECT_EQ("INVALID_ARGUMENT", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kDeadlineExceeded;
-  EXPECT_EQ("DEADLINE_EXCEEDED", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kNotFound;
-  EXPECT_EQ("NOT_FOUND", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kAlreadyExists;
-  EXPECT_EQ("ALREADY_EXISTS", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kPermissionDenied;
-  EXPECT_EQ("PERMISSION_DENIED", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kResourceExhausted;
-  EXPECT_EQ("RESOURCE_EXHAUSTED", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kFailedPrecondition;
-  EXPECT_EQ("FAILED_PRECONDITION", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kAborted;
-  EXPECT_EQ("ABORTED", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kOutOfRange;
-  EXPECT_EQ("OUT_OF_RANGE", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kUnimplemented;
-  EXPECT_EQ("UNIMPLEMENTED", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kInternal;
-  EXPECT_EQ("INTERNAL", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kUnavailable;
-  EXPECT_EQ("UNAVAILABLE", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kDataLoss;
-  EXPECT_EQ("DATA_LOSS", output.str());
-
-  output = std::ostringstream();
-  output << gax::StatusCode::kUnauthenticated;
-  EXPECT_EQ("UNAUTHENTICATED", output.str());
-
-  output = std::ostringstream();
-  output << static_cast<gax::StatusCode>(42);
-  EXPECT_EQ("UNEXPECTED_STATUS_CODE=42", output.str());
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kOk;
+    EXPECT_EQ("OK", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kCancelled;
+    EXPECT_EQ("CANCELLED", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kUnknown;
+    EXPECT_EQ("UNKNOWN", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kInvalidArgument;
+    EXPECT_EQ("INVALID_ARGUMENT", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kDeadlineExceeded;
+    EXPECT_EQ("DEADLINE_EXCEEDED", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kNotFound;
+    EXPECT_EQ("NOT_FOUND", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kAlreadyExists;
+    EXPECT_EQ("ALREADY_EXISTS", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kPermissionDenied;
+    EXPECT_EQ("PERMISSION_DENIED", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kResourceExhausted;
+    EXPECT_EQ("RESOURCE_EXHAUSTED", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kFailedPrecondition;
+    EXPECT_EQ("FAILED_PRECONDITION", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kAborted;
+    EXPECT_EQ("ABORTED", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kOutOfRange;
+    EXPECT_EQ("OUT_OF_RANGE", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kUnimplemented;
+    EXPECT_EQ("UNIMPLEMENTED", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kInternal;
+    EXPECT_EQ("INTERNAL", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kUnavailable;
+    EXPECT_EQ("UNAVAILABLE", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kDataLoss;
+    EXPECT_EQ("DATA_LOSS", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << gax::StatusCode::kUnauthenticated;
+    EXPECT_EQ("UNAUTHENTICATED", output.str());
+  }
+  {
+    std::ostringstream output;
+    output << static_cast<gax::StatusCode>(42);
+    EXPECT_EQ("UNEXPECTED_STATUS_CODE=42", output.str());
+  }
 }
 
 TEST(Status,Ostream) {

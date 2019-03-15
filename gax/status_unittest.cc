@@ -111,7 +111,7 @@ TEST(Status,CodeOstream) {
   output << gax::StatusCode::kOk;
   EXPECT_EQ("OK", output.str());
 
-  output = std::ostringstream();
+  output(std::ostringstream());
   output << gax::StatusCode::kCancelled;
   EXPECT_EQ("CANCELLED", output.str());
 

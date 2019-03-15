@@ -20,11 +20,11 @@ cc_library(
     name = "gax",
     srcs = [
         "backoff_policy.cc",
+        "internal/gtest_prod.h",
         "status.cc",
     ],
     hdrs = [
         "backoff_policy.h",
-        "internal/gtest_prod.h",
         "retry_policy.h",
         "status.h",
     ],

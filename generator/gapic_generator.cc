@@ -21,6 +21,7 @@
 #include "absl/strings/str_replace.h"
 #include "generator/gapic_generator.h"
 #include "internal/gapic_utils.h"
+#include "internal/printer.h"
 
 #include "google/api/client.pb.h"
 
@@ -69,7 +70,7 @@ std::vector<std::string> BuildNamespaces(
 void PrintMethods(
     pb::ServiceDescriptor const* service,
     std::map<std::string, std::string> vars,
-    pb::io::Printer* p,
+    internal::Printer& p,
     char const* tmplt) {
   for (int i = 0; i < service->method_count(); i++) {
     const pb::MethodDescriptor* method = service->method(i);
@@ -81,7 +82,7 @@ void PrintMethods(
 bool GenerateClientHeaderFile(
     pb::ServiceDescriptor const* service,
     std::map<std::string, std::string> const& vars,
-    pb::io::Printer* p,
+    internal::Printer& p,
     std::string * /* error */) {
   auto includes = BuildHeaderIncludes(service);
   auto namespaces = BuildNamespaces(service);
@@ -121,7 +122,7 @@ bool GenerateClientHeaderFile(
 bool GenerateClientCCFile(
     pb::ServiceDescriptor const* service,
     std::map<std::string, std::string> const& vars,
-    pb::io::Printer* p,
+    internal::Printer& p,
     std::string * /* error */) {
   auto includes = BuildCCIncludes(service);
   auto namespaces = BuildNamespaces(service);
@@ -174,18 +175,14 @@ bool GapicGenerator::Generate(pb::FileDescriptor const* file,
         service->full_name());
 
     std::string header_file_path = absl::StrCat(service_file_path, ".gapic.h");
-    std::unique_ptr<pb::io::ZeroCopyOutputStream> header_output(
-        generator_context->Open(header_file_path));
-    pb::io::Printer header_printer(header_output.get(), '$', NULL);
-    if (!GenerateClientHeaderFile(service, vars, &header_printer, error)) {
+    internal::Printer header_printer(generator_context, header_file_path);
+    if (!GenerateClientHeaderFile(service, vars, header_printer, error)) {
       return false;
     }
 
     std::string cc_file_path = absl::StrCat(service_file_path, ".gapic.cc");
-    std::unique_ptr<pb::io::ZeroCopyOutputStream> cc_output(
-        generator_context->Open(cc_file_path));
-    pb::io::Printer cc_printer(cc_output.get(), '$', NULL);
-    if (!GenerateClientCCFile(service, vars, &cc_printer, error)) {
+    internal::Printer cc_printer(generator_context, cc_file_path);
+    if (!GenerateClientCCFile(service, vars, cc_printer, error)) {
       return false;
     }
   }

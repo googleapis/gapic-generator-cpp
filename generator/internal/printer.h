@@ -25,22 +25,27 @@ namespace api {
 namespace codegen {
 namespace internal {
 
+/**
+ * Wrapper around a google::protobuf::io::ZeroCopyOutputStream and a
+ * google::protobuf::io::Printer object so that they can be used for
+ * code generation. 
+ */
 class Printer {
  public:
   Printer(pb::compiler::GeneratorContext* generator_context,
           std::string const& file_name)
     : output_(generator_context->Open(file_name)),
-      printer_(output_.get(), '$', NULL) {}
+      printer_(new pb::io::Printer(output_.get(), '$', NULL)) {}
 
-  pb::io::Printer* operator->() & { return &printer_; }
-  pb::io::Printer const* operator->() const& { return &printer_; }
+  pb::io::Printer* operator->() & { return printer_.get(); }
+  pb::io::Printer const* operator->() const& { return printer_.get(); }
 
   Printer(Printer const&) = delete;
   Printer& operator=(Printer const&) = delete;
 
  private:
   std::unique_ptr<pb::io::ZeroCopyOutputStream> output_;
-  pb::io::Printer printer_;
+  std::unique_ptr<pb::io::Printer> printer_;
 };
 
 } // internal

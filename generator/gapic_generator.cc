@@ -24,7 +24,6 @@
 #include "internal/client_cc_generator.h"
 #include "internal/gapic_utils.h"
 #include "internal/printer.h"
-#include "internal/service_generator.h"
 
 #include "google/api/client.pb.h"
 
@@ -33,31 +32,6 @@ namespace pb = google::protobuf;
 namespace google {
 namespace api {
 namespace codegen {
-
-std::vector<std::string> BuildHeaderIncludes(
-    pb::ServiceDescriptor const* /* service */) {
-  return std::vector<std::string>();
-}
-
-std::vector<std::string> BuildCCIncludes(
-    pb::ServiceDescriptor const* /* service */) {
-  return std::vector<std::string>();
-}
-
-std::vector<std::string> BuildNamespaces(
-    pb::ServiceDescriptor const* /* service */) {
-  return std::vector<std::string>();
-}
-
-template <typename Generator>
-bool GenerateService(pb::ServiceDescriptor const* service,
-              std::map<std::string, std::string>& vars,
-              pb::compiler::GeneratorContext* generator_context,
-              std::string* error) {
-  std::string file = Generator::FileName(service);
-  internal::Printer p(generator_context, file);
-  return Generator::Generate(service, vars, p, error);
-}
 
 bool GapicGenerator::Generate(pb::FileDescriptor const* file,
                                  std::string const& /* parameter */,
@@ -79,16 +53,18 @@ bool GapicGenerator::Generate(pb::FileDescriptor const* file,
     std::map<std::string, std::string> vars;
     internal::SetServiceVars(service, vars);
 
-    std::string header_file_path = internal::ClientHeaderGenerator::FileName(service);
+    std::string service_file_path = internal::ServiceNameToFilePath(
+        service->full_name());
+
+    std::string header_file_path = absl::StrCat(service_file_path, ".gapic.h");
     internal::Printer header_printer(generator_context, header_file_path);
-    if (!internal::ClientHeaderGenerator::Generate(
-          service, vars, header_printer, error)) {
+    if (!internal::GenerateClientHeader(service, vars, header_printer, error)) {
       return false;
     }
 
-    std::string cc_file_path = internal::ClientCCGenerator::FileName(service);
+    std::string cc_file_path = absl::StrCat(service_file_path, ".gapic.cc");
     internal::Printer cc_printer(generator_context, cc_file_path);
-    if (!internal::ClientCCGenerator::Generate(service, vars, cc_printer, error)) {
+    if (!internal::GenerateClientCC(service, vars, cc_printer, error)) {
       return false;
     }
   }

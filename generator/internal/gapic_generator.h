@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef GOOGLE_API_CODEGEN_INTERNAL_GENERATOR_DATA_UTILS_H_
-#define GOOGLE_API_CODEGEN_INTERNAL_GENERATOR_DATA_UTILS_H_
+#ifndef GOOGLE_API_CODEGEN_INTERNAL_GAPIC_GENERATOR_H_
+#define GOOGLE_API_CODEGEN_INTERNAL_GAPIC_GENERATOR_H_
 
 #include <algorithm>
 #include <string>
@@ -73,4 +73,4 @@ void PrintMethods(
 } // api
 } // google
 
-#endif // GOOGLE_API_CODEGEN_INTERNAL_GENERATOR_DATA_UTILS_H_
+#endif // GOOGLE_API_CODEGEN_INTERNAL_GAPIC_GENERATOR_H_

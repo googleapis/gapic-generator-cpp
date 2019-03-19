@@ -21,6 +21,7 @@ cc_library(
     srcs = [
         "gapic_generator.cc",
         "internal/gapic_utils.h",
+        "internal/printer.h",
     ],
     hdrs = [
         "gapic_generator.h",

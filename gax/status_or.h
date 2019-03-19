@@ -44,7 +44,8 @@ namespace gax {
  * }
  * @endcode
  *
- * Alternatively, you may call the `StatusOr::value()` member function.
+ * Alternatively, you may call the `StatusOr::value()` member function,
+ * which will invoke `std::abort()` if `!StatusOr::ok()`.
  *
  * @code
  * StatusOr<Foo> foo = FetchFoo();
@@ -80,14 +81,19 @@ namespace gax {
 template<typename T>
 class StatusOr final {
  public:
-  // There is no good definition of a default StatusOr:
-  // it can't default construct T because T may not have a default constructor,
-  // and using an unknown error code and generic message is not helpful.
+  /**
+   * StatusOr is not default constructible.
+   *
+   * There is no good definition of a default StatusOr:
+   * it can't default construct T because T may not have a default constructor,
+   * and using an unknown error code and generic message is not helpful.
+   */
   StatusOr() = delete;
 
   /**
    * Creates a new `StatusOr<T>` holding the error condition @p rhs.
-   * It is undefined behavior to create a `StatusOr<T>` from an OK status.
+   * Creating a StatusOr from an OK status is not permitted
+   * and invokes `std::abort()`.
    *
    * @par Post-conditions
    * `ok() == false` and `status() == rhs`.
@@ -113,17 +119,13 @@ class StatusOr final {
   StatusOr(T&& rhs) : status_(), value_(std::move(rhs)) {}
 
   StatusOr(StatusOr const& rhs) : status_(rhs.status_) {
-    // Can't call ok() directly because that causes
-    // invalid memory accesses, not sure why.
-    if(status_.IsOk()) {
+    if(ok()) {
       new (&value_) T(rhs.value_);
     }
   }
 
   StatusOr(StatusOr&& rhs) : status_(std::move(rhs.status_)) {
-    // Can't call ok() directly because that causes
-    // invalid memory accesses, not sure why.
-    if(status_.IsOk()) {
+    if(ok()) {
       new (&value_) T(std::move(rhs.value_));
     }
   }
@@ -138,7 +140,7 @@ class StatusOr final {
    * @name Status accessors.
    *
    * @return All these member functions return the (properly ref and
-   *     const-qualified) status. If the object contains a value then
+   *     const-qualified) status. Iff the object contains a value then
    *     `status().ok() == true`.
    */
   Status const& status() const { return status_; }

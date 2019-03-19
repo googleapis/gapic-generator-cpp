@@ -35,17 +35,17 @@ class Printer {
   Printer(pb::compiler::GeneratorContext* generator_context,
           std::string const& file_name)
     : output_(generator_context->Open(file_name)),
-      printer_(new pb::io::Printer(output_.get(), '$', NULL)) {}
+      printer_(output_.get(), '$', NULL) {}
 
-  pb::io::Printer* operator->() & { return printer_.get(); }
-  pb::io::Printer const* operator->() const& { return printer_.get(); }
+  pb::io::Printer* operator->() & { return &printer_; }
+  pb::io::Printer const* operator->() const& { return &printer_; }
 
   Printer(Printer const&) = delete;
   Printer& operator=(Printer const&) = delete;
 
  private:
   std::unique_ptr<pb::io::ZeroCopyOutputStream> output_;
-  std::unique_ptr<pb::io::Printer> printer_;
+  pb::io::Printer printer_;
 };
 
 } // internal

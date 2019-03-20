@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "googletest/include/gtest/gtest.h"
 #include "status_or.h"
+#include "googletest/include/gtest/gtest.h"
 #include "status.h"
 
 #include <memory>
@@ -40,7 +40,9 @@ class Observable {
     destructor = 0;
   }
   Observable() { ++default_constructor; }
-  explicit Observable(std::string str) : str_(std::move(str)) { ++value_constructor; }
+  explicit Observable(std::string str) : str_(std::move(str)) {
+    ++value_constructor;
+  }
   Observable(Observable const& rhs) : str_(rhs.str_) { ++copy_constructor; }
   Observable(Observable&& rhs) : str_(std::move(rhs.str_)) {
     rhs.str_ = "moved-out";
@@ -75,14 +77,17 @@ TEST(StatusOr, ConstructFromStatus) {
   EXPECT_EQ(tested.status(), gax::Status(gax::StatusCode::kUnknown, "Because"));
   EXPECT_FALSE(tested);
 
-  gax::StatusOr<int> tested2(gax::Status(gax::StatusCode::kCancelled, "Why not?"));
+  gax::StatusOr<int> tested2(
+      gax::Status(gax::StatusCode::kCancelled, "Why not?"));
   EXPECT_FALSE(tested2.ok());
-  EXPECT_EQ(tested2.status(), gax::Status(gax::StatusCode::kCancelled, "Why not?"));
+  EXPECT_EQ(tested2.status(),
+            gax::Status(gax::StatusCode::kCancelled, "Why not?"));
   EXPECT_FALSE(tested2);
 
   gax::StatusOr<int> copy(tested2);
   EXPECT_FALSE(copy.ok());
-  EXPECT_EQ(copy.status(), gax::Status(gax::StatusCode::kCancelled, "Why not?"));
+  EXPECT_EQ(copy.status(),
+            gax::Status(gax::StatusCode::kCancelled, "Why not?"));
   EXPECT_FALSE(copy);
 }
 
@@ -92,17 +97,20 @@ TEST(StatusOr, ConstructFromOkStatusFails) {
 }
 
 TEST(StatusOr, ValueOnFailedAborts) {
-  gax::StatusOr<int> failed(gax::Status(gax::StatusCode::kCancelled, "Because"));
+  gax::StatusOr<int> failed(
+      gax::Status(gax::StatusCode::kCancelled, "Because"));
   EXPECT_DEATH(failed.value(), "Because \\[CANCELLED\\]");
 }
 
 TEST(StatusOr, ValueOnFailedAbortsConst) {
-  gax::StatusOr<int> const failed(gax::Status(gax::StatusCode::kCancelled, "Because"));
+  gax::StatusOr<int> const failed(
+      gax::Status(gax::StatusCode::kCancelled, "Because"));
   EXPECT_DEATH(failed.value(), "Because \\[CANCELLED\\]");
 }
 
 TEST(StatusOr, ValueOnFailedAbortsMove) {
-  gax::StatusOr<int> failed(gax::Status(gax::StatusCode::kCancelled, "Because"));
+  gax::StatusOr<int> failed(
+      gax::Status(gax::StatusCode::kCancelled, "Because"));
   EXPECT_DEATH(std::move(failed).value(), "Because \\[CANCELLED\\]");
 }
 
@@ -128,7 +136,8 @@ TEST(StatusOr, ConstructFromValue) {
 
 TEST(StatusOr, CopyConstruct) {
   Observable::reset_counters();
-  gax::StatusOr<Observable> failed(gax::Status(gax::StatusCode::kUnknown, "Because"));
+  gax::StatusOr<Observable> failed(
+      gax::Status(gax::StatusCode::kUnknown, "Because"));
   gax::StatusOr<Observable> copy_failed(failed);
   EXPECT_EQ(Observable::default_constructor, 0);
   EXPECT_EQ(Observable::copy_constructor, 0);
@@ -142,7 +151,8 @@ TEST(StatusOr, CopyConstruct) {
 
 TEST(StatusOr, MoveConstruct) {
   Observable::reset_counters();
-  gax::StatusOr<Observable> failed(gax::Status(gax::StatusCode::kUnknown, "Because"));
+  gax::StatusOr<Observable> failed(
+      gax::Status(gax::StatusCode::kUnknown, "Because"));
   gax::StatusOr<Observable> move_failed(std::move(failed));
   EXPECT_EQ(Observable::default_constructor, 0);
   EXPECT_EQ(Observable::copy_constructor, 0);
@@ -179,15 +189,14 @@ TEST(StatusOr, ValueByRvalueRef) {
 TEST(StatusOr, Destructor) {
   Observable::reset_counters();
   {
-    gax::StatusOr<Observable> invalid(gax::Status(gax::StatusCode::kUnknown, "Because"));
+    gax::StatusOr<Observable> invalid(
+        gax::Status(gax::StatusCode::kUnknown, "Because"));
   }
   EXPECT_EQ(Observable::destructor, 0);
 
   Observable o;
   Observable::reset_counters();
-  {
-    gax::StatusOr<Observable> valid(o);
-  }
+  { gax::StatusOr<Observable> valid(o); }
   EXPECT_EQ(Observable::destructor, 1);
 }
 

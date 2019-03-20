@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef GOOGLE_GAX_STATUS_OR_H_
-#define GOOGLE_GAX_STATUS_OR_H_
+#ifndef GAPIC_GENERATOR_CPP_GAX_STATUS_OR_H_
+#define GAPIC_GENERATOR_CPP_GAX_STATUS_OR_H_
 
 #include <cstdlib>
 #include <iostream>
@@ -78,7 +78,7 @@ namespace gax {
  *
  * @tparam T the type of the value.
  */
-template<typename T>
+template <typename T>
 class StatusOr final {
  public:
   /**
@@ -101,8 +101,9 @@ class StatusOr final {
    * @param rhs the status to initialize the object.
    */
   StatusOr(Status rhs) : status_(std::move(rhs)) {
-    if(status_.IsOk()){
-      std::cerr << "Constructing StatusOr<T> from OK status is not allowed" << std::endl;
+    if (status_.IsOk()) {
+      std::cerr << "Constructing StatusOr<T> from OK status is not allowed"
+                << std::endl;
       std::abort();
     }
   }
@@ -115,28 +116,24 @@ class StatusOr final {
    *
    * @param rhs the value used to initialize the object.
    */
-  StatusOr(T const& rhs) : status_() {
-    new (&value_) T(rhs);
-  }
+  StatusOr(T const& rhs) : status_() { new (&value_) T(rhs); }
 
-  StatusOr(T&& rhs) : status_() {
-    new (&value_) T(std::move(rhs));
-  }
+  StatusOr(T&& rhs) : status_() { new (&value_) T(std::move(rhs)); }
 
   StatusOr(StatusOr const& rhs) : status_(rhs.status_) {
-    if(ok()) {
+    if (ok()) {
       new (&value_) T(rhs.value_);
     }
   }
 
   StatusOr(StatusOr&& rhs) : status_(std::move(rhs.status_)) {
-    if(ok()) {
+    if (ok()) {
       new (&value_) T(std::move(rhs.value_));
     }
   }
 
   ~StatusOr() {
-    if(ok()) {
+    if (ok()) {
       value_.~T();
     }
   }
@@ -203,14 +200,14 @@ class StatusOr final {
 
  private:
   void check_value() const {
-    if(!ok()) {
+    if (!ok()) {
       std::cerr << status_ << std::endl;
       std::abort();
     }
   }
 
   Status const status_;
-  union{
+  union {
     T value_;
   };
 };
@@ -218,4 +215,4 @@ class StatusOr final {
 }  // namespace gax
 }  // namespace google
 
-#endif  //  GOOGLE_GAX_STATUS_OR_H_
+#endif  // GAPIC_GENERATOR_CPP_GAX_STATUS_OR_H_

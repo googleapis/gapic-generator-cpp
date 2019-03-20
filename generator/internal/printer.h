@@ -17,6 +17,7 @@
 #include <string>
 #include "src/google/protobuf/compiler/code_generator.h"
 #include "src/google/protobuf/io/printer.h"
+#include "src/google/protobuf/io/zero_copy_stream.h"
 
 namespace pb = google::protobuf;
 

@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef GOOGLE_API_CODEGEN_INTERNAL_PRINTER_H_
-#define GOOGLE_API_CODEGEN_INTERNAL_PRINTER_H_
+#ifndef GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_PRINTER_H_
+#define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_PRINTER_H_
 
 #include <string>
 #include "src/google/protobuf/compiler/code_generator.h"
@@ -54,4 +54,4 @@ class Printer {
 } // api
 } // google
 
-#endif // GOOGLE_API_CODEGEN_INTERNAL_PRINTER_H_
+#endif  // GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_PRINTER_H_

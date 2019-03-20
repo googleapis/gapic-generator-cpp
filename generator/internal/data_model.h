@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef GOOGLE_API_CODEGEN_INTERNAL_DATA_MODEL_H_
-#define GOOGLE_API_CODEGEN_INTERNAL_DATA_MODEL_H_
+#ifndef GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_DATA_MODEL_H_
+#define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_DATA_MODEL_H_
 
 #include <algorithm>
 #include <string>
@@ -75,4 +75,4 @@ struct DataModel {
 } // api
 } // google
 
-#endif // GOOGLE_API_CODEGEN_INTERNAL_DATA_MODEL_H_
+#endif  // GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_DATA_MODEL_H_

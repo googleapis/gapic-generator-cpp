@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef GOOGLE_GAX_RETRY_POLICY_H_
-#define GOOGLE_GAX_RETRY_POLICY_H_
+#ifndef GAPIC_GENERATOR_CPP_GAX_RETRY_POLICY_H_
+#define GAPIC_GENERATOR_CPP_GAX_RETRY_POLICY_H_
 
 #include <chrono>
 #include <memory>
@@ -110,4 +110,4 @@ class LimitedDurationRetryPolicy : RetryPolicy {
 }  // namespace gax
 }  // namespace google
 
-#endif  // GOOGLE_GAX_RETRY_POLICY_H_
+#endif  // GAPIC_GENERATOR_CPP_GAX_RETRY_POLICY_H_

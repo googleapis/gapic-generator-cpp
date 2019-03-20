@@ -57,8 +57,10 @@ enum class StatusCode {
 class Status {
  public:
   Status() : code_(StatusCode::kOk) {}
-  explicit Status(StatusCode code, std::string msg)
-      : code_(code), msg_(std::move(msg)) {}
+  Status(StatusCode code, std::string msg) : code_(code),
+                                             msg_(std::move(msg)) {}
+  Status(Status const& rhs) : Status(rhs.code_, rhs.msg_) {}
+  Status(Status&& rhs) : Status(rhs.code_, std::move(rhs.msg_)) {}
 
   inline bool IsOk() const { return code_ == StatusCode::kOk; }
   inline bool IsTransientFailure() const {

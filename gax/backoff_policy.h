@@ -75,10 +75,7 @@ class BackoffPolicy {
  * problem](https://en.wikipedia.org/wiki/Thundering_herd_problem).
  *
  * Note: The random number generator used when calculating backoff time in
- *       OnCompletion is lazily created. Furthermore,
- * GeneratorFactory::Generator may touch mutable shared state. As a result,
- * OnCompletion is NOT thread-safe. All other methods, including clone, are
- * thread-safe. ExponentialBackoffPolicy is therefore thread-compatible.
+ *       OnCompletion is lazily created.
  */
 class ExponentialBackoffPolicy : BackoffPolicy {
  public:

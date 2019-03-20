@@ -50,8 +50,8 @@ class BackoffPolicy {
   /**
    * Handle an operation completion.
    *
-   * This function is called when an operation has failed and needs to be retried.
-   * The decision to retry or not is handled by other policies.
+   * This function is called when an operation has failed and needs to be
+   * retried. The decision to retry or not is handled by other policies.
    *
    * @return the delay to wait before the next retry attempt.
    */
@@ -69,18 +69,16 @@ class BackoffPolicy {
  * This policy implements the truncated exponential backoff policy for
  * retrying operations. After a request fails, and subject to a separate
  * retry policy, the client library will wait for an initial delay before
- * trying again. If the second attempt fails the delay time is increased by a factor
- * of 2. The delay time growth stops at a maximum delay wait time.
- * The policy also randomizes the delay each time, to avoid
- * [thundering herd
+ * trying again. If the second attempt fails the delay time is increased by a
+ * factor of 2. The delay time growth stops at a maximum delay wait time. The
+ * policy also randomizes the delay each time, to avoid [thundering herd
  * problem](https://en.wikipedia.org/wiki/Thundering_herd_problem).
  *
  * Note: The random number generator used when calculating backoff time in
- *       OnCompletion is lazily created. Furthermore, GeneratorFactory::Generator
- *       may touch mutable shared state.
- *       As a result, OnCompletion is NOT thread-safe.
- *       All other methods, including clone, are thread-safe.
- *       ExponentialBackoffPolicy is therefore thread-compatible.
+ *       OnCompletion is lazily created. Furthermore,
+ * GeneratorFactory::Generator may touch mutable shared state. As a result,
+ * OnCompletion is NOT thread-safe. All other methods, including clone, are
+ * thread-safe. ExponentialBackoffPolicy is therefore thread-compatible.
  */
 class ExponentialBackoffPolicy : BackoffPolicy {
  public:
@@ -101,28 +99,31 @@ class ExponentialBackoffPolicy : BackoffPolicy {
    *     operation.
    * @param maximum_delay the maximum value for the delay between operations.
    *
-   * @tparam duration1_t a placeholder to match the Rep tparam for @p initial_delay's
-   *     type, the semantics of this template parameter are documented in
-   *     `std::chrono::duration<>` (in brief, the underlying arithmetic type
-   *     used to store the number of ticks), for our purposes it is simply a
-   *     formal parameter.
+   * @tparam duration1_t a placeholder to match the Rep tparam for @p
+   * initial_delay's type, the semantics of this template parameter are
+   * documented in `std::chrono::duration<>` (in brief, the underlying
+   * arithmetic type used to store the number of ticks), for our purposes it is
+   * simply a formal parameter.
    * @tparam d1 a placeholder to match the Period tparam for
    *     @p initial_delay's type, the semantics of this template parameter are
    *     documented in `std::chrono::duration<>` (in brief, the length of the
    *     tick in seconds, expressed as a `std::ratio<>`), for our purposes it
    *     is simply a formal parameter.
-   * @tparam duration2_t similar formal parameter for the type of @p maximum_delay.
+   * @tparam duration2_t similar formal parameter for the type of @p
+   * maximum_delay.
    * @tparam d2 similar formal parameter for the type of @p maximum_delay.
    *
    * @see
    * [std::chrono::duration<>](http://en.cppreference.com/w/cpp/chrono/duration)
    *     for more details.
    */
-  template<typename duration1_t, typename duration2_t>
-  ExponentialBackoffPolicy(duration1_t d1, duration2_t d2) :
-      initial_delay_(std::chrono::duration_cast<std::chrono::microseconds>(d1)),
-      current_delay_range_(initial_delay_),
-      maximum_delay_(std::chrono::duration_cast<std::chrono::microseconds>(d2)) {}
+  template <typename duration1_t, typename duration2_t>
+  ExponentialBackoffPolicy(duration1_t d1, duration2_t d2)
+      : initial_delay_(
+            std::chrono::duration_cast<std::chrono::microseconds>(d1)),
+        current_delay_range_(initial_delay_),
+        maximum_delay_(
+            std::chrono::duration_cast<std::chrono::microseconds>(d2)) {}
 
   ExponentialBackoffPolicy(ExponentialBackoffPolicy const& rhs) noexcept
       : ExponentialBackoffPolicy(rhs.initial_delay_, rhs.maximum_delay_) {}
@@ -150,7 +151,8 @@ class ExponentialBackoffPolicy : BackoffPolicy {
 
   // Store via pointer and do not initialize until OnCompletion is called.
   // The 19937 refers to bits of state: as a result, generator_ is very large,
-  // is expensive to create, and in any case most rpcs succeed on the first call.
+  // is expensive to create, and in any case most rpcs succeed on the first
+  // call.
   std::unique_ptr<std::mt19937_64> generator_;
 };
 

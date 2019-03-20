@@ -18,8 +18,8 @@
 #include <sstream>
 #include <string>
 
-#include "src/google/protobuf/descriptor.h"
 #include "printer.h"
+#include "src/google/protobuf/descriptor.h"
 
 namespace pb = google::protobuf;
 
@@ -34,15 +34,13 @@ std::vector<std::string> BuildClientHeaderIncludes(
 std::vector<std::string> BuildClientHeaderNamespaces(
     pb::ServiceDescriptor const* /* service */);
 
-bool GenerateClientHeader(
-    pb::ServiceDescriptor const* service,
-    std::map<std::string, std::string> const& vars,
-    Printer& p,
-    std::string * /* error */);
+bool GenerateClientHeader(pb::ServiceDescriptor const* service,
+                          std::map<std::string, std::string> const& vars,
+                          Printer& p, std::string* /* error */);
 
-} // namespace internal
-} // namespace codegen
-} // namespace api
-} // namespace google
+}  // namespace internal
+}  // namespace codegen
+}  // namespace api
+}  // namespace google
 
 #endif  // GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_CLIENT_HEADER_GENERATOR_H_

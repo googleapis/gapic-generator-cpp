@@ -15,13 +15,13 @@
 #define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_GAPIC_UTILS_H_
 
 #include <algorithm>
-#include <string>
 #include <cctype>
+#include <string>
 
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
-#include "absl/strings/str_split.h"
 #include "absl/strings/str_replace.h"
+#include "absl/strings/str_split.h"
 
 namespace google {
 namespace api {
@@ -32,24 +32,24 @@ namespace internal {
  * Convert a CamelCase string to snake_case.
  */
 inline std::string CamelCaseToSnakeCase(std::string const& input) {
-    std::string output;
-    for (auto i = 0u; i < input.size(); ++i) {
-        if (i + 2 < input.size()) {
-            if (std::isupper(input[i + 1]) && std::islower(input[i + 2])) {
-                absl::StrAppend(&output, std::string(1, std::tolower(input[i])), "_");
-                continue;
-            }
-        }
-        if (i + 1 < input.size()) {
-            if ((std::islower(input[i]) || std::isdigit(input[i]))
-                    && std::isupper(input[i + 1])) {
-                absl::StrAppend(&output, std::string(1, std::tolower(input[i])), "_");
-                continue;
-            }
-        }
-        absl::StrAppend(&output, std::string(1, std::tolower(input[i])));
+  std::string output;
+  for (auto i = 0u; i < input.size(); ++i) {
+    if (i + 2 < input.size()) {
+      if (std::isupper(input[i + 1]) && std::islower(input[i + 2])) {
+        absl::StrAppend(&output, std::string(1, std::tolower(input[i])), "_");
+        continue;
+      }
     }
-    return output;
+    if (i + 1 < input.size()) {
+      if ((std::islower(input[i]) || std::isdigit(input[i])) &&
+          std::isupper(input[i + 1])) {
+        absl::StrAppend(&output, std::string(1, std::tolower(input[i])), "_");
+        continue;
+      }
+    }
+    absl::StrAppend(&output, std::string(1, std::tolower(input[i])));
+  }
+  return output;
 }
 
 /**
@@ -76,13 +76,12 @@ inline std::string ServiceNameToFilePath(std::string const& service_name) {
  * "::" separated C++ fully qualified name.
  */
 inline std::string ProtoNameToCppName(std::string const& proto_name) {
-  return "::" + absl::StrReplaceAll(proto_name, {
-    {".", "::"}});
+  return "::" + absl::StrReplaceAll(proto_name, {{".", "::"}});
 }
 
-} // internal
-} // codegen
-} // api
-} // google
+}  // namespace internal
+}  // namespace codegen
+}  // namespace api
+}  // namespace google
 
 #endif  // GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_GAPIC_UTILS_H_

@@ -14,10 +14,10 @@
 #ifndef GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_PRINTER_H_
 #define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_PRINTER_H_
 
-#include <string>
 #include "src/google/protobuf/compiler/code_generator.h"
 #include "src/google/protobuf/io/printer.h"
 #include "src/google/protobuf/io/zero_copy_stream.h"
+#include <string>
 
 namespace pb = google::protobuf;
 
@@ -29,14 +29,14 @@ namespace internal {
 /**
  * Wrapper around a google::protobuf::io::ZeroCopyOutputStream and a
  * google::protobuf::io::Printer object so that they can be used for
- * code generation. 
+ * code generation.
  */
 class Printer {
  public:
   Printer(pb::compiler::GeneratorContext* generator_context,
           std::string const& file_name)
-    : output_(generator_context->Open(file_name)),
-      printer_(output_.get(), '$', NULL) {}
+      : output_(generator_context->Open(file_name)),
+        printer_(output_.get(), '$', NULL) {}
 
   pb::io::Printer* operator->() & { return &printer_; }
   pb::io::Printer const* operator->() const& { return &printer_; }
@@ -49,9 +49,9 @@ class Printer {
   pb::io::Printer printer_;
 };
 
-} // internal
-} // codegen
-} // api
-} // google
+}  // namespace internal
+}  // namespace codegen
+}  // namespace api
+}  // namespace google
 
 #endif  // GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_PRINTER_H_

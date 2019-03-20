@@ -61,7 +61,7 @@ std::string StatusCodeToString(StatusCode code) {
   }
 }
 
-std::ostream& operator<<(std::ostream& os, StatusCode code){
+std::ostream& operator<<(std::ostream& os, StatusCode code) {
   return os << StatusCodeToString(code);
 }
 

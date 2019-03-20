@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string>
 #include <map>
+#include <string>
 #include <vector>
 
 #include "absl/strings/str_cat.h"
-#include "absl/strings/string_view.h"
 #include "absl/strings/str_replace.h"
+#include "absl/strings/string_view.h"
 #include "generator/gapic_generator.h"
-#include "generator/internal/client_header_generator.h"
 #include "generator/internal/client_cc_generator.h"
+#include "generator/internal/client_header_generator.h"
 #include "generator/internal/data_model.h"
 #include "generator/internal/gapic_utils.h"
 #include "generator/internal/printer.h"
@@ -35,9 +35,9 @@ namespace api {
 namespace codegen {
 
 bool GapicGenerator::Generate(pb::FileDescriptor const* file,
-                                 std::string const& /* parameter */,
-                                 pb::compiler::GeneratorContext* generator_context,
-                                 std::string* error) const {
+                              std::string const& /* parameter */,
+                              pb::compiler::GeneratorContext* generator_context,
+                              std::string* error) const {
   if (file->options().cc_generic_services()) {
     *error =
         "cpp gapic proto compiler plugin does not work with generic "
@@ -54,8 +54,8 @@ bool GapicGenerator::Generate(pb::FileDescriptor const* file,
     std::map<std::string, std::string> vars;
     internal::DataModel::SetServiceVars(service, vars);
 
-    std::string service_file_path = internal::ServiceNameToFilePath(
-        service->full_name());
+    std::string service_file_path =
+        internal::ServiceNameToFilePath(service->full_name());
 
     std::string header_file_path = absl::StrCat(service_file_path, ".gapic.h");
     internal::Printer header_printer(generator_context, header_file_path);
@@ -72,6 +72,6 @@ bool GapicGenerator::Generate(pb::FileDescriptor const* file,
   return true;
 }
 
-} // namespace codegen
-} // namespace api
-} // namespace google
+}  // namespace codegen
+}  // namespace api
+}  // namespace google

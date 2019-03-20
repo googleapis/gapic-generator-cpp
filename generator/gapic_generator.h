@@ -36,8 +36,8 @@ class GapicGenerator : public google::protobuf::compiler::CodeGenerator {
                 std::string* error) const override;
 };
 
-} // namespace codegen
-} // namespace api
-} // namespace google
+}  // namespace codegen
+}  // namespace api
+}  // namespace google
 
 #endif  // GAPIC_GENERATOR_CPP_GENERATOR_GAPIC_GENERATOR_H_

@@ -93,7 +93,8 @@ class TestClock {
 };
 
 TEST(LimitedDurationRetryPolicy, Basic) {
-  gax::LimitedDurationRetryPolicy<TestClock> tested(std::chrono::milliseconds(5));
+  gax::LimitedDurationRetryPolicy<TestClock> tested(
+      std::chrono::milliseconds(5));
   gax::Status s;
   EXPECT_TRUE(tested.OnFailure(s));
 
@@ -105,14 +106,16 @@ TEST(LimitedDurationRetryPolicy, Basic) {
 }
 
 TEST(LimitedDurationRetryPolicy, PermanentFailureCheck) {
-  gax::LimitedDurationRetryPolicy<TestClock> tested(std::chrono::milliseconds(5));
+  gax::LimitedDurationRetryPolicy<TestClock> tested(
+      std::chrono::milliseconds(5));
   gax::Status s{gax::StatusCode::kCancelled, ""};
 
   EXPECT_FALSE(tested.OnFailure(s));
 }
 
 TEST(LimitedDurationRetryPolicy, CopyConstruct) {
-  gax::LimitedDurationRetryPolicy<TestClock> tested(std::chrono::milliseconds(5));
+  gax::LimitedDurationRetryPolicy<TestClock> tested(
+      std::chrono::milliseconds(5));
   gax::Status s;
 
   now_point += std::chrono::milliseconds(10);
@@ -123,7 +126,8 @@ TEST(LimitedDurationRetryPolicy, CopyConstruct) {
 }
 
 TEST(LimitedDurationRetryPolicy, MoveConstruct) {
-  gax::LimitedDurationRetryPolicy<TestClock> tested(std::chrono::milliseconds(5));
+  gax::LimitedDurationRetryPolicy<TestClock> tested(
+      std::chrono::milliseconds(5));
   gax::Status s;
 
   now_point += std::chrono::milliseconds(10);
@@ -134,7 +138,8 @@ TEST(LimitedDurationRetryPolicy, MoveConstruct) {
 }
 
 TEST(LimitedDurationRetryPolicy, Clone) {
-  gax::LimitedDurationRetryPolicy<TestClock> tested(std::chrono::milliseconds(5));
+  gax::LimitedDurationRetryPolicy<TestClock> tested(
+      std::chrono::milliseconds(5));
   gax::Status s;
 
   now_point += std::chrono::milliseconds(10);

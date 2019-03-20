@@ -27,17 +27,19 @@ namespace gax {
  * Define the interface for controlling how clients retry RPC operations.
  *
  * Idempotent (and certain non-idempotent) operations can be retried
- * transparently to the user. However, we need to give the users enough flexiblity
- * to control when to stop retrying.
+ * transparently to the user. However, we need to give the users enough
+ * flexiblity to control when to stop retrying.
  *
- * The application provides an instance of this class when the client is created.
+ * The application provides an instance of this class when the client is
+ * created.
  */
 class RetryPolicy {
  public:
   virtual ~RetryPolicy() = default;
 
   /**
-   * Return a new copy of this object with the same retry criteria and fresh state.
+   * Return a new copy of this object with the same retry criteria and fresh
+   * state.
    */
   virtual std::unique_ptr<RetryPolicy> clone() const = 0;
 
@@ -64,12 +66,12 @@ class LimitedErrorCountRetryPolicy : RetryPolicy {
       : LimitedErrorCountRetryPolicy(rhs.max_failures_) {}
 
   std::unique_ptr<RetryPolicy> clone() const override {
-    return std::unique_ptr<RetryPolicy>(new LimitedErrorCountRetryPolicy(*this));
+    return std::unique_ptr<RetryPolicy>(
+        new LimitedErrorCountRetryPolicy(*this));
   }
 
   bool OnFailure(Status const& status) override {
-    return (!status.IsPermanentFailure() &&
-            (failure_count_++) < max_failures_);
+    return (!status.IsPermanentFailure() && (failure_count_++) < max_failures_);
   }
 
  private:
@@ -84,8 +86,8 @@ template <typename Clock>
 class LimitedDurationRetryPolicy : RetryPolicy {
  public:
   template <typename duration_t>
-  LimitedDurationRetryPolicy(duration_t max_duration) : max_duration_(max_duration),
-                                                        deadline_(max_duration_ + Clock::now()) {}
+  LimitedDurationRetryPolicy(duration_t max_duration)
+      : max_duration_(max_duration), deadline_(max_duration_ + Clock::now()) {}
 
   LimitedDurationRetryPolicy(LimitedDurationRetryPolicy const& rhs) noexcept
       : LimitedDurationRetryPolicy(rhs.max_duration_) {}
@@ -94,12 +96,12 @@ class LimitedDurationRetryPolicy : RetryPolicy {
       : LimitedDurationRetryPolicy(rhs.max_duration_) {}
 
   std::unique_ptr<RetryPolicy> clone() const override {
-    return std::unique_ptr<RetryPolicy>(new LimitedDurationRetryPolicy<Clock>(*this));
+    return std::unique_ptr<RetryPolicy>(
+        new LimitedDurationRetryPolicy<Clock>(*this));
   }
 
-  bool OnFailure(Status const & status) override {
-    return (!status.IsPermanentFailure() &&
-            Clock::now() < deadline_);
+  bool OnFailure(Status const& status) override {
+    return (!status.IsPermanentFailure() && Clock::now() < deadline_);
   }
 
  private:

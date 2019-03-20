@@ -20,6 +20,11 @@ cc_library(
     name = "cpp_gapic_generator",
     srcs = [
         "gapic_generator.cc",
+        "internal/client_header_generator.cc",
+        "internal/client_header_generator.h",
+        "internal/client_cc_generator.cc",
+        "internal/client_cc_generator.h",
+        "internal/data_model.h",
         "internal/gapic_utils.h",
         "internal/printer.h",
     ],

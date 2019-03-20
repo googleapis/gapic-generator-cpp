@@ -11,33 +11,38 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef GOOGLE_API_CODEGEN_GAPIC_GENERATOR_H_
-#define GOOGLE_API_CODEGEN_GAPIC_GENERATOR_H_
+#ifndef GOOGLE_API_CODEGEN_INTERNAL_CLIENT_HEADER_GENERATOR_H_
+#define GOOGLE_API_CODEGEN_INTERNAL_CLIENT_HEADER_GENERATOR_H_
 
 #include <memory>
 #include <sstream>
 #include <string>
 
-#include "src/google/protobuf/compiler/code_generator.h"
 #include "src/google/protobuf/descriptor.h"
+#include "printer.h"
+
+namespace pb = google::protobuf;
 
 namespace google {
 namespace api {
 namespace codegen {
+namespace internal {
 
-/**
- * Code generator that outputs a C++ GAPIC client from proto descriptors.
- */
-class GapicGenerator : public google::protobuf::compiler::CodeGenerator {
- public:
-  bool Generate(google::protobuf::FileDescriptor const* file,
-                std::string const& parameter,
-                google::protobuf::compiler::GeneratorContext* generator_context,
-                std::string* error) const override;
-};
+std::vector<std::string> BuildClientHeaderIncludes(
+    pb::ServiceDescriptor const* /* service */);
 
+std::vector<std::string> BuildClientHeaderNamespaces(
+    pb::ServiceDescriptor const* /* service */);
+
+bool GenerateClientHeader(
+    pb::ServiceDescriptor const* service,
+    std::map<std::string, std::string> const& vars,
+    Printer& p,
+    std::string * /* error */);
+
+} // namespace internal
 } // namespace codegen
 } // namespace api
 } // namespace google
 
-#endif // GOOGLE_API_CODEGEN_GAPIC_GENERATOR_H_
+#endif // GOOGLE_API_CODEGEN_INTERNAL_CLIENT_HEADER_GENERATOR_H_

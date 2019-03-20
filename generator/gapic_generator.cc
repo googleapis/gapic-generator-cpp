@@ -20,10 +20,11 @@
 #include "absl/strings/string_view.h"
 #include "absl/strings/str_replace.h"
 #include "generator/gapic_generator.h"
-#include "internal/client_header_generator.h"
-#include "internal/client_cc_generator.h"
-#include "internal/gapic_utils.h"
-#include "internal/printer.h"
+#include "generator/internal/client_header_generator.h"
+#include "generator/internal/client_cc_generator.h"
+#include "generator/internal/data_model.h"
+#include "generator/internal/gapic_utils.h"
+#include "generator/internal/printer.h"
 
 #include "google/api/client.pb.h"
 
@@ -51,7 +52,7 @@ bool GapicGenerator::Generate(pb::FileDescriptor const* file,
     // TODO(michaelbausor): initialize Vars with cross-file-descriptor
     // configuration, e.g. metadata annotation.
     std::map<std::string, std::string> vars;
-    internal::SetServiceVars(service, vars);
+    internal::DataModel::SetServiceVars(service, vars);
 
     std::string service_file_path = internal::ServiceNameToFilePath(
         service->full_name());

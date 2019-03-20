@@ -19,11 +19,7 @@
 #include <string>
 
 #include "src/google/protobuf/compiler/code_generator.h"
-#include "src/google/protobuf/io/printer.h"
-#include "src/google/protobuf/io/zero_copy_stream.h"
 #include "src/google/protobuf/descriptor.h"
-#include "src/google/protobuf/descriptor.pb.h"
-#include "absl/strings/string_view.h"
 
 namespace google {
 namespace api {

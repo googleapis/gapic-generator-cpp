@@ -27,6 +27,7 @@ cc_library(
         "backoff_policy.h",
         "retry_policy.h",
         "status.h",
+        "status_or.h",
     ],
     deps = [
     ],
@@ -36,6 +37,7 @@ gax_unit_tests = [
     "backoff_policy_unittest.cc",
     "retry_policy_unittest.cc",
     "status_unittest.cc",
+    "status_or_unittest.cc",
 ]
 
 [cc_test(

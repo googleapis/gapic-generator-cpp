@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef GOOGLE_API_CODEGEN_GAPIC_GENERATOR_H_
-#define GOOGLE_API_CODEGEN_GAPIC_GENERATOR_H_
+#ifndef GAPIC_GENERATOR_CPP_GENERATOR_GAPIC_GENERATOR_H_
+#define GAPIC_GENERATOR_CPP_GENERATOR_GAPIC_GENERATOR_H_
 
 #include <memory>
 #include <sstream>
@@ -36,8 +36,8 @@ class GapicGenerator : public google::protobuf::compiler::CodeGenerator {
                 std::string* error) const override;
 };
 
-} // namespace codegen
-} // namespace api
-} // namespace google
+}  // namespace codegen
+}  // namespace api
+}  // namespace google
 
-#endif // GOOGLE_API_CODEGEN_GAPIC_GENERATOR_H_
+#endif  // GAPIC_GENERATOR_CPP_GENERATOR_GAPIC_GENERATOR_H_

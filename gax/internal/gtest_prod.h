@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef GOOGLE_GAX_INTERNAL_GTEST_PROD_H_
-#define GOOGLE_GAX_INTERNAL_GTEST_PROD_H_
+#ifndef GAPIC_GENERATOR_CPP_GAX_INTERNAL_GTEST_PROD_H_
+#define GAPIC_GENERATOR_CPP_GAX_INTERNAL_GTEST_PROD_H_
 
 // Note: gtest-1.8.1 doesn't have a separate target for gtest_prod.
 //       Rather than add an overlarge dependency on @gtest//:gtest,
 //       just define the necessary macro ourselves.
-#define FRIEND_TEST(test_case_name, test_name)\
-friend class test_case_name##_##test_name##_Test
+#define FRIEND_TEST(test_case_name, test_name) \
+  friend class test_case_name##_##test_name##_Test
 
-#endif  // GOOGLE_GAX_INTERNAL_GTEST_PROD_H_
+#endif  // GAPIC_GENERATOR_CPP_GAX_INTERNAL_GTEST_PROD_H_

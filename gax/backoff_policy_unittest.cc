@@ -27,11 +27,11 @@ TEST(ExponentialBackoffPolicy, Basic) {
   ExponentialBackoffPolicy tested(std::chrono::milliseconds(1),
                                   std::chrono::milliseconds(32));
 
-  for(int i = 0; i < 5; ++i){
+  for (int i = 0; i < 5; ++i) {
     auto base_delay = tested.current_delay_range_;
-    EXPECT_EQ(base_delay, std::chrono::milliseconds(1<<i));
+    EXPECT_EQ(base_delay, std::chrono::milliseconds(1 << i));
     auto delay = tested.OnCompletion();
-    EXPECT_GE(delay, base_delay/2.0);
+    EXPECT_GE(delay, base_delay / 2.0);
     EXPECT_LE(delay, base_delay);
   }
 
@@ -45,7 +45,8 @@ TEST(ExponentialBackoffPolicy, CopyConstruct) {
   ExponentialBackoffPolicy tested(std::chrono::milliseconds(10),
                                   std::chrono::milliseconds(320));
   tested.OnCompletion();
-  ExponentialBackoffPolicy copy(tested);  // Copy starts with fresh backoff delays
+  ExponentialBackoffPolicy copy(
+      tested);  // Copy starts with fresh backoff delays
 
   EXPECT_EQ(copy.current_delay_range_, std::chrono::milliseconds(10));
   EXPECT_EQ(copy.maximum_delay_, std::chrono::milliseconds(320));
@@ -55,7 +56,8 @@ TEST(ExponentialBackoffPolicy, MoveConstruct) {
   ExponentialBackoffPolicy tested(std::chrono::milliseconds(10),
                                   std::chrono::milliseconds(320));
   tested.OnCompletion();
-  ExponentialBackoffPolicy moved(std::move(tested));  // Starts with fresh backoff delays
+  ExponentialBackoffPolicy moved(
+      std::move(tested));  // Starts with fresh backoff delays
 
   EXPECT_EQ(moved.current_delay_range_, std::chrono::milliseconds(10));
   EXPECT_EQ(moved.maximum_delay_, std::chrono::milliseconds(320));
@@ -67,8 +69,8 @@ TEST(ExponentialBackoffPolicy, Clone) {
   tested.OnCompletion();
   std::unique_ptr<BackoffPolicy> clone = tested.clone();
 
-  // We need to check that the clone method has the right signature, but we also need
-  // to check that the clone attributes have the right initial values.
+  // We need to check that the clone method has the right signature, but we also
+  // need to check that the clone attributes have the right initial values.
   auto cast_clone = std::unique_ptr<ExponentialBackoffPolicy>(
       static_cast<ExponentialBackoffPolicy*>(clone.release()));
 

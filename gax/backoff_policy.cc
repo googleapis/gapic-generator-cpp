@@ -23,15 +23,16 @@ namespace google {
 namespace gax {
 
 std::chrono::microseconds ExponentialBackoffPolicy::OnCompletion() {
-  if(!generator_) {
-    generator_ = std::unique_ptr<std::mt19937_64>(new std::mt19937_64(std::random_device()()));
+  if (!generator_) {
+    generator_ = std::unique_ptr<std::mt19937_64>(
+        new std::mt19937_64(std::random_device()()));
   }
 
-  std::uniform_int_distribution<std::chrono::microseconds::rep> dist(current_delay_range_.count() / 2,
-                                                                     current_delay_range_.count());
+  std::uniform_int_distribution<std::chrono::microseconds::rep> dist(
+      current_delay_range_.count() / 2, current_delay_range_.count());
   auto delay = std::chrono::microseconds(dist(*generator_));
 
-  current_delay_range_ = std::min(maximum_delay_, current_delay_range_*2);
+  current_delay_range_ = std::min(maximum_delay_, current_delay_range_ * 2);
   return delay;
 }
 

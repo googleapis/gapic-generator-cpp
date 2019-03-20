@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef GOOGLE_GAX_STATUS_H_
-#define GOOGLE_GAX_STATUS_H_
+#ifndef GAPIC_GENERATOR_CPP_GAX_STATUS_H_
+#define GAPIC_GENERATOR_CPP_GAX_STATUS_H_
 
 #include <ostream>
 #include <string>
@@ -57,8 +57,8 @@ enum class StatusCode {
 class Status {
  public:
   Status() : code_(StatusCode::kOk) {}
-  Status(StatusCode code, std::string msg) : code_(code),
-                                             msg_(std::move(msg)) {}
+  Status(StatusCode code, std::string msg)
+      : code_(code), msg_(std::move(msg)) {}
   Status(Status const& rhs) : Status(rhs.code_, rhs.msg_) {}
   Status(Status&& rhs) : Status(rhs.code_, std::move(rhs.msg_)) {}
 
@@ -68,7 +68,9 @@ class Status {
             code_ == StatusCode::kUnavailable ||
             code_ == StatusCode::kDeadlineExceeded);
   }
-  inline bool IsPermanentFailure() const { return !IsOk() && !IsTransientFailure(); }
+  inline bool IsPermanentFailure() const {
+    return !IsOk() && !IsTransientFailure();
+  }
 
   inline StatusCode code() const { return code_; }
 
@@ -91,4 +93,4 @@ std::ostream& operator<<(std::ostream& os, Status const& rhs);
 }  // namespace gax
 }  // namespace google
 
-#endif  // GOOGLE_GAX_RETRY_POLICY_H_
+#endif  // GAPIC_GENERATOR_CPP_GAX_STATUS_H_

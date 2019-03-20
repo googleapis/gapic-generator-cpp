@@ -11,15 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef GOOGLE_API_CODEGEN_INTERNAL_CLIENT_CC_GENERATOR_H_
-#define GOOGLE_API_CODEGEN_INTERNAL_CLIENT_CC_GENERATOR_H_
+#ifndef GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_CLIENT_CC_GENERATOR_H_
+#define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_CLIENT_CC_GENERATOR_H_
 
 #include <memory>
 #include <sstream>
 #include <string>
 
-#include "src/google/protobuf/descriptor.h"
 #include "printer.h"
+#include "src/google/protobuf/descriptor.h"
 
 namespace pb = google::protobuf;
 
@@ -34,15 +34,13 @@ std::vector<std::string> BuildClientCCIncludes(
 std::vector<std::string> BuildClientCCNamespaces(
     pb::ServiceDescriptor const* /* service */);
 
-bool GenerateClientCC(
-    pb::ServiceDescriptor const* service,
-    std::map<std::string, std::string> const& vars,
-    Printer& p,
-    std::string * /* error */);
+bool GenerateClientCC(pb::ServiceDescriptor const* service,
+                      std::map<std::string, std::string> const& vars,
+                      Printer& p, std::string* /* error */);
 
-} // namespace internal
-} // namespace codegen
-} // namespace api
-} // namespace google
+}  // namespace internal
+}  // namespace codegen
+}  // namespace api
+}  // namespace google
 
-#endif // GOOGLE_API_CODEGEN_INTERNAL_CLIENT_CC_GENERATOR_H_
+#endif  // GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_CLIENT_CC_GENERATOR_H_

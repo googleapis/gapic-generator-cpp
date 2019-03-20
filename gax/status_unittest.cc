@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "googletest/include/gtest/gtest.h"
 #include "status.h"
+#include "googletest/include/gtest/gtest.h"
 
 #include <sstream>
 #include <string>
@@ -22,7 +22,7 @@ namespace {
 
 using namespace ::google;
 
-TEST(Status,Basic) {
+TEST(Status, Basic) {
   {
     gax::Status s;  // sanity check for default construction
     EXPECT_TRUE(s.IsOk());
@@ -105,7 +105,7 @@ TEST(Status,Basic) {
   }
 }
 
-TEST(Status,CodeOstream) {
+TEST(Status, CodeOstream) {
   {
     std::ostringstream output;
     output << gax::StatusCode::kOk;
@@ -198,7 +198,7 @@ TEST(Status,CodeOstream) {
   }
 }
 
-TEST(Status,Ostream) {
+TEST(Status, Ostream) {
   {
     std::ostringstream output;
     gax::Status s;
@@ -215,7 +215,7 @@ TEST(Status,Ostream) {
   }
 }
 
-TEST(Status,Equality) {
+TEST(Status, Equality) {
   gax::Status ok1, ok2;
   EXPECT_EQ(ok1, ok2);
 

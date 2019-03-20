@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string>
-#include <vector>
-#include <utility>
-#include "googletest/include/gtest/gtest.h"
 #include "generator/internal/gapic_utils.h"
+#include "googletest/include/gtest/gtest.h"
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace google {
 namespace api {
@@ -25,19 +25,12 @@ namespace internal {
 namespace {
 
 TEST(GapicUtils, CamelCaseToSnakeCase) {
-
-  std::vector<std::pair<std::string, std::string>> test_cases {
-    { "abc", "abc" },
-    { "Abc", "abc" },
-    { "AbcDef", "abc_def" },
-    { "abcDef", "abc_def" },
-    { "ABc", "a_bc" },
-    { "ABcDEf", "a_bc_d_ef" },
-    { "Abc1De", "abc1_de" },
-    { "Abc1de", "abc1de" },
-    { "A1B", "a1_b" },
-    { "SNMPParse", "snmp_parse" }
-  };
+  std::vector<std::pair<std::string, std::string>> test_cases{
+      {"abc", "abc"},        {"Abc", "abc"},
+      {"AbcDef", "abc_def"}, {"abcDef", "abc_def"},
+      {"ABc", "a_bc"},       {"ABcDEf", "a_bc_d_ef"},
+      {"Abc1De", "abc1_de"}, {"Abc1de", "abc1de"},
+      {"A1B", "a1_b"},       {"SNMPParse", "snmp_parse"}};
 
   for (auto test_case : test_cases) {
     std::string actual = CamelCaseToSnakeCase(test_case.first);
@@ -46,9 +39,8 @@ TEST(GapicUtils, CamelCaseToSnakeCase) {
   }
 }
 
-} // namespace
-} // internal
-} // codegen
-} // api
-} // google
-
+}  // namespace
+}  // namespace internal
+}  // namespace codegen
+}  // namespace api
+}  // namespace google

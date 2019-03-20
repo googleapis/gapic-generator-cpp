@@ -115,8 +115,13 @@ class StatusOr final {
    *
    * @param rhs the value used to initialize the object.
    */
-  StatusOr(T const& rhs) : status_(), value_(rhs) {}
-  StatusOr(T&& rhs) : status_(), value_(std::move(rhs)) {}
+  StatusOr(T const& rhs) : status_() {
+    new (&value_) T(rhs);
+  }
+
+  StatusOr(T&& rhs) : status_() {
+    new (&value_) T(std::move(rhs));
+  }
 
   StatusOr(StatusOr const& rhs) : status_(rhs.status_) {
     if(ok()) {

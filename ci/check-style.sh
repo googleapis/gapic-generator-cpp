@@ -25,7 +25,7 @@ function check_style {
     | xargs -0 awk -f ${BINDIR}/check-include-guards.gawk
 
   find $1 \( -name '*.cc' -o -name '*.h' \) -print0 \
-    | xargs -0 clang-format -i
+    | xargs -0 ${CLANG_FORMAT_BIN} -format -i
 }
 
 check_style gax

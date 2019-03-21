@@ -30,4 +30,5 @@ fi
 
 readonly CLANG_FORMAT_VERSION=3.9
 sudo apt-get install "clang-format-${CLANG_FORMAT_VERSION}"
+export CLANG_FORMAT_BIN="$(which clang-format-${CLANG_FORMAT_VERSION})"
 

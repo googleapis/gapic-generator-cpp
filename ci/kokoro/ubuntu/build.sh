@@ -27,7 +27,9 @@ readonly PROJECT_ROOT="${PWD}"
 echo "================================================================"
 echo "Install clang format $(date)."
 echo "================================================================"
-"${PROJECT_ROOT}/ci/install-clang-format.sh" linux
+readonly CLANG_FORMAT_VERSION=3.9
+sudo apt-get install "clang-format-${CLANG_FORMAT_VERSION}"
+export CLANG_FORMAT_BIN="$(which clang-format-${CLANG_FORMAT_VERSION})"
 
 echo "================================================================"
 echo "Check style $(date)."

@@ -25,6 +25,11 @@ cd "$(dirname $0)/../../.."
 readonly PROJECT_ROOT="${PWD}"
 
 echo "================================================================"
+echo "Check code style $(date)."
+echo "================================================================"
+"${PROJECT_ROOT}/ci/check-style.sh"
+
+echo "================================================================"
 echo "Update or Install Bazel $(date)."
 echo "================================================================"
 "${PROJECT_ROOT}/ci/install-bazel.sh" linux

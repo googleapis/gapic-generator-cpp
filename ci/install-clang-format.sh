@@ -21,16 +21,13 @@ if [[ $# -lt 1 ]]; then
 fi
 
 if [[ "$1" = "linux" ]]; then
-  readonly PLATFORM="linux-x86_64"
+  # OK
+  echo "Installing clang-format on linux platform"
 else
   echo "Unsupported platform for clang-format: $1"
   exit 1
 fi
 
-apt-cache search "clang-format"
-sudo apt-get update
-apt-cache search "clang-format"
-
-sudo apt-get install clang-format
-clang-format --version
+readonly CLANG_FORMAT_VERSION=3.9
+sudo apt-get install "clang-format-${CLANG_FORMAT_VERSION}"
 

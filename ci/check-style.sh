@@ -16,11 +16,6 @@
 
 set -eu
 
-if [ "${CHECK_STYLE}" != "yes" ]; then
-  echo "Skipping code style check as it is disabled for this build."
-  exit 0
-fi
-
 # This script assumes it is running the top-level gapic-generator-cpp directory.
 
 readonly BINDIR="$(dirname $0)"

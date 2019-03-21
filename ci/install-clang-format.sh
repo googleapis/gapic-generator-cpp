@@ -27,6 +27,10 @@ else
   exit 1
 fi
 
+apt-cache search "clang-format"
+sudo apt-get update
+apt-cache search "clang-format"
+
 sudo apt-get install clang-format
 clang-format --version
 

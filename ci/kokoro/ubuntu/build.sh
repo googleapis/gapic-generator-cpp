@@ -25,6 +25,20 @@ cd "$(dirname $0)/../../.."
 readonly PROJECT_ROOT="${PWD}"
 
 echo "================================================================"
+echo "Install clang format $(date)."
+echo "================================================================"
+# The version of clang-format matters here - 3.9 makes slight changes
+# in formatting which we don't want.
+readonly CLANG_FORMAT_VERSION=3.8
+sudo apt-get install "clang-format-${CLANG_FORMAT_VERSION}"
+export CLANG_FORMAT_BIN="$(which clang-format-${CLANG_FORMAT_VERSION})"
+
+echo "================================================================"
+echo "Check style $(date)."
+echo "================================================================"
+"${PROJECT_ROOT}/ci/check-style.sh"
+
+echo "================================================================"
 echo "Update or Install Bazel $(date)."
 echo "================================================================"
 "${PROJECT_ROOT}/ci/install-bazel.sh" linux

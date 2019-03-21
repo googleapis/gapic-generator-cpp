@@ -25,7 +25,12 @@ cd "$(dirname $0)/../../.."
 readonly PROJECT_ROOT="${PWD}"
 
 echo "================================================================"
-echo "Check code style $(date)."
+echo "Install clang format $(date)."
+echo "================================================================"
+"${PROJECT_ROOT}/ci/install-clang-format.sh" linux
+
+echo "================================================================"
+echo "Check style $(date)."
 echo "================================================================"
 "${PROJECT_ROOT}/ci/check-style.sh"
 

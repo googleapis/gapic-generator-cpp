@@ -38,6 +38,10 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
                       std::map<std::string, std::string> const& vars,
                       Printer& p, std::string* /* error */);
 
+bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
+                          std::map<std::string, std::string> const& vars,
+                          Printer& p, std::string* /* error */);
+
 }  // namespace internal
 }  // namespace codegen
 }  // namespace api

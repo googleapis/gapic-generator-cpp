@@ -22,15 +22,11 @@ namespace codegen {
 namespace internal {
 
 std::string LocalInclude(std::string header) {
-  header.insert(header.begin(), '"');
-  header.insert(header.end(), '"');
-  return header;
+  return absl::StrCat("\"", header, "\"");
 }
 
 std::string SystemInclude(std::string header) {
-  header.insert(header.begin(), '<');
-  header.insert(header.end(), '>');
-  return header;
+  return absl::StrCat("<", header, ">");
 }
 
 bool NoStreamingPredicate(pb::MethodDescriptor const* m) {

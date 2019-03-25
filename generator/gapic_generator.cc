@@ -21,6 +21,7 @@
 #include "absl/strings/string_view.h"
 #include "generator/gapic_generator.h"
 #include "generator/internal/client_cc_generator.h"
+#include "generator/internal/client_cc_stub_generator.h"
 #include "generator/internal/client_header_generator.h"
 #include "generator/internal/data_model.h"
 #include "generator/internal/gapic_utils.h"

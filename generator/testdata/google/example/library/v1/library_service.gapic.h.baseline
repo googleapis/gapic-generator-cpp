@@ -10,10 +10,10 @@
 #include "gax/status_or.h"
 #include "gax/retry_policy.h"
 #include "gax/backoff_policy.h"
+
 // TODO: pull in comments
 class LibraryService final {
-public:
-
+ public:
     LibraryService(std::shared_ptr<LibraryServiceStub> stub) : 
         stub_(std::move(stub)) {}
 
@@ -28,7 +28,6 @@ public:
     LibraryService& operator=(LibraryService const&) = delete;
 
     std::shared_ptr<LibraryServiceStub> Stub() { return stub_; }
-
     gax::StatusOr<::google::example::library::v1::Book> 
     CreateBook(::google::example::library::v1::CreateBookRequest const& request);
 
@@ -47,11 +46,12 @@ public:
     gax::StatusOr<::google::example::library::v1::Book> 
     GetBigBook(::google::example::library::v1::GetBookRequest const& request);
 
-    private:
-    void ChangePolicy(gax::RetryPolicy const& policy) { 
+
+ private:
+    void ChangePolicy(gax::RetryPolicy const& policy) {
         retry_policy_ = policy.clone();
     }
-    void ChangePolicy(gax::BackoffPolicy const& policy) { 
+    void ChangePolicy(gax::BackoffPolicy const& policy) {
         backoff_policy_ = policy.clone();
     }
     void ChangePolicies() {}
@@ -66,4 +66,5 @@ public:
     std::unique_ptr<gax::RetryPolicy> retry_policy_;
     std::unique_ptr<gax::BackoffPolicy> backoff_policy_;
 }; // LibraryService
+
 #endif // LibraryService_H_

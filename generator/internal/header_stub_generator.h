@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_CLIENT_CC_STUB_GENERATOR_H_
-#define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_CLIENT_CC_STUB_GENERATOR_H_
+#ifndef GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_HEADER_STUB_GENERATOR_H_
+#define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_HEADER_STUB_GENERATOR_H_
 
 #include <map>
 #include <string>
@@ -28,13 +28,13 @@ namespace api {
 namespace codegen {
 namespace internal {
 
-bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
-                          std::map<std::string, std::string> const& vars,
-                          Printer& p, std::string* /* error */);
+bool GenerateClientStubHeader(pb::ServiceDescriptor const* service,
+                              std::map<std::string, std::string> const& vars,
+                              Printer& p, std::string* /* error */);
 
 }  // namespace internal
 }  // namespace codegen
 }  // namespace api
 }  // namespace google
 
-#endif  // GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_CLIENT_CC_STUB_GENERATOR_H_
+#endif  // GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_HEADER_STUB_GENERATOR_H_

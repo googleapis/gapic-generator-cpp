@@ -58,61 +58,64 @@ bool GenerateClientHeader(pb::ServiceDescriptor const* service,
            "// If you make any local changes, they will be lost.\n"
            "// source: $proto_file_name$\n"
            "#ifndef $header_include_guard_const$\n"
-           "#define $header_include_guard_const$\n");
+           "#define $header_include_guard_const$\n\n");
 
   for (auto include : includes) {
-    p->Print("\n#include $include$", "include", include);
+    p->Print("#include $include$\n", "include", include);
   }
 
   for (auto nspace : namespaces) {
-    p->Print("\nnamespace $namespace$ {", "namespace", nspace);
-  }
-
-  p->Print(
-      vars,
-      "\n$class_comment_block$\nclass $class_name$ final {\npublic:\n"
-      "\n    $class_name$(std::shared_ptr<$stub_class_name$> stub) : "
-      "\n        stub_(std::move(stub)) {}"
-      "\n\n    template<typename... Policies>"
-      "\n    $class_name$(std::shared_ptr<$stub_class_name$> stub, "
-      "\n        Policies&&... policies) : $class_name$(std::move(stub)) {"
-      "\n        ChangePolicies(std::forward<policies>...);"
-      "\n    }"
-      "\n\n    $class_name$($class_name$ const&) = delete;"
-      "\n\n    $class_name$& operator=($class_name$ const&) = delete;"
-      "\n\n    std::shared_ptr<$stub_class_name$> Stub() { return stub_; }\n");
-
-  DataModel::PrintMethods(
-      service, vars, p,
-      "\n    gax::StatusOr<$response_object$> "
-      "\n    $method_name$($request_object$ const& request);\n",
-      NoStreamingPredicate);
-
-  p->Print(
-      vars,
-      "\n    private:"
-      "\n    void ChangePolicy(gax::RetryPolicy const& policy) { "
-      "\n        retry_policy_ = policy.clone();\n    }"
-      "\n    void ChangePolicy(gax::BackoffPolicy const& policy) { "
-      "\n        backoff_policy_ = policy.clone();\n    }"
-      "\n    void ChangePolicies() {}"
-      "\n\n    template <typename Policy, typename... Policies>"
-      "\n    void ChangePolicies(Policy&& policy, Policies&&... policies) {"
-      "\n        ChangePolicy(policy);"
-      "\n        ChangePolicies(std::forward<Policies>(policies)...);"
-      "\n    }"
-      "\n\n    std::shared_ptr<$stub_class_name$> stub_;"
-      "\n    std::unique_ptr<gax::RetryPolicy> retry_policy_;"
-      "\n    std::unique_ptr<gax::BackoffPolicy> backoff_policy_;"
-      "\n}; // $class_name$");
-
-  for (auto nspace : namespaces) {
-    p->Print("\n} // namespace $namespace$", "namespace", nspace);
+    p->Print("namespace $namespace$ {\n", "namespace", nspace);
   }
 
   p->Print(vars,
            "\n"
-           "#endif // $header_include_guard_const$\n");
+           "$class_comment_block$\n"
+           "class $class_name$ final {\n"
+           " public:\n"
+           "    $class_name$(std::shared_ptr<$stub_class_name$> stub) : \n"
+           "        stub_(std::move(stub)) {}\n\n"
+           "    template<typename... Policies>\n"
+           "    $class_name$(std::shared_ptr<$stub_class_name$> stub, \n"
+           "        Policies&&... policies) : $class_name$(std::move(stub)) {\n"
+           "        ChangePolicies(std::forward<policies>...);\n"
+           "    }\n\n"
+           "    $class_name$($class_name$ const&) = delete;\n\n"
+           "    $class_name$& operator=($class_name$ const&) = delete;\n\n"
+           "    std::shared_ptr<$stub_class_name$> Stub() { return stub_; }\n");
+
+  DataModel::PrintMethods(
+      service, vars, p,
+      "    gax::StatusOr<$response_object$> \n"
+      "    $method_name$($request_object$ const& request);\n\n",
+      NoStreamingPredicate);
+
+  p->Print(
+      vars,
+      "\n"
+      " private:\n"
+      "    void ChangePolicy(gax::RetryPolicy const& policy) {\n"
+      "        retry_policy_ = policy.clone();\n"
+      "    }\n"
+      "    void ChangePolicy(gax::BackoffPolicy const& policy) {\n"
+      "        backoff_policy_ = policy.clone();\n"
+      "    }\n"
+      "    void ChangePolicies() {}\n\n"
+      "    template <typename Policy, typename... Policies>\n"
+      "    void ChangePolicies(Policy&& policy, Policies&&... policies) {\n"
+      "        ChangePolicy(policy);\n"
+      "        ChangePolicies(std::forward<Policies>(policies)...);\n"
+      "    }\n\n"
+      "    std::shared_ptr<$stub_class_name$> stub_;\n"
+      "    std::unique_ptr<gax::RetryPolicy> retry_policy_;\n"
+      "    std::unique_ptr<gax::BackoffPolicy> backoff_policy_;\n"
+      "}; // $class_name$\n\n");
+
+  for (auto nspace : namespaces) {
+    p->Print("} // namespace $namespace$\n", "namespace", nspace);
+  }
+
+  p->Print(vars, "#endif // $header_include_guard_const$\n");
 
   return true;
 }

@@ -8,38 +8,32 @@
 #include "grpcpp/client_context.h"
 #include "grpc/status.h"
 
-class LibraryServiceStub{
-public:
+class LibraryServiceStub {
+ public:
+    virtual grpc::Status CreateBook(grpc::ClientContext* context,
+        ::google::example::library::v1::CreateBookRequest const& request,
+        ::google::example::library::v1::Book* response);
 
-virtual grpc::Status
-CreateBook(grpc::ClientContext* context,
-    ::google::example::library::v1::CreateBookRequest const& request,
-    ::google::example::library::v1::Book* response);
+    virtual grpc::Status GetBook(grpc::ClientContext* context,
+        ::google::example::library::v1::GetBookRequest const& request,
+        ::google::example::library::v1::Book* response);
 
-virtual grpc::Status
-GetBook(grpc::ClientContext* context,
-    ::google::example::library::v1::GetBookRequest const& request,
-    ::google::example::library::v1::Book* response);
+    virtual grpc::Status ListBooks(grpc::ClientContext* context,
+        ::google::example::library::v1::ListBooksRequest const& request,
+        ::google::example::library::v1::ListBooksResponse* response);
 
-virtual grpc::Status
-ListBooks(grpc::ClientContext* context,
-    ::google::example::library::v1::ListBooksRequest const& request,
-    ::google::example::library::v1::ListBooksResponse* response);
+    virtual grpc::Status DeleteBook(grpc::ClientContext* context,
+        ::google::example::library::v1::DeleteBookRequest const& request,
+        ::google::example::library::v1::Empty* response);
 
-virtual grpc::Status
-DeleteBook(grpc::ClientContext* context,
-    ::google::example::library::v1::DeleteBookRequest const& request,
-    ::google::example::library::v1::Empty* response);
+    virtual grpc::Status UpdateBook(grpc::ClientContext* context,
+        ::google::example::library::v1::UpdateBookRequest const& request,
+        ::google::example::library::v1::Book* response);
 
-virtual grpc::Status
-UpdateBook(grpc::ClientContext* context,
-    ::google::example::library::v1::UpdateBookRequest const& request,
-    ::google::example::library::v1::Book* response);
+    virtual grpc::Status GetBigBook(grpc::ClientContext* context,
+        ::google::example::library::v1::GetBookRequest const& request,
+        ::google::example::library::v1::Book* response);
 
-virtual grpc::Status
-GetBigBook(grpc::ClientContext* context,
-    ::google::example::library::v1::GetBookRequest const& request,
-    ::google::example::library::v1::Book* response);
     virtual ~LibraryServiceStub() = 0;
 
 }; // LibraryServiceStub

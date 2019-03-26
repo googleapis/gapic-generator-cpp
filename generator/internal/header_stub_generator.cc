@@ -16,6 +16,7 @@
 #include <string>
 
 #include "data_model.h"
+#include "header_stub_generator.h"
 #include "printer.h"
 #include "src/google/protobuf/descriptor.h"
 
@@ -51,31 +52,34 @@ bool GenerateClientStubHeader(pb::ServiceDescriptor const* service,
            "// If you make any local changes, they will be lost.\n"
            "// source: $proto_file_name$\n"
            "#ifndef $stub_header_include_guard_const$\n"
-           "#define $stub_header_include_guard_const$\n");
+           "#define $stub_header_include_guard_const$\n\n");
 
   for (auto const& include : includes) {
-    p->Print("\n#include $include$", "include", include);
+    p->Print("#include $include$\n", "include", include);
   }
 
   for (auto const& nspace : namespaces) {
-    p->Print("\nnamespace $namespace$ {", "namespace", nspace);
+    p->Print("namespace $namespace$ {\n", "namespace", nspace);
   }
+
+  p->Print("\n");
 
   // Abstract interface Stub base class
   p->Print(vars,
-           "\n\nclass $stub_class_name${\n"
-           "public:\n");
+           "class $stub_class_name$ {\n"
+           " public:\n");
 
-  DataModel::PrintMethods(service, vars, p,
-                          "\nvirtual grpc::Status\n$method_name$("
-                          "grpc::ClientContext* context,"
-                          "\n    $request_object$ const& request,"
-                          "\n    $response_object$* response);\n",
-                          NoStreamingPredicate);
+  DataModel::PrintMethods(
+      service, vars, p,
+      "    virtual grpc::Status $method_name$(grpc::ClientContext* context,\n"
+      "        $request_object$ const& request,\n"
+      "        $response_object$* response);\n\n",
+      NoStreamingPredicate);
 
   p->Print(vars,
-           "    virtual ~$stub_class_name$() = 0;\n\n}; // $stub_class_name$"
-           "\n\n#endif // $stub_header_include_guard_const$\n");
+           "    virtual ~$stub_class_name$() = 0;\n\n}; // "
+           "$stub_class_name$\n\n"
+           "#endif // $stub_header_include_guard_const$\n");
 
   return true;
 }

@@ -25,6 +25,8 @@
 #include "generator/internal/data_model.h"
 #include "generator/internal/gapic_utils.h"
 #include "generator/internal/printer.h"
+#include "generator/internal/stub_cc_generator.h"
+#include "generator/internal/stub_header_generator.h"
 
 #include "google/api/client.pb.h"
 
@@ -63,9 +65,26 @@ bool GapicGenerator::Generate(pb::FileDescriptor const* file,
       return false;
     }
 
+    std::string header_stub_file_path =
+        absl::StrCat(service_file_path, "_stub", ".gapic.h");
+    internal::Printer header_stub_printer(generator_context,
+                                          header_stub_file_path);
+    if (!internal::GenerateClientStubHeader(service, vars, header_stub_printer,
+                                            error)) {
+      return false;
+    }
+
     std::string cc_file_path = absl::StrCat(service_file_path, ".gapic.cc");
     internal::Printer cc_printer(generator_context, cc_file_path);
     if (!internal::GenerateClientCC(service, vars, cc_printer, error)) {
+      return false;
+    }
+
+    std::string cc_stub_file_path =
+        absl::StrCat(service_file_path, "_stub", ".gapic.cc");
+    internal::Printer cc_stub_printer(generator_context, cc_stub_file_path);
+    if (!internal::GenerateClientStubCC(service, vars, cc_stub_printer,
+                                        error)) {
       return false;
     }
   }

@@ -20,11 +20,16 @@ cc_library(
     name = "cpp_gapic_generator",
     srcs = [
         "gapic_generator.cc",
-        "internal/client_header_generator.cc",
-        "internal/client_header_generator.h",
         "internal/client_cc_generator.cc",
         "internal/client_cc_generator.h",
+        "internal/stub_cc_generator.cc",
+        "internal/stub_cc_generator.h",
+        "internal/client_header_generator.cc",
+        "internal/client_header_generator.h",
+        "internal/stub_header_generator.cc",
+        "internal/stub_header_generator.h",
         "internal/data_model.h",
+        "internal/gapic_utils.cc",
         "internal/gapic_utils.h",
         "internal/printer.h",
     ],
@@ -34,8 +39,8 @@ cc_library(
     deps = [
         "@absl//absl/base",
         "@absl//absl/strings",
-        "@com_google_protobuf//:protoc_lib",
         "@api_common_protos//google/api:client_cc_proto",
+        "@com_google_protobuf//:protoc_lib",
     ],
 )
 
@@ -49,29 +54,31 @@ cc_binary(
 
 cc_test(
     name = "gapic_generator_unittest",
+    size = "small",
     srcs = ["gapic_generator_unittest.cc"],
-    deps = [
-        "//generator:cpp_gapic_generator",
-        "@gtest//:gtest_main",
-    ],
     data = glob(
         ["testdata/**"],
     ) + [
         "@api_common_protos//google/api:client_proto",
     ],
+    deps = [
+        "//generator:cpp_gapic_generator",
+        "@gtest//:gtest_main",
+    ],
 )
 
 generator_unit_tests = [
-    "internal/gapic_utils_unittest.cc"
+    "internal/gapic_utils_unittest.cc",
 ]
 
 [cc_test(
     name = "generator_" + test.replace("/", "_").replace(".cc", ""),
+    size = "small",
     srcs = [test],
     deps = [
+        "//generator:cpp_gapic_generator",
         "@absl//absl/base",
         "@absl//absl/strings",
-        "//generator:cpp_gapic_generator",
         "@gtest//:gtest_main",
     ],
 ) for test in generator_unit_tests]

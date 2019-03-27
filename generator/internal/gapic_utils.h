@@ -23,34 +23,26 @@
 #include "absl/strings/str_replace.h"
 #include "absl/strings/str_split.h"
 
+#include "src/google/protobuf/descriptor.h"
+
 namespace google {
 namespace api {
 namespace codegen {
 namespace internal {
 
+namespace pb = google::protobuf;
+
+bool NoStreamingPredicate(pb::MethodDescriptor const* m);
+
+// Convenience functions for wrapping include headers with the correct
+// delimiting characters (either <> or "")
+std::string LocalInclude(std::string header);
+std::string SystemInclude(std::string header);
+
 /**
  * Convert a CamelCase string to snake_case.
  */
-inline std::string CamelCaseToSnakeCase(std::string const& input) {
-  std::string output;
-  for (auto i = 0u; i < input.size(); ++i) {
-    if (i + 2 < input.size()) {
-      if (std::isupper(input[i + 1]) && std::islower(input[i + 2])) {
-        absl::StrAppend(&output, std::string(1, std::tolower(input[i])), "_");
-        continue;
-      }
-    }
-    if (i + 1 < input.size()) {
-      if ((std::islower(input[i]) || std::isdigit(input[i])) &&
-          std::isupper(input[i + 1])) {
-        absl::StrAppend(&output, std::string(1, std::tolower(input[i])), "_");
-        continue;
-      }
-    }
-    absl::StrAppend(&output, std::string(1, std::tolower(input[i])));
-  }
-  return output;
-}
+std::string CamelCaseToSnakeCase(std::string const& input);
 
 /**
  * Convert a service name to a file path.
@@ -62,12 +54,7 @@ inline std::string CamelCaseToSnakeCase(std::string const& input) {
  *
  * Example: "google.LibraryService" -> "google/library_service"
  */
-inline std::string ServiceNameToFilePath(std::string const& service_name) {
-  std::vector<std::string> components = absl::StrSplit(service_name, '.');
-  std::transform(components.begin(), components.end(), components.begin(),
-                 CamelCaseToSnakeCase);
-  return absl::StrJoin(components, "/");
-}
+std::string ServiceNameToFilePath(std::string const& service_name);
 
 /**
  * Convert a protobuf name to a fully qualified C++ name.
@@ -75,9 +62,7 @@ inline std::string ServiceNameToFilePath(std::string const& service_name) {
  * proto_name should be a "." separated name, which we convert to a
  * "::" separated C++ fully qualified name.
  */
-inline std::string ProtoNameToCppName(std::string const& proto_name) {
-  return "::" + absl::StrReplaceAll(proto_name, {{".", "::"}});
-}
+std::string ProtoNameToCppName(std::string const& proto_name);
 
 }  // namespace internal
 }  // namespace codegen

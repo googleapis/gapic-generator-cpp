@@ -80,7 +80,10 @@ TEST(CppGapicPluginTest, GapicPluginTest) {
 
   std::vector<std::string> files_to_check{
       "google/example/library/v1/library_service.gapic.h",
-      "google/example/library/v1/library_service.gapic.cc"};
+      "google/example/library/v1/library_service.gapic.cc",
+      "google/example/library/v1/library_service_stub.gapic.h",
+      "google/example/library/v1/library_service_stub.gapic.cc",
+  };
 
   for (std::string const& f : files_to_check) {
     std::string actual_file = absl::StrCat(gapic_out_dir, "/", f);

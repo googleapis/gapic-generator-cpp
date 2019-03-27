@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <functional>
 #include <string>
 
 #include "absl/strings/str_cat.h"
@@ -41,8 +42,11 @@ struct DataModel {
   static void SetServiceVars(pb::ServiceDescriptor const* service,
                              std::map<std::string, std::string>& vars) {
     vars["class_name"] = service->name();
+    vars["stub_class_name"] = absl::StrCat(service->name(), "Stub");
     vars["proto_file_name"] = service->file()->name();
     vars["header_include_guard_const"] = absl::StrCat(service->name(), "_H_");
+    vars["stub_header_include_guard_const"] =
+        absl::StrCat(service->name(), "_Stub", "_H_");
     vars["class_comment_block"] = "// TODO: pull in comments";
     vars["grpc_stub_fqn"] = internal::ProtoNameToCppName(service->full_name());
     vars["service_endpoint"] =
@@ -58,13 +62,17 @@ struct DataModel {
         internal::ProtoNameToCppName(method->output_type()->full_name());
   }
 
-  static void PrintMethods(pb::ServiceDescriptor const* service,
-                           std::map<std::string, std::string> vars, Printer& p,
-                           char const* tmplt) {
+  static void PrintMethods(
+      pb::ServiceDescriptor const* service,
+      std::map<std::string, std::string> vars, Printer& p, char const* tmplt,
+      std::function<bool(pb::MethodDescriptor const*)> predicate =
+          [](pb::MethodDescriptor const*) { return true; }) {
     for (int i = 0; i < service->method_count(); i++) {
       const pb::MethodDescriptor* method = service->method(i);
-      SetMethodVars(method, vars);
-      p->Print(vars, tmplt);
+      if (predicate(method)) {
+        SetMethodVars(method, vars);
+        p->Print(vars, tmplt);
+      }
     }
   }
 };

@@ -16,9 +16,9 @@
 #include <string>
 
 #include "data_model.h"
-#include "header_stub_generator.h"
 #include "printer.h"
 #include "src/google/protobuf/descriptor.h"
+#include "stub_header_generator.h"
 
 namespace pb = google::protobuf;
 
@@ -52,7 +52,8 @@ bool GenerateClientStubHeader(pb::ServiceDescriptor const* service,
            "// If you make any local changes, they will be lost.\n"
            "// source: $proto_file_name$\n"
            "#ifndef $stub_header_include_guard_const$\n"
-           "#define $stub_header_include_guard_const$\n\n");
+           "#define $stub_header_include_guard_const$\n"
+           "\n");
 
   for (auto const& include : includes) {
     p->Print("#include $include$\n", "include", include);
@@ -73,12 +74,15 @@ bool GenerateClientStubHeader(pb::ServiceDescriptor const* service,
       service, vars, p,
       "    virtual grpc::Status $method_name$(grpc::ClientContext* context,\n"
       "        $request_object$ const& request,\n"
-      "        $response_object$* response);\n\n",
+      "        $response_object$* response);\n"
+      "\n",
       NoStreamingPredicate);
 
   p->Print(vars,
-           "    virtual ~$stub_class_name$() = 0;\n\n}; // "
-           "$stub_class_name$\n\n"
+           "    virtual ~$stub_class_name$() = 0;\n"
+           "\n"
+           "}; // $stub_class_name$\n"
+           "\n"
            "#endif // $stub_header_include_guard_const$\n");
 
   return true;

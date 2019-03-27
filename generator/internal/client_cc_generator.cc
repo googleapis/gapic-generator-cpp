@@ -82,7 +82,8 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
       "    } else {\n"
       "        return gax::GrpcStatusToGaxStatus(status);\n"
       "    }\n"
-      "}\n\n",
+      "}\n"
+      "\n",
       NoStreamingPredicate);
 
   for (auto nspace : namespaces) {

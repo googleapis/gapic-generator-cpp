@@ -24,10 +24,10 @@ class LibraryService final {
     }
 
     LibraryService(LibraryService const&) = delete;
-
     LibraryService& operator=(LibraryService const&) = delete;
 
     std::shared_ptr<LibraryServiceStub> Stub() { return stub_; }
+
     gax::StatusOr<::google::example::library::v1::Book> 
     CreateBook(::google::example::library::v1::CreateBookRequest const& request);
 

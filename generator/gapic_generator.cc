@@ -20,13 +20,13 @@
 #include "absl/strings/str_replace.h"
 #include "absl/strings/string_view.h"
 #include "generator/gapic_generator.h"
-#include "generator/internal/cc_stub_generator.h"
 #include "generator/internal/client_cc_generator.h"
 #include "generator/internal/client_header_generator.h"
 #include "generator/internal/data_model.h"
 #include "generator/internal/gapic_utils.h"
-#include "generator/internal/header_stub_generator.h"
 #include "generator/internal/printer.h"
+#include "generator/internal/stub_cc_generator.h"
+#include "generator/internal/stub_header_generator.h"
 
 #include "google/api/client.pb.h"
 

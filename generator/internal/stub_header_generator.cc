@@ -31,8 +31,7 @@ std::vector<std::string> BuildClientStubHeaderIncludes(
     pb::ServiceDescriptor const* service) {
   return {
       LocalInclude(absl::StrCat(service->name(), ".pb.h")),
-      LocalInclude("grpcpp/client_context.h"),
-      LocalInclude("grpc/status.h"),
+      LocalInclude("grpcpp/client_context.h"), LocalInclude("grpc/status.h"),
   };
 }
 

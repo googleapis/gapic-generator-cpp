@@ -36,8 +36,7 @@ std::vector<std::string> BuildClientCCIncludes(
           internal::ServiceNameToFilePath(service->name()), ".gapic.h")),
       LocalInclude(absl::StrCat(
           internal::ServiceNameToFilePath(service->name()), "_stub.gapic.h")),
-      LocalInclude("gax/status.h"),
-      LocalInclude("gax/status_or.h"),
+      LocalInclude("gax/status.h"), LocalInclude("gax/status_or.h"),
   };
 }
 

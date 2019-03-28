@@ -1,0 +1,2 @@
+*.cc.baseline linguist-language=cpp
+*.h.baseline linguist-language=cpp

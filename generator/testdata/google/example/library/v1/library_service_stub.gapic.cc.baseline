@@ -3,6 +3,8 @@
 // source: generator/testdata/library.proto
 
 #include "library_service_stub.gapic.h"
+#include "grpcpp/channel.h"
+#include "grpcpp/create_channel.h"
 
 grpc::Status
 LibraryServiceStub::CreateBook(
@@ -60,3 +62,79 @@ LibraryServiceStub::GetBigBook(
 
 LibraryServiceStub::~LibraryServiceStub() {}
 
+namespace {
+class DefaultLibraryServiceStub : public LibraryServiceStub {
+ public:
+    DefaultLibraryServiceStub(std::unique_ptr<LibraryService::StubInterface> grpc_stub)
+        : grpc_stub_(std::move(grpc_stub)) {}
+
+    DefaultLibraryServiceStub(DefaultLibraryServiceStub const&) = delete;
+    DefaultLibraryServiceStub& operator=(DefaultLibraryServiceStub const&) = delete;
+
+    grpc::Status
+    CreateBook(grpc::ClientContext* context,
+        ::google::example::library::v1::CreateBookRequest const& request,
+        ::google::example::library::v1::Book* response) override {
+        return grpc_stub_->CreateBook(context, request, response);
+    }
+
+    grpc::Status
+    GetBook(grpc::ClientContext* context,
+        ::google::example::library::v1::GetBookRequest const& request,
+        ::google::example::library::v1::Book* response) override {
+        return grpc_stub_->GetBook(context, request, response);
+    }
+
+    grpc::Status
+    ListBooks(grpc::ClientContext* context,
+        ::google::example::library::v1::ListBooksRequest const& request,
+        ::google::example::library::v1::ListBooksResponse* response) override {
+        return grpc_stub_->ListBooks(context, request, response);
+    }
+
+    grpc::Status
+    DeleteBook(grpc::ClientContext* context,
+        ::google::example::library::v1::DeleteBookRequest const& request,
+        ::google::example::library::v1::Empty* response) override {
+        return grpc_stub_->DeleteBook(context, request, response);
+    }
+
+    grpc::Status
+    UpdateBook(grpc::ClientContext* context,
+        ::google::example::library::v1::UpdateBookRequest const& request,
+        ::google::example::library::v1::Book* response) override {
+        return grpc_stub_->UpdateBook(context, request, response);
+    }
+
+    grpc::Status
+    GetBigBook(grpc::ClientContext* context,
+        ::google::example::library::v1::GetBookRequest const& request,
+        ::google::example::library::v1::Book* response) override {
+        return grpc_stub_->GetBigBook(context, request, response);
+    }
+
+ private:
+    std::unique_ptr<::google::example::library::v1::LibraryService::StubInterface> grpc_stub_;
+}; // DefaultLibraryServiceStub
+
+} // namespace
+
+std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub(
+    std::shared_ptr<::google::example::library::v1::LibraryService::StubInterface> stub) {
+    return std::unique_ptr<LibraryServiceStub>(
+        new DefaultLibraryServiceStub(std::move(stub)));
+}
+
+std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub(
+    std::shared_ptr<grpc::ChannelInterface> channel) {
+    auto grpc_stub = std::shared_ptr<::google::example::library::v1::LibraryService::StubInterface>(
+        ::google::example::library::v1::LibraryService::NewStub(std::move(channel)));
+    return CreateLibraryServiceStub(std::move(grpc_stub));
+}
+
+std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub(
+    std::shared_ptr<grpc::ChannelCredentials> credentials) {
+    auto channel = grpc::CreateChannel("library.googleapis.com",
+                    std::move(credentials));
+    return CreateLibraryServiceStub(std::move(channel));
+}

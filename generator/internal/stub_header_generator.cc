@@ -82,6 +82,15 @@ bool GenerateClientStubHeader(pb::ServiceDescriptor const* service,
            "\n"
            "}; // $stub_class_name$\n"
            "\n"
+           "std::unique_ptr<$stub_class_name$> Create$stub_class_name$(\n"
+           "    std::shared_ptr<$grpc_stub_fqn$::StubInterface> stub);\n"
+           "\n"
+           "std::unique_ptr<$stub_class_name$> Create$stub_class_name$(\n"
+           "    std::shared_ptr<grpc::ChannelInterface> channel);\n"
+           "\n"
+           "std::unique_ptr<$stub_class_name$> Create$stub_class_name$(\n"
+           "    std::shared_ptr<grpc::ChannelCredentials> creds);\n"
+           "\n"
            "#endif // $stub_header_include_guard_const$\n");
 
   return true;

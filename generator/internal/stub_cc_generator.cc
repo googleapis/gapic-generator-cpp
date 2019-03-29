@@ -119,7 +119,7 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
       "Create$stub_class_name$(std::shared_ptr<grpc::ChannelCredentials> "
       "creds) {\n"
       "    auto channel = grpc::CreateChannel(\"$service_endpoint$\",\n"
-      "        std::move(credentials));\n"
+      "        std::move(creds));\n"
       "    auto grpc_stub = $grpc_stub_fqn$::NewStub(std::move(channel));\n"
       "    return std::unique_ptr<$stub_class_name$>(new \n"
       "        Default$stub_class_name$(std::move(grpc_stub)));\n"

@@ -71,14 +71,14 @@ bool GenerateClientStubHeader(pb::ServiceDescriptor const* service,
 
   DataModel::PrintMethods(
       service, vars, p,
-      "    virtual grpc::Status $method_name$(grpc::ClientContext* context,\n"
-      "        $request_object$ const& request,\n"
-      "        $response_object$* response);\n"
+      "  virtual grpc::Status $method_name$(grpc::ClientContext* context,\n"
+      "    $request_object$ const& request,\n"
+      "    $response_object$* response);\n"
       "\n",
       NoStreamingPredicate);
 
   p->Print(vars,
-           "    virtual ~$stub_class_name$() = 0;\n"
+           "  virtual ~$stub_class_name$() = 0;\n"
            "\n"
            "}; // $stub_class_name$\n"
            "\n"

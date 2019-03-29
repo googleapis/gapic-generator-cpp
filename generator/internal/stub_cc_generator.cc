@@ -63,11 +63,11 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
       service, vars, p,
       "grpc::Status\n"
       "$stub_class_name$::$method_name$(\n"
-      "    grpc::ClientContext*,\n"
-      "    $request_object$ const&,\n"
-      "    $response_object$*) {\n"
-      "    return grpc::Status(grpc::StatusCode::kUnimplemented,\n"
-      "        \"$method_name$ not implemented\");\n"
+      "  grpc::ClientContext*,\n"
+      "  $request_object$ const&,\n"
+      "  $response_object$*) {\n"
+      "  return grpc::Status(grpc::StatusCode::kUnimplemented,\n"
+      "    \"$method_name$ not implemented\");\n"
       "}\n"
       "\n",
       NoStreamingPredicate);
@@ -81,50 +81,49 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
            "namespace {\n"
            "class Default$stub_class_name$ : public $stub_class_name$ {\n"
            " public:\n"
-           "    Default$stub_class_name$(std::unique_ptr<$class_name$::"
+           "  Default$stub_class_name$(std::unique_ptr<$class_name$::"
            "StubInterface> grpc_stub)\n"
-           "        : grpc_stub_(std::move(grpc_stub)) {}\n"
+           "    : grpc_stub_(std::move(grpc_stub)) {}\n"
            "\n"
-           "    Default$stub_class_name$(Default$stub_class_name$ const&) = "
+           "  Default$stub_class_name$(Default$stub_class_name$ const&) = "
            "delete;\n"
-           "    Default$stub_class_name$& operator=(Default$stub_class_name$ "
+           "  Default$stub_class_name$& operator=(Default$stub_class_name$ "
            "const&) = delete;\n"
            "\n");
 
   DataModel::PrintMethods(
       service, vars, p,
-      "    grpc::Status\n"
-      "    $method_name$(grpc::ClientContext* context,\n"
-      "        $request_object$ const& request,\n"
-      "        $response_object$* response) override {\n"
-      "        return grpc_stub_->$method_name$(context, request, response);\n"
-      "    }\n"
+      "  grpc::Status\n"
+      "  $method_name$(grpc::ClientContext* context,\n"
+      "    $request_object$ const& request,\n"
+      "    $response_object$* response) override {\n"
+      "    return grpc_stub_->$method_name$(context, request, response);\n"
+      "  }\n"
       "\n",
       NoStreamingPredicate);
 
-  p->Print(
-      vars,
-      " private:\n"
-      "    std::unique_ptr<$grpc_stub_fqn$::StubInterface> grpc_stub_;\n"
-      "}; // Default$stub_class_name$\n"
-      "\n"
-      "} // namespace\n"
-      "\n"
-      "std::unique_ptr<$stub_class_name$> Create$stub_class_name$() {\n"
-      "    auto credentials = grpc::GoogleDefaultCredentials();\n"
-      "    return Create$stub_class_name$(std::move(credentials));\n"
-      "}\n"
-      "\n"
-      "std::unique_ptr<$stub_class_name$>\n"
-      "Create$stub_class_name$(std::shared_ptr<grpc::ChannelCredentials> "
-      "creds) {\n"
-      "    auto channel = grpc::CreateChannel(\"$service_endpoint$\",\n"
-      "        std::move(creds));\n"
-      "    auto grpc_stub = $grpc_stub_fqn$::NewStub(std::move(channel));\n"
-      "    return std::unique_ptr<$stub_class_name$>(new \n"
-      "        Default$stub_class_name$(std::move(grpc_stub)));\n"
-      "}\n"
-      "\n");
+  p->Print(vars,
+           " private:\n"
+           "  std::unique_ptr<$grpc_stub_fqn$::StubInterface> grpc_stub_;\n"
+           "}; // Default$stub_class_name$\n"
+           "\n"
+           "} // namespace\n"
+           "\n"
+           "std::unique_ptr<$stub_class_name$> Create$stub_class_name$() {\n"
+           "  auto credentials = grpc::GoogleDefaultCredentials();\n"
+           "  return Create$stub_class_name$(std::move(credentials));\n"
+           "}\n"
+           "\n"
+           "std::unique_ptr<$stub_class_name$>\n"
+           "Create$stub_class_name$(std::shared_ptr<grpc::ChannelCredentials> "
+           "creds) {\n"
+           "  auto channel = grpc::CreateChannel(\"$service_endpoint$\",\n"
+           "    std::move(creds));\n"
+           "  auto grpc_stub = $grpc_stub_fqn$::NewStub(std::move(channel));\n"
+           "  return std::unique_ptr<$stub_class_name$>(new \n"
+           "    Default$stub_class_name$(std::move(grpc_stub)));\n"
+           "}\n"
+           "\n");
 
   for (auto const& nspace : namespaces) {
     p->Print("} // namespace $namespace$\n", "namespace", nspace);

@@ -73,51 +73,49 @@ bool GenerateClientHeader(pb::ServiceDescriptor const* service,
            "$class_comment_block$\n"
            "class $class_name$ final {\n"
            " public:\n"
-           "    $class_name$(std::shared_ptr<$stub_class_name$> stub) : \n"
-           "        stub_(std::move(stub)) {}\n"
+           "  $class_name$(std::shared_ptr<$stub_class_name$> stub) : \n"
+           "    stub_(std::move(stub)) {}\n"
            "\n"
-           "    template<typename... Policies>\n"
-           "    $class_name$(std::shared_ptr<$stub_class_name$> stub, \n"
-           "        Policies&&... policies) : $class_name$(std::move(stub)) {\n"
-           "        ChangePolicies(std::forward<policies>...);\n"
-           "    }\n"
+           "  template<typename... Policies>\n"
+           "  $class_name$(std::shared_ptr<$stub_class_name$> stub, \n"
+           "    Policies&&... policies) : $class_name$(std::move(stub)) {\n"
+           "    ChangePolicies(std::forward<policies>...);\n"
+           "  }\n"
            "\n"
-           "    $class_name$($class_name$ const&) = delete;\n"
-           "    $class_name$& operator=($class_name$ const&) = delete;\n"
+           "  $class_name$($class_name$ const&) = delete;\n"
+           "  $class_name$& operator=($class_name$ const&) = delete;\n"
            "\n"
-           "    std::shared_ptr<$stub_class_name$> Stub() { return stub_; }\n"
+           "  std::shared_ptr<$stub_class_name$> Stub() { return stub_; }\n"
            "\n");
 
-  DataModel::PrintMethods(
-      service, vars, p,
-      "    gax::StatusOr<$response_object$> \n"
-      "    $method_name$($request_object$ const& request);\n"
-      "\n",
-      NoStreamingPredicate);
+  DataModel::PrintMethods(service, vars, p,
+                          "  gax::StatusOr<$response_object$> \n"
+                          "  $method_name$($request_object$ const& request);\n"
+                          "\n",
+                          NoStreamingPredicate);
 
-  p->Print(
-      vars,
-      "\n"
-      " private:\n"
-      "    void ChangePolicy(gax::RetryPolicy const& policy) {\n"
-      "        retry_policy_ = policy.clone();\n"
-      "    }\n"
-      "    void ChangePolicy(gax::BackoffPolicy const& policy) {\n"
-      "        backoff_policy_ = policy.clone();\n"
-      "    }\n"
-      "    void ChangePolicies() {}\n"
-      "\n"
-      "    template <typename Policy, typename... Policies>\n"
-      "    void ChangePolicies(Policy&& policy, Policies&&... policies) {\n"
-      "        ChangePolicy(policy);\n"
-      "        ChangePolicies(std::forward<Policies>(policies)...);\n"
-      "    }\n"
-      "\n"
-      "    std::shared_ptr<$stub_class_name$> stub_;\n"
-      "    std::unique_ptr<gax::RetryPolicy> retry_policy_;\n"
-      "    std::unique_ptr<gax::BackoffPolicy> backoff_policy_;\n"
-      "}; // $class_name$\n"
-      "\n");
+  p->Print(vars,
+           "\n"
+           " private:\n"
+           "  void ChangePolicy(gax::RetryPolicy const& policy) {\n"
+           "    retry_policy_ = policy.clone();\n"
+           "  }\n"
+           "  void ChangePolicy(gax::BackoffPolicy const& policy) {\n"
+           "    backoff_policy_ = policy.clone();\n"
+           "  }\n"
+           "  void ChangePolicies() {}\n"
+           "\n"
+           "  template <typename Policy, typename... Policies>\n"
+           "  void ChangePolicies(Policy&& policy, Policies&&... policies) {\n"
+           "    ChangePolicy(policy);\n"
+           "    ChangePolicies(std::forward<Policies>(policies)...);\n"
+           "  }\n"
+           "\n"
+           "  std::shared_ptr<$stub_class_name$> stub_;\n"
+           "  std::unique_ptr<gax::RetryPolicy> retry_policy_;\n"
+           "  std::unique_ptr<gax::BackoffPolicy> backoff_policy_;\n"
+           "}; // $class_name$\n"
+           "\n");
 
   for (auto nspace : namespaces) {
     p->Print("} // namespace $namespace$\n", "namespace", nspace);

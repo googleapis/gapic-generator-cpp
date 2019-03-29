@@ -127,7 +127,7 @@ std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub() {
 std::unique_ptr<LibraryServiceStub>
 CreateLibraryServiceStub(std::shared_ptr<grpc::ChannelCredentials> creds) {
     auto channel = grpc::CreateChannel("library.googleapis.com",
-        std::move(cred));
+        std::move(creds));
     auto grpc_stub = ::google::example::library::v1::LibraryService::NewStub(std::move(channel));
     return std::unique_ptr<LibraryServiceStub>(new 
         DefaultLibraryServiceStub(std::move(grpc_stub)));

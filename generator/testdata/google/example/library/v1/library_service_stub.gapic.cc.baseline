@@ -8,56 +8,56 @@
 
 grpc::Status
 LibraryServiceStub::CreateBook(
-    grpc::ClientContext*,
-    ::google::example::library::v1::CreateBookRequest const&,
-    ::google::example::library::v1::Book*) {
-    return grpc::Status(grpc::StatusCode::kUnimplemented,
-        "CreateBook not implemented");
+  grpc::ClientContext*,
+  ::google::example::library::v1::CreateBookRequest const&,
+  ::google::example::library::v1::Book*) {
+  return grpc::Status(grpc::StatusCode::kUnimplemented,
+    "CreateBook not implemented");
 }
 
 grpc::Status
 LibraryServiceStub::GetBook(
-    grpc::ClientContext*,
-    ::google::example::library::v1::GetBookRequest const&,
-    ::google::example::library::v1::Book*) {
-    return grpc::Status(grpc::StatusCode::kUnimplemented,
-        "GetBook not implemented");
+  grpc::ClientContext*,
+  ::google::example::library::v1::GetBookRequest const&,
+  ::google::example::library::v1::Book*) {
+  return grpc::Status(grpc::StatusCode::kUnimplemented,
+    "GetBook not implemented");
 }
 
 grpc::Status
 LibraryServiceStub::ListBooks(
-    grpc::ClientContext*,
-    ::google::example::library::v1::ListBooksRequest const&,
-    ::google::example::library::v1::ListBooksResponse*) {
-    return grpc::Status(grpc::StatusCode::kUnimplemented,
-        "ListBooks not implemented");
+  grpc::ClientContext*,
+  ::google::example::library::v1::ListBooksRequest const&,
+  ::google::example::library::v1::ListBooksResponse*) {
+  return grpc::Status(grpc::StatusCode::kUnimplemented,
+    "ListBooks not implemented");
 }
 
 grpc::Status
 LibraryServiceStub::DeleteBook(
-    grpc::ClientContext*,
-    ::google::example::library::v1::DeleteBookRequest const&,
-    ::google::example::library::v1::Empty*) {
-    return grpc::Status(grpc::StatusCode::kUnimplemented,
-        "DeleteBook not implemented");
+  grpc::ClientContext*,
+  ::google::example::library::v1::DeleteBookRequest const&,
+  ::google::example::library::v1::Empty*) {
+  return grpc::Status(grpc::StatusCode::kUnimplemented,
+    "DeleteBook not implemented");
 }
 
 grpc::Status
 LibraryServiceStub::UpdateBook(
-    grpc::ClientContext*,
-    ::google::example::library::v1::UpdateBookRequest const&,
-    ::google::example::library::v1::Book*) {
-    return grpc::Status(grpc::StatusCode::kUnimplemented,
-        "UpdateBook not implemented");
+  grpc::ClientContext*,
+  ::google::example::library::v1::UpdateBookRequest const&,
+  ::google::example::library::v1::Book*) {
+  return grpc::Status(grpc::StatusCode::kUnimplemented,
+    "UpdateBook not implemented");
 }
 
 grpc::Status
 LibraryServiceStub::GetBigBook(
-    grpc::ClientContext*,
-    ::google::example::library::v1::GetBookRequest const&,
-    ::google::example::library::v1::Book*) {
-    return grpc::Status(grpc::StatusCode::kUnimplemented,
-        "GetBigBook not implemented");
+  grpc::ClientContext*,
+  ::google::example::library::v1::GetBookRequest const&,
+  ::google::example::library::v1::Book*) {
+  return grpc::Status(grpc::StatusCode::kUnimplemented,
+    "GetBigBook not implemented");
 }
 
 LibraryServiceStub::~LibraryServiceStub() {}
@@ -65,71 +65,71 @@ LibraryServiceStub::~LibraryServiceStub() {}
 namespace {
 class DefaultLibraryServiceStub : public LibraryServiceStub {
  public:
-    DefaultLibraryServiceStub(std::unique_ptr<LibraryService::StubInterface> grpc_stub)
-        : grpc_stub_(std::move(grpc_stub)) {}
+  DefaultLibraryServiceStub(std::unique_ptr<LibraryService::StubInterface> grpc_stub)
+    : grpc_stub_(std::move(grpc_stub)) {}
 
-    DefaultLibraryServiceStub(DefaultLibraryServiceStub const&) = delete;
-    DefaultLibraryServiceStub& operator=(DefaultLibraryServiceStub const&) = delete;
+  DefaultLibraryServiceStub(DefaultLibraryServiceStub const&) = delete;
+  DefaultLibraryServiceStub& operator=(DefaultLibraryServiceStub const&) = delete;
 
-    grpc::Status
-    CreateBook(grpc::ClientContext* context,
-        ::google::example::library::v1::CreateBookRequest const& request,
-        ::google::example::library::v1::Book* response) override {
-        return grpc_stub_->CreateBook(context, request, response);
-    }
+  grpc::Status
+  CreateBook(grpc::ClientContext* context,
+    ::google::example::library::v1::CreateBookRequest const& request,
+    ::google::example::library::v1::Book* response) override {
+    return grpc_stub_->CreateBook(context, request, response);
+  }
 
-    grpc::Status
-    GetBook(grpc::ClientContext* context,
-        ::google::example::library::v1::GetBookRequest const& request,
-        ::google::example::library::v1::Book* response) override {
-        return grpc_stub_->GetBook(context, request, response);
-    }
+  grpc::Status
+  GetBook(grpc::ClientContext* context,
+    ::google::example::library::v1::GetBookRequest const& request,
+    ::google::example::library::v1::Book* response) override {
+    return grpc_stub_->GetBook(context, request, response);
+  }
 
-    grpc::Status
-    ListBooks(grpc::ClientContext* context,
-        ::google::example::library::v1::ListBooksRequest const& request,
-        ::google::example::library::v1::ListBooksResponse* response) override {
-        return grpc_stub_->ListBooks(context, request, response);
-    }
+  grpc::Status
+  ListBooks(grpc::ClientContext* context,
+    ::google::example::library::v1::ListBooksRequest const& request,
+    ::google::example::library::v1::ListBooksResponse* response) override {
+    return grpc_stub_->ListBooks(context, request, response);
+  }
 
-    grpc::Status
-    DeleteBook(grpc::ClientContext* context,
-        ::google::example::library::v1::DeleteBookRequest const& request,
-        ::google::example::library::v1::Empty* response) override {
-        return grpc_stub_->DeleteBook(context, request, response);
-    }
+  grpc::Status
+  DeleteBook(grpc::ClientContext* context,
+    ::google::example::library::v1::DeleteBookRequest const& request,
+    ::google::example::library::v1::Empty* response) override {
+    return grpc_stub_->DeleteBook(context, request, response);
+  }
 
-    grpc::Status
-    UpdateBook(grpc::ClientContext* context,
-        ::google::example::library::v1::UpdateBookRequest const& request,
-        ::google::example::library::v1::Book* response) override {
-        return grpc_stub_->UpdateBook(context, request, response);
-    }
+  grpc::Status
+  UpdateBook(grpc::ClientContext* context,
+    ::google::example::library::v1::UpdateBookRequest const& request,
+    ::google::example::library::v1::Book* response) override {
+    return grpc_stub_->UpdateBook(context, request, response);
+  }
 
-    grpc::Status
-    GetBigBook(grpc::ClientContext* context,
-        ::google::example::library::v1::GetBookRequest const& request,
-        ::google::example::library::v1::Book* response) override {
-        return grpc_stub_->GetBigBook(context, request, response);
-    }
+  grpc::Status
+  GetBigBook(grpc::ClientContext* context,
+    ::google::example::library::v1::GetBookRequest const& request,
+    ::google::example::library::v1::Book* response) override {
+    return grpc_stub_->GetBigBook(context, request, response);
+  }
 
  private:
-    std::unique_ptr<::google::example::library::v1::LibraryService::StubInterface> grpc_stub_;
+  std::unique_ptr<::google::example::library::v1::LibraryService::StubInterface> grpc_stub_;
 }; // DefaultLibraryServiceStub
 
 } // namespace
 
 std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub() {
-    auto credentials = grpc::GoogleDefaultCredentials();
-    return CreateLibraryServiceStub(std::move(credentials));
+  auto credentials = grpc::GoogleDefaultCredentials();
+  return CreateLibraryServiceStub(std::move(credentials));
 }
 
 std::unique_ptr<LibraryServiceStub>
 CreateLibraryServiceStub(std::shared_ptr<grpc::ChannelCredentials> creds) {
-    auto channel = grpc::CreateChannel("library.googleapis.com",
-        std::move(creds));
-    auto grpc_stub = ::google::example::library::v1::LibraryService::NewStub(std::move(channel));
-    return std::unique_ptr<LibraryServiceStub>(new 
-        DefaultLibraryServiceStub(std::move(grpc_stub)));
+  auto channel = grpc::CreateChannel("library.googleapis.com",
+    std::move(creds));
+  auto grpc_stub = ::google::example::library::v1::LibraryService::NewStub(std::move(channel));
+  return std::unique_ptr<LibraryServiceStub>(new 
+    DefaultLibraryServiceStub(std::move(grpc_stub)));
 }
 

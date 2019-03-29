@@ -119,22 +119,17 @@ class DefaultLibraryServiceStub : public LibraryServiceStub {
 
 } // namespace
 
-std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub(
-    std::shared_ptr<::google::example::library::v1::LibraryService::StubInterface> stub) {
-    return std::unique_ptr<LibraryServiceStub>(
-        new DefaultLibraryServiceStub(std::move(stub)));
+std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub() {
+    auto credentials = grpc::GoogleDefaultCredentials();
+    return CreateLibraryServiceStub(std::move(credentials));
 }
 
-std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub(
-    std::shared_ptr<grpc::ChannelInterface> channel) {
-    auto grpc_stub = std::shared_ptr<::google::example::library::v1::LibraryService::StubInterface>(
-        ::google::example::library::v1::LibraryService::NewStub(std::move(channel)));
-    return CreateLibraryServiceStub(std::move(grpc_stub));
-}
-
-std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub(
-    std::shared_ptr<grpc::ChannelCredentials> credentials) {
+std::unique_ptr<LibraryServiceStub>
+CreateLibraryServiceStub(std::shared_ptr<grpc::ChannelCredentials> creds) {
     auto channel = grpc::CreateChannel("library.googleapis.com",
-                    std::move(credentials));
-    return CreateLibraryServiceStub(std::move(channel));
+        std::move(credentials));
+    auto grpc_stub = ::google::example::library::v1::LibraryService::NewStub(std::move(channel));
+    return std::unique_ptr<LibraryServiceStub>(new 
+        DefaultLibraryServiceStub(std::move(grpc_stub)));
 }
+

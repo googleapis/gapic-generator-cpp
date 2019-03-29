@@ -38,13 +38,10 @@ class LibraryServiceStub {
 
 }; // LibraryServiceStub
 
-std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub(
-    std::shared_ptr<::google::example::library::v1::LibraryService::StubInterface> stub);
+std::unique_ptr<LibraryServiceStub>
+CreateLibraryServiceStub();
 
-std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub(
-    std::shared_ptr<grpc::ChannelInterface> channel);
-
-std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub(
-    std::shared_ptr<grpc::ChannelCredentials> creds);
+std::unique_ptr<LibraryServiceStub>
+CreateLibraryServiceStub(std::shared_ptr<grpc::ChannelCredentials> creds);
 
 #endif // LibraryService_Stub_H_

@@ -32,6 +32,7 @@ namespace internal {
 std::vector<std::string> BuildClientCCIncludes(
     pb::ServiceDescriptor const* service) {
   return {
+      SystemInclude("string"), SystemInclude("thread"),
       LocalInclude(absl::StrCat(
           internal::ServiceNameToFilePath(service->name()), ".gapic.h")),
       LocalInclude(absl::StrCat(
@@ -70,17 +71,37 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
       "gax::StatusOr<$response_object$>\n"
       "$class_name$::$method_name$(\n"
       "$request_object$ const& request) {\n"
-      "  // TODO: actual useful work, e.g. retry, backoff, metadata, "
-      "pagination, etc.\n"
+      "  // TODO: update metadata and idempotency, "
+      "etc.\n"
       "  grpc::ClientContext context;\n"
       "  $response_object$ response;\n"
       "  grpc::Status status = stub_->$method_name$(&context, request, "
       "&response);\n"
+      "\n"
       "  if (status.ok()) {\n"
       "    return response;\n"
-      "  } else {\n"
-      "    return gax::GrpcStatusToGaxStatus(status);\n"
       "  }\n"
+      "\n"
+      "  std::string error_message;\n"
+      "  // TODO: use idempotency policy to determine whether a failure is "
+      "permanent\n"
+      "  if (!isPermanentFailure(status)) {\n"
+      "    auto retry_policy = retry_policy_->clone();\n"
+      "    auto backoff_policy = backoff_policy_->clone();\n"
+      "    while (retry_policy->OnFailure(status)) {\n"
+      "      auto backoff_duration = backoff_policy->OnCompletion();\n"
+      "      std::this_thread::sleep_for(backoff_duration);\n"
+      "      status = stub_->$method_name$(&context, request, &response);\n"
+      "      if (status.ok()) {\n"
+      "        return response;\n"
+      "      }\n"
+      "    // TODO: augment error_message with result from status\n"
+      "    }\n"
+      "  }\n"
+      "  // TODO: implement grpcStatusCodeToGaxStatusCode\n"
+      "  gax::StatusCode code = "
+      "grpcStatusCodeToGaxStatusCode(status.error_code());\n"
+      "  return gax::Status(code, error_message);\n"
       "}\n"
       "\n",
       NoStreamingPredicate);

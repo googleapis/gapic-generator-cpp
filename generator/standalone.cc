@@ -1,5 +1,5 @@
-#include <standalone.h>
 #include <fstream>
+#include <standalone.h>
 
 #include <google/protobuf/compiler/command_line_interface.h>
 #include <google/protobuf/stubs/io_win32.h>
@@ -19,12 +19,10 @@ namespace pb = google::protobuf;
 //
 // This function extracts the relevant file names (those, which match the
 // package) from the set of descriptors.
-bool ExtractFileNames(
-    const std::vector<std::string>& desc_sets,
-    const std::vector<std::string>& packages,
-    std::vector<std::string>& filenames,
-    std::string* error_msg) {
-
+bool ExtractFileNames(const std::vector<std::string>& desc_sets,
+                      const std::vector<std::string>& packages,
+                      std::vector<std::string>& filenames,
+                      std::string* error_msg) {
   for (const std::string& desc_set : desc_sets) {
     if (desc_set.empty()) {
       continue;
@@ -64,8 +62,7 @@ void ParseDelimitedArg(const std::string& arg,
   size_t p0 = 0;
   for (const char* d = delimiters; *d != '\0' && tokens.empty(); d++) {
     p0 = 0;
-    for (size_t p = arg.find(*d, 0);
-         p != std::string::npos;
+    for (size_t p = arg.find(*d, 0); p != std::string::npos;
          p0 = p + 1, p = arg.find(*d, p0)) {
       tokens.emplace_back(arg.substr(p0, p - p0));
     }
@@ -87,8 +84,7 @@ void ParseDelimitedArg(const std::string& arg,
 //   this is especially useful for folder operations, since standard library
 //   below C++17 does not have folder I/O abstraction whatsoever.
 //
-bool ConvertCommandLineArgs(int argc,
-                            const char* const argv[],
+bool ConvertCommandLineArgs(int argc, const char* const argv[],
                             std::vector<std::string>& args,
                             std::string* error_msg) {
   // GAPIC Generator Standalone arguments
@@ -129,16 +125,14 @@ bool ConvertCommandLineArgs(int argc,
     if (!ExtractFileNames(desc_set_in, packages, file_names, error_msg)) {
       return false;
     }
-    args.insert(args.end(),
-                std::make_move_iterator(file_names.begin()),
+    args.insert(args.end(), std::make_move_iterator(file_names.begin()),
                 std::make_move_iterator(file_names.end()));
   }
 
   return true;
 }
 
-int StandaloneMain(int argc,
-                   const char* const argv[],
+int StandaloneMain(int argc, const char* const argv[],
                    google::protobuf::compiler::CodeGenerator* generator) {
   std::string error_msg;
   std::vector<std::string> args;
@@ -153,12 +147,11 @@ int StandaloneMain(int argc,
     c_args.push_back(arg.c_str());
   }
 
-  return cli.Run((int) args.size(), c_args.data());
+  return cli.Run((int)args.size(), c_args.data());
 }
 
 int StandaloneMain(const std::vector<std::string>& descriptors,
-                   const std::string& package,
-                   const std::string& output,
+                   const std::string& package, const std::string& output,
                    google::protobuf::compiler::CodeGenerator* generator) {
   std::string desc_set_in_arg("--descriptor=");
   for (const std::string& desc_set : descriptors) {
@@ -167,12 +160,10 @@ int StandaloneMain(const std::vector<std::string>& descriptors,
   std::string package_arg("--package=" + package);
   std::string output_arg("--output=" + output);
 
-  std::vector<const char*> c_args = {"<ignored>",
-                                     desc_set_in_arg.c_str(),
-                                     package_arg.c_str(),
-                                     output_arg.c_str()};
+  std::vector<const char*> c_args = {"<ignored>", desc_set_in_arg.c_str(),
+                                     package_arg.c_str(), output_arg.c_str()};
 
-  return StandaloneMain((int) c_args.size(), c_args.data(), generator);
+  return StandaloneMain((int)c_args.size(), c_args.data(), generator);
 };
 
 }  // namespace codegen

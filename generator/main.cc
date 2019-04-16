@@ -14,9 +14,9 @@
 
 //#include <fstream>
 
-#include <standalone.h>
 #include <google/protobuf/compiler/plugin.h>
 #include <gapic_generator.h>
+#include <standalone.h>
 
 /**
  * Entry point for C++ GAPIC generator.

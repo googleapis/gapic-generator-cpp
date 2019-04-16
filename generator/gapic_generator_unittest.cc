@@ -25,7 +25,6 @@
 #include <gapic_generator.h>
 #include <standalone.h>
 
-
 namespace google {
 namespace api {
 namespace codegen {
@@ -48,13 +47,13 @@ TEST(GapicGeneratorBaselineTest, StandaloneTest) {
   const std::string data_dir("./generator/testdata/");
 
   std::vector<std::string> descriptors = {
-      input_dir
-          + "com_google_gapic_generator_cpp/generator/testdata/library_proto-descriptor-set.proto.bin",
-      input_dir
-          + "api_common_protos/google/api/client_proto-descriptor-set.proto.bin",
-      input_dir
-          + "com_google_protobuf/descriptor_proto-descriptor-set.proto.bin"
-  };
+      input_dir +
+          "com_google_gapic_generator_cpp/generator/testdata/"
+          "library_proto-descriptor-set.proto.bin",
+      input_dir +
+          "api_common_protos/google/api/client_proto-descriptor-set.proto.bin",
+      input_dir +
+          "com_google_protobuf/descriptor_proto-descriptor-set.proto.bin"};
   std::string package = "google.example.library.v1";
 
   GapicGenerator generator;

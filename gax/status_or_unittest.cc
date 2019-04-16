@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include "status_or.h"
-#include <gtest/gtest.h>
 #include "status.h"
+#include <gtest/gtest.h>
 
 #include <memory>
 #include <string>

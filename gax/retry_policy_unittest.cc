@@ -15,9 +15,9 @@
 #include <chrono>
 #include <memory>
 
-#include <gtest/gtest.h>
 #include "retry_policy.h"
 #include "status.h"
+#include <gtest/gtest.h>
 
 namespace {
 using namespace ::google;

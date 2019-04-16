@@ -17,7 +17,6 @@
 #include <string>
 #include <vector>
 
-#include <dirent.h>
 #include <iostream>
 
 #include <gtest/gtest.h>
@@ -39,9 +38,6 @@ inline std::string LoadContent(const std::string& f) {
 }
 
 TEST(GapicGeneratorBaselineTest, StandaloneTest) {
-  char cwd[PATH_MAX];
-  getcwd(cwd, sizeof(cwd));
-
   const std::string input_dir("../");
   const std::string output_dir("./");
   const std::string data_dir("./generator/testdata/");

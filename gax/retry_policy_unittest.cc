@@ -15,7 +15,7 @@
 #include <chrono>
 #include <memory>
 
-#include "googletest/include/gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "retry_policy.h"
 #include "status.h"
 

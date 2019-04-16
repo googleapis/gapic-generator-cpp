@@ -18,7 +18,7 @@
 
 #include "gapic_utils.h"
 #include "printer.h"
-#include "src/google/protobuf/descriptor.h"
+#include <google/protobuf/descriptor.h>
 #include "generator/internal/client_header_generator.h"
 #include "generator/internal/data_model.h"
 

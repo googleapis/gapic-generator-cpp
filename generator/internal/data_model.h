@@ -24,9 +24,9 @@
 #include "absl/strings/str_replace.h"
 #include "absl/strings/str_split.h"
 #include "google/api/client.pb.h"
-#include "src/google/protobuf/compiler/code_generator.h"
-#include "src/google/protobuf/descriptor.h"
-#include "src/google/protobuf/descriptor.pb.h"
+#include <google/protobuf/compiler/code_generator.h>
+#include <google/protobuf/descriptor.h>
+#include <google/protobuf/descriptor.pb.h>
 
 #include "gapic_utils.h"
 #include "printer.h"

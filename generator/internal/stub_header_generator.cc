@@ -17,7 +17,7 @@
 
 #include "data_model.h"
 #include "printer.h"
-#include "src/google/protobuf/descriptor.h"
+#include <google/protobuf/descriptor.h>
 #include "stub_header_generator.h"
 
 namespace pb = google::protobuf;

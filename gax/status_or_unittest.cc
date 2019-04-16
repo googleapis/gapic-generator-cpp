@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "status_or.h"
-#include "googletest/include/gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "status.h"
 
 #include <memory>

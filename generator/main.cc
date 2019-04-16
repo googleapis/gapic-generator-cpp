@@ -12,13 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "src/google/protobuf/compiler/plugin.h"
-#include "gapic_generator.h"
+//#include <fstream>
+
+#include <standalone.h>
+#include <google/protobuf/compiler/plugin.h>
+#include <gapic_generator.h>
 
 /**
- * Entry point for C++ GAPIC generator protoc plugin.
+ * Entry point for C++ GAPIC generator.
+ *
+ * If at least one command line argument is provided, the standalone mode is
+ * assumed. Otherwise thegenerator runs as a plugin (it expects input to be
+ * received via stdin and outputs to stdout).
  */
 int main(int argc, char** argv) {
   google::api::codegen::GapicGenerator generator;
+  if (argc > 1) {
+    return google::api::codegen::StandaloneMain(argc, argv, &generator);
+  }
+  // PluginMain immediately fails if argc > 1
   return google::protobuf::compiler::PluginMain(argc, argv, &generator);
 }

@@ -15,7 +15,7 @@
 #include "stub_cc_generator.h"
 #include "gapic_utils.h"
 #include "printer.h"
-#include "src/google/protobuf/descriptor.h"
+#include <google/protobuf/descriptor.h>
 #include "generator/internal/data_model.h"
 
 namespace pb = google::protobuf;

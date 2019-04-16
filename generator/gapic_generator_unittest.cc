@@ -44,7 +44,7 @@ TEST(GapicGeneratorBaselineTest, StandaloneTest) {
   getcwd(cwd, sizeof(cwd));
 
   const std::string input_dir("../");
-  const std::string output_dir("./hoho.zip");
+  const std::string output_dir("./");
   const std::string data_dir("./generator/testdata/");
 
   std::vector<std::string> descriptors = {

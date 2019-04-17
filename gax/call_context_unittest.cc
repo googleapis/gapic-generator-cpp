@@ -22,8 +22,10 @@
 namespace google {
 namespace gax {
 
-static_assert(std::is_move_constructible<CallContext>::value);
-static_assert(std::is_copy_constructible<CallContext>::value);
+static_assert(std::is_move_constructible<CallContext>::value,
+              "CallContext must be move constructable");
+static_assert(std::is_copy_constructible<CallContext>::value,
+              "CallContext must be copy constructable");
 
 TEST(CallContext, Basic) {
   gax::MethodInfo mi{"TestMethod", MethodInfo::RpcType::CLIENT_STREAMING,

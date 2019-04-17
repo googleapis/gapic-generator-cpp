@@ -30,6 +30,7 @@ cc_library(
         "status_or.h",
     ],
     deps = [
+        "@com_github_grpc_grpc//:grpc++",
     ],
 )
 

@@ -16,9 +16,11 @@ workspace(name = "com_google_gapic_generator_cpp")
 
 load(
     "//:repositories.bzl",
+    "com_google_gapic_generator_cpp_gax_repositories",
     "com_google_gapic_generator_cpp_repositories",
 )
 
+com_google_gapic_generator_cpp_gax_repositories()
 com_google_gapic_generator_cpp_repositories()
 
 bind(
@@ -26,3 +28,7 @@ bind(
     actual = "@net_zlib//:zlib",
 )
 
+# NOTE: this is a hack to allow grpc to build
+load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
+
+grpc_deps()

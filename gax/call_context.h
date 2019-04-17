@@ -161,7 +161,7 @@ class CallContext {
   FRIEND_TEST(CallContext, Basic);
   std::chrono::system_clock::time_point deadline_;
   std::vector<GrpcContextPolicyFunc> context_policies_;
-  std::multimap<std::string const, std::string const> metadata_;
+  std::multimap<std::string, std::string const> metadata_;
   MethodInfo const method_info_;
 };
 }

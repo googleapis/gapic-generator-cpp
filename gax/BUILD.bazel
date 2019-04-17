@@ -16,29 +16,42 @@ package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])  # Apache 2.0
 
+# Note: googleapis doesn't define a cc_proto_library for operations_proto,
+# so declare one here ourselves.
+cc_proto_library(
+    name = "longrunning_cpp_proto",
+    deps = ["@com_google_googleapis//google/longrunning:operations_proto"],
+)
+
 cc_library(
     name = "gax",
     srcs = [
         "backoff_policy.cc",
         "call_context.cc",
         "internal/gtest_prod.h",
+        "operations_stub.cc",
         "status.cc",
     ],
     hdrs = [
         "backoff_policy.h",
         "call_context.h",
         "retry_policy.h",
+        "operation.h",
+        "operations_stub.h",
         "status.h",
         "status_or.h",
     ],
     deps = [
         "@com_github_grpc_grpc//:grpc++",
+        ":longrunning_cpp_proto",
     ],
 )
 
 gax_unit_tests = [
     "backoff_policy_unittest.cc",
     "call_context_unittest.cc",
+    "operation_unittest.cc",
+    "operations_stub_unittest.cc",
     "retry_policy_unittest.cc",
     "status_unittest.cc",
     "status_or_unittest.cc",

@@ -5,6 +5,8 @@
 #include <google/protobuf/stubs/io_win32.h>
 #include <gapic_generator.h>
 
+#include "absl/strings/str_split.h"
+
 namespace google {
 namespace api {
 namespace codegen {
@@ -21,7 +23,7 @@ namespace pb = google::protobuf;
 // package) from the set of descriptors.
 bool ExtractFileNames(std::vector<std::string> const& desc_sets,
                       std::vector<std::string> const& packages,
-                      std::vector<std::string>& filenames,
+                      std::vector<std::string>* filenames,
                       std::string* error_msg) {
   for (auto const& desc_set : desc_sets) {
     if (desc_set.empty()) {
@@ -46,30 +48,12 @@ bool ExtractFileNames(std::vector<std::string> const& desc_sets,
       auto const& fl = bin_desc_set.file(i);
       auto iter = std::find(packages.begin(), packages.end(), fl.package());
       if (iter != packages.end()) {
-        filenames.emplace_back(fl.name());
+        filenames->emplace_back(fl.name());
       }
     }
   }
 
   return true;
-}
-
-void ParseDelimitedArg(std::string const& arg,
-                       std::vector<std::string>& tokens) {
-  // Linux will use ':' and Windows will use ';' as the the delimiter.
-  // Accept both as valid delimiters (not allowed to be used simultaneously).
-  char const* delimiters = ":;";
-  size_t p0 = 0;
-  for (char const* d = delimiters; *d != '\0' && tokens.empty(); d++) {
-    p0 = 0;
-    for (size_t p = arg.find(*d, 0); p != std::string::npos;
-         p0 = p + 1, p = arg.find(*d, p0)) {
-      tokens.emplace_back(arg.substr(p0, p - p0));
-    }
-  }
-  if (arg.size() > p0) {
-    tokens.emplace_back(arg.substr(p0, arg.size() - p0));
-  }
 }
 
 // Converts arguments from what is required by GAPIC generator standalone mode
@@ -98,31 +82,35 @@ bool ConvertCommandLineArgs(int argc, char const* const argv[],
   std::vector<std::string> packages;
 
   for (int i = 0; i < argc; i++) {
-    std::string arg(argv[i]);
-    auto pos = arg.find('=', 0);
-    if (pos == std::string::npos) {
-      args.emplace_back(arg);
+    std::vector<std::string> arg =
+        absl::StrSplit(argv[i], absl::MaxSplits('=', 1));
+    if (arg.size() <= 1) {
+      args.emplace_back(argv[i]);
       continue;
     }
 
-    std::string const& arg_name = arg.substr(0, pos);
-    std::string const& arg_val = arg.substr(pos + 1, arg.size() - pos);
+    std::string const& arg_name = arg[0];
+    std::string const& arg_val = arg[1];
 
     if (arg_name == desc_arg || arg_name == desc_set_in_arg) {
       args.emplace_back(desc_set_in_arg + arg_val);
-      ParseDelimitedArg(arg_val, desc_set_in);
+      std::vector<std::string> const& spl =
+          absl::StrSplit(arg_val, absl::ByAnyChar(":;"));
+      std::move(spl.begin(), spl.end(), std::back_inserter(desc_set_in));
     } else if (arg_name == output_arg) {
       args.emplace_back("--cpp_gapic_out=" + arg_val);
     } else if (arg_name == package_arg) {
-      ParseDelimitedArg(arg_val, packages);
+      std::vector<std::string> const& spl =
+          absl::StrSplit(arg_val, absl::ByAnyChar(":;"));
+      std::move(spl.begin(), spl.end(), std::back_inserter(packages));
     } else {
-      args.emplace_back(arg);
+      args.emplace_back(argv[i]);
     }
   }
 
   if (!desc_set_in.empty()) {
     std::vector<std::string> file_names;
-    if (!ExtractFileNames(desc_set_in, packages, file_names, error_msg)) {
+    if (!ExtractFileNames(desc_set_in, packages, &file_names, error_msg)) {
       return false;
     }
     args.insert(args.end(), std::make_move_iterator(file_names.begin()),

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "status.h"
-#include "googletest/include/gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include <sstream>
 #include <string>

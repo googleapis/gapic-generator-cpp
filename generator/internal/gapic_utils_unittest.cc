@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "generator/internal/gapic_utils.h"
-#include "googletest/include/gtest/gtest.h"
+#include <gtest/gtest.h>
 #include <string>
 #include <utility>
 #include <vector>

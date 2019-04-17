@@ -1,0 +1,19 @@
+proto_library(
+    name = "library_proto",
+    srcs = ["library.proto"],
+    deps = ["@api_common_protos//google/api:client_proto"],
+    visibility = ["//visibility:public"],
+)
+
+cc_proto_library(
+    name = "library_cc_proto",
+    deps = [":library_proto"],
+    visibility = ["//visibility:public"],
+)
+
+
+filegroup(
+    name = "library_service_baseline",
+    srcs = glob(["google/example/library/v1/**"]),
+    visibility = ["//visibility:public"],
+)

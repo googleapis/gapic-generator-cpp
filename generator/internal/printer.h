@@ -14,9 +14,9 @@
 #ifndef GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_PRINTER_H_
 #define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_PRINTER_H_
 
-#include "src/google/protobuf/compiler/code_generator.h"
-#include "src/google/protobuf/io/printer.h"
-#include "src/google/protobuf/io/zero_copy_stream.h"
+#include <google/protobuf/compiler/code_generator.h>
+#include <google/protobuf/io/printer.h>
+#include <google/protobuf/io/zero_copy_stream.h>
 #include <string>
 
 namespace pb = google::protobuf;

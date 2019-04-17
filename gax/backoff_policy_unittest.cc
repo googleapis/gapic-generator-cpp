@@ -16,7 +16,7 @@
 #include <memory>
 #include <random>
 
-#include "googletest/include/gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "backoff_policy.h"
 

@@ -30,7 +30,7 @@ namespace codegen {
 
 namespace pb = google::protobuf;
 
-inline std::string LoadContent(const std::string& f) {
+inline std::string LoadContent(std::string const& f) {
   std::ifstream ifs(f);
   EXPECT_TRUE(ifs.good()) << "Could not open " << f;
   return std::string((std::istreambuf_iterator<char>(ifs)),
@@ -38,9 +38,9 @@ inline std::string LoadContent(const std::string& f) {
 }
 
 TEST(GapicGeneratorBaselineTest, StandaloneTest) {
-  const std::string input_dir("../");
-  const std::string output_dir("./");
-  const std::string data_dir("./generator/testdata/");
+  std::string const input_dir("../");
+  std::string const output_dir("./");
+  std::string const data_dir("./generator/testdata/");
 
   std::vector<std::string> descriptors = {
       input_dir +
@@ -64,12 +64,12 @@ TEST(GapicGeneratorBaselineTest, StandaloneTest) {
       "google/example/library/v1/library_service_stub.gapic.cc",
   };
 
-  for (const std::string& file : files_to_check) {
-    const std::string expected_file(data_dir + file + ".baseline");
-    const std::string actual_file(output_dir + file);
+  for (auto const& file : files_to_check) {
+    std::string const expected_file(data_dir + file + ".baseline");
+    std::string const actual_file(output_dir + file);
 
-    const std::string& expected_file_content = LoadContent(expected_file);
-    const std::string& actual_file_content = LoadContent(actual_file);
+    std::string const& expected_file_content = LoadContent(expected_file);
+    std::string const& actual_file_content = LoadContent(actual_file);
 
     EXPECT_EQ(expected_file_content, actual_file_content);
   }

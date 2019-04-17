@@ -19,11 +19,11 @@ namespace pb = google::protobuf;
 //
 // This function extracts the relevant file names (those, which match the
 // package) from the set of descriptors.
-bool ExtractFileNames(const std::vector<std::string>& desc_sets,
-                      const std::vector<std::string>& packages,
+bool ExtractFileNames(std::vector<std::string> const& desc_sets,
+                      std::vector<std::string> const& packages,
                       std::vector<std::string>& filenames,
                       std::string* error_msg) {
-  for (const std::string& desc_set : desc_sets) {
+  for (auto const& desc_set : desc_sets) {
     if (desc_set.empty()) {
       continue;
     }
@@ -43,7 +43,7 @@ bool ExtractFileNames(const std::vector<std::string>& desc_sets,
     }
 
     for (int i = 0; i < bin_desc_set.file_size(); i++) {
-      const auto& fl = bin_desc_set.file(i);
+      auto const& fl = bin_desc_set.file(i);
       auto iter = std::find(packages.begin(), packages.end(), fl.package());
       if (iter != packages.end()) {
         filenames.emplace_back(fl.name());
@@ -54,13 +54,13 @@ bool ExtractFileNames(const std::vector<std::string>& desc_sets,
   return true;
 }
 
-void ParseDelimitedArg(const std::string& arg,
+void ParseDelimitedArg(std::string const& arg,
                        std::vector<std::string>& tokens) {
   // Linux will use ':' and Windows will use ';' as the the delimiter.
   // Accept both as valid delimiters (not allowed to be used simultaneously).
-  const char* delimiters = ":;";
+  char const* delimiters = ":;";
   size_t p0 = 0;
-  for (const char* d = delimiters; *d != '\0' && tokens.empty(); d++) {
+  for (char const* d = delimiters; *d != '\0' && tokens.empty(); d++) {
     p0 = 0;
     for (size_t p = arg.find(*d, 0); p != std::string::npos;
          p0 = p + 1, p = arg.find(*d, p0)) {
@@ -84,15 +84,15 @@ void ParseDelimitedArg(const std::string& arg,
 //   this is especially useful for folder operations, since standard library
 //   below C++17 does not have folder I/O abstraction whatsoever.
 //
-bool ConvertCommandLineArgs(int argc, const char* const argv[],
+bool ConvertCommandLineArgs(int argc, char const* const argv[],
                             std::vector<std::string>& args,
                             std::string* error_msg) {
   // GAPIC Generator Standalone arguments
-  const std::string desc_arg("--descriptor");
-  const std::string output_arg("--output");
-  const std::string package_arg("--package");
+  std::string const desc_arg("--descriptor");
+  std::string const output_arg("--output");
+  std::string const package_arg("--package");
 
-  const std::string desc_set_in_arg("--descriptor_set_in=");
+  std::string const desc_set_in_arg("--descriptor_set_in=");
 
   std::vector<std::string> desc_set_in;
   std::vector<std::string> packages;
@@ -105,8 +105,8 @@ bool ConvertCommandLineArgs(int argc, const char* const argv[],
       continue;
     }
 
-    const std::string& arg_name = arg.substr(0, pos);
-    const std::string& arg_val = arg.substr(pos + 1, arg.size() - pos);
+    std::string const& arg_name = arg.substr(0, pos);
+    std::string const& arg_val = arg.substr(pos + 1, arg.size() - pos);
 
     if (arg_name == desc_arg || arg_name == desc_set_in_arg) {
       args.emplace_back(desc_set_in_arg + arg_val);
@@ -132,7 +132,7 @@ bool ConvertCommandLineArgs(int argc, const char* const argv[],
   return true;
 }
 
-int StandaloneMain(int argc, const char* const argv[],
+int StandaloneMain(int argc, char const* const argv[],
                    google::protobuf::compiler::CodeGenerator* generator) {
   std::string error_msg;
   std::vector<std::string> args;
@@ -141,26 +141,26 @@ int StandaloneMain(int argc, const char* const argv[],
   pb::compiler::CommandLineInterface cli;
   cli.RegisterGenerator("--cpp_gapic_out", generator, "GAPIC C++ Generator");
 
-  std::vector<const char*> c_args;
+  std::vector<char const*> c_args;
   c_args.reserve(args.size());
-  for (const std::string& arg : args) {
+  for (auto const& arg : args) {
     c_args.push_back(arg.c_str());
   }
 
   return cli.Run((int)args.size(), c_args.data());
 }
 
-int StandaloneMain(const std::vector<std::string>& descriptors,
-                   const std::string& package, const std::string& output,
+int StandaloneMain(std::vector<std::string> const& descriptors,
+                   std::string const& package, std::string const& output,
                    google::protobuf::compiler::CodeGenerator* generator) {
   std::string desc_set_in_arg("--descriptor=");
-  for (const std::string& desc_set : descriptors) {
+  for (auto const& desc_set : descriptors) {
     desc_set_in_arg += desc_set + ":";
   }
   std::string package_arg("--package=" + package);
   std::string output_arg("--output=" + output);
 
-  std::vector<const char*> c_args = {"<ignored>", desc_set_in_arg.c_str(),
+  std::vector<char const*> c_args = {"<ignored>", desc_set_in_arg.c_str(),
                                      package_arg.c_str(), output_arg.c_str()};
 
   return StandaloneMain((int)c_args.size(), c_args.data(), generator);

@@ -39,9 +39,11 @@ void CallContext::PrepareGrpcContext(grpc::ClientContext* context) {
   }
 }
 
-bool CallContext::AddMetadata(std::string key, std::string val) {
-  return metadata_.emplace(std::move(key), std::move(val)).second;
+void CallContext::AddMetadata(std::string key, std::string val) {
+  metadata_.emplace(std::move(key), std::move(val));
 }
+
+MethodInfo CallContext::Info() const { return method_info_; }
 
 std::chrono::system_clock::time_point CallContext::Deadline() const {
   return deadline_;

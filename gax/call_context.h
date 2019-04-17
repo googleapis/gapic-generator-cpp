@@ -24,11 +24,34 @@
 #include <string>
 #include <utility>
 
+/**
+ * Callback type for custom manipulation of grpc::ClientContext.
+ * These callbacks can be used to manipulate advanced grpc settings.
+ */
 using GrpcContextPolicyFunc = std::function<void(grpc::ClientContext*)>;
 
 namespace google {
 namespace gax {
 
+/**
+ * Compile time information about specific rpc methods.
+ * This information can be used by user provided GAPIC stub decorator methods to
+ * configure ClientContexts.
+ *
+ * Example:
+ * @code
+ * gax::Status GetFoo(gax::CallContext& context, GetFooRequest const& request,
+ *                    Foo* response) {
+ *   auto info = context.Info();
+ *   if(info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENCY) {
+ *     context.addGrpcContextPolicy([](grpc::ClientContext* ctx){
+ *                                       ctx->set_idempotent(true);
+ *                                     });
+ *   }
+ *   return inner_stub_->GetFoo(context, request, response);
+ * }
+ *
+ */
 struct MethodInfo {
   enum class RpcType {
     // Copied from grpc include/grpcpp/impl/codegen/rpc_method.h#L32
@@ -91,7 +114,7 @@ struct MethodInfo {
 class CallContext {
  public:
   CallContext(MethodInfo method_info)
-      : deadline_(std::chrono::time_point<std::chrono::system_clock>::max()),
+      : deadline_(std::chrono::system_clock::time_point::max()),
         method_info_(std::move(method_info)) {}
 
   /**
@@ -105,7 +128,7 @@ class CallContext {
    * deadline, and applying registered customization functions.
    *
    * @par Pre-conditions
-   * The 'context' parameter is pristine and has not been used for an rpc.
+   * The 'context' parameter has not been used for an rpc.
    *
    * @param context the context to initialize.
    */
@@ -116,11 +139,8 @@ class CallContext {
    *
    * @param key the metadata key.
    * @param val the metadata value.
-   *
-   * @return True if the key had not previously been registered, false
-   * otherwise.
    */
-  bool AddMetadata(std::string key, std::string val);
+  void AddMetadata(std::string key, std::string val);
 
   /**
    * @name Set a deadline for the rpc.
@@ -135,13 +155,13 @@ class CallContext {
   /**
    * @name Accessor for method info.
    */
-  MethodInfo Info() const { return method_info_; }
+  MethodInfo Info() const;
 
  private:
   FRIEND_TEST(CallContext, Basic);
   std::chrono::system_clock::time_point deadline_;
   std::vector<GrpcContextPolicyFunc> context_policies_;
-  std::map<std::string const, std::string const> metadata_;
+  std::multimap<std::string const, std::string const> metadata_;
   MethodInfo const method_info_;
 };
 }

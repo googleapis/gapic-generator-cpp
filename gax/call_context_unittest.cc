@@ -16,6 +16,7 @@
 #include "googletest/include/gtest/gtest.h"
 
 #include <chrono>
+#include <set>
 #include <string>
 #include <type_traits>
 
@@ -43,14 +44,20 @@ TEST(CallContext, Basic) {
   ctx.SetDeadline(now);
   EXPECT_EQ(ctx.Deadline(), now);
 
-  EXPECT_TRUE(ctx.AddMetadata("testKey", "testVal"));
+  ctx.AddMetadata("testKey", "testVal");
   auto iter = ctx.metadata_.find("testKey");
   EXPECT_NE(iter, ctx.metadata_.end());
   EXPECT_EQ(iter->second, "testVal");
 
-  EXPECT_FALSE(ctx.AddMetadata("testKey", "testVal2"));
-  iter = ctx.metadata_.find("testKey");
-  EXPECT_EQ(iter->second, "testVal");
+  std::set<std::string> const vals = {"testVal", "testVal2"};
+  std::set<std::string> tmp;
+  ctx.AddMetadata("testKey", "testVal2");
+  EXPECT_EQ(ctx.metadata_.count("testKey"), std::size_t(2));
+  auto range = ctx.metadata_.equal_range("testKey");
+  for (auto i = range.first; i != range.second; ++i) {
+    tmp.insert(i->second);
+  }
+  EXPECT_EQ(tmp, vals);
 
   int policy_invoked = 0;
   ctx.AddGrpcContextPolicy(

@@ -5,32 +5,34 @@
 #define LibraryService_Stub_H_
 
 #include "LibraryService.pb.h"
-#include "grpcpp/client_context.h"
-#include "grpc/status.h"
+#include "gax/call_context.h"
+#include "gax/status.h"
+#include "grpcpp/security/credentials.h"
+#include <memory>
 
 class LibraryServiceStub {
  public:
-  virtual grpc::Status CreateBook(grpc::ClientContext* context,
+  virtual google::gax::Status CreateBook(google::gax::CallContext& context,
     ::google::example::library::v1::CreateBookRequest const& request,
     ::google::example::library::v1::Book* response);
 
-  virtual grpc::Status GetBook(grpc::ClientContext* context,
+  virtual google::gax::Status GetBook(google::gax::CallContext& context,
     ::google::example::library::v1::GetBookRequest const& request,
     ::google::example::library::v1::Book* response);
 
-  virtual grpc::Status ListBooks(grpc::ClientContext* context,
+  virtual google::gax::Status ListBooks(google::gax::CallContext& context,
     ::google::example::library::v1::ListBooksRequest const& request,
     ::google::example::library::v1::ListBooksResponse* response);
 
-  virtual grpc::Status DeleteBook(grpc::ClientContext* context,
+  virtual google::gax::Status DeleteBook(google::gax::CallContext& context,
     ::google::example::library::v1::DeleteBookRequest const& request,
     ::google::example::library::v1::Empty* response);
 
-  virtual grpc::Status UpdateBook(grpc::ClientContext* context,
+  virtual google::gax::Status UpdateBook(google::gax::CallContext& context,
     ::google::example::library::v1::UpdateBookRequest const& request,
     ::google::example::library::v1::Book* response);
 
-  virtual grpc::Status GetBigBook(grpc::ClientContext* context,
+  virtual google::gax::Status GetBigBook(google::gax::CallContext& context,
     ::google::example::library::v1::GetBookRequest const& request,
     ::google::example::library::v1::Book* response);
 

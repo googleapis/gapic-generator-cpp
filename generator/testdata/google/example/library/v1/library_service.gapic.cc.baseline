@@ -3,90 +3,97 @@
 // source: generator/testdata/library.proto
 #include "library_service.gapic.h"
 #include "library_service_stub.gapic.h"
+#include "gax/call_context.h"
 #include "gax/status.h"
 #include "gax/status_or.h"
 
-gax::StatusOr<::google::example::library::v1::Book>
+google::gax::StatusOr<::google::example::library::v1::Book>
 LibraryService::CreateBook(
 ::google::example::library::v1::CreateBookRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
-  grpc::ClientContext context;
+  google::gax::CallContext context(CreateBook_info_);
   ::google::example::library::v1::Book response;
-  grpc::Status status = stub_->CreateBook(&context, request, &response);
-  if (status.ok()) {
+  google::gax::Status status = stub_->CreateBook(context, request, &response);
+  if (status.IsOk()) {
     return response;
   } else {
-    return gax::GrpcStatusToGaxStatus(status);
+    return status;
   }
 }
 
-gax::StatusOr<::google::example::library::v1::Book>
+google::gax::StatusOr<::google::example::library::v1::Book>
 LibraryService::GetBook(
 ::google::example::library::v1::GetBookRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
-  grpc::ClientContext context;
+  google::gax::CallContext context(GetBook_info_);
   ::google::example::library::v1::Book response;
-  grpc::Status status = stub_->GetBook(&context, request, &response);
-  if (status.ok()) {
+  google::gax::Status status = stub_->GetBook(context, request, &response);
+  if (status.IsOk()) {
     return response;
   } else {
-    return gax::GrpcStatusToGaxStatus(status);
+    return status;
   }
 }
 
-gax::StatusOr<::google::example::library::v1::ListBooksResponse>
+google::gax::StatusOr<::google::example::library::v1::ListBooksResponse>
 LibraryService::ListBooks(
 ::google::example::library::v1::ListBooksRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
-  grpc::ClientContext context;
+  google::gax::CallContext context(ListBooks_info_);
   ::google::example::library::v1::ListBooksResponse response;
-  grpc::Status status = stub_->ListBooks(&context, request, &response);
-  if (status.ok()) {
+  google::gax::Status status = stub_->ListBooks(context, request, &response);
+  if (status.IsOk()) {
     return response;
   } else {
-    return gax::GrpcStatusToGaxStatus(status);
+    return status;
   }
 }
 
-gax::StatusOr<::google::example::library::v1::Empty>
+google::gax::StatusOr<::google::example::library::v1::Empty>
 LibraryService::DeleteBook(
 ::google::example::library::v1::DeleteBookRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
-  grpc::ClientContext context;
+  google::gax::CallContext context(DeleteBook_info_);
   ::google::example::library::v1::Empty response;
-  grpc::Status status = stub_->DeleteBook(&context, request, &response);
-  if (status.ok()) {
+  google::gax::Status status = stub_->DeleteBook(context, request, &response);
+  if (status.IsOk()) {
     return response;
   } else {
-    return gax::GrpcStatusToGaxStatus(status);
+    return status;
   }
 }
 
-gax::StatusOr<::google::example::library::v1::Book>
+google::gax::StatusOr<::google::example::library::v1::Book>
 LibraryService::UpdateBook(
 ::google::example::library::v1::UpdateBookRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
-  grpc::ClientContext context;
+  google::gax::CallContext context(UpdateBook_info_);
   ::google::example::library::v1::Book response;
-  grpc::Status status = stub_->UpdateBook(&context, request, &response);
-  if (status.ok()) {
+  google::gax::Status status = stub_->UpdateBook(context, request, &response);
+  if (status.IsOk()) {
     return response;
   } else {
-    return gax::GrpcStatusToGaxStatus(status);
+    return status;
   }
 }
 
-gax::StatusOr<::google::example::library::v1::Book>
+google::gax::StatusOr<::google::example::library::v1::Book>
 LibraryService::GetBigBook(
 ::google::example::library::v1::GetBookRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
-  grpc::ClientContext context;
+  google::gax::CallContext context(GetBigBook_info_);
   ::google::example::library::v1::Book response;
-  grpc::Status status = stub_->GetBigBook(&context, request, &response);
-  if (status.ok()) {
+  google::gax::Status status = stub_->GetBigBook(context, request, &response);
+  if (status.IsOk()) {
     return response;
   } else {
-    return gax::GrpcStatusToGaxStatus(status);
+    return status;
   }
 }
 
+constexpr MethodInfo LibraryService::CreateBook_info_;
+constexpr MethodInfo LibraryService::GetBook_info_;
+constexpr MethodInfo LibraryService::ListBooks_info_;
+constexpr MethodInfo LibraryService::DeleteBook_info_;
+constexpr MethodInfo LibraryService::UpdateBook_info_;
+constexpr MethodInfo LibraryService::GetBigBook_info_;

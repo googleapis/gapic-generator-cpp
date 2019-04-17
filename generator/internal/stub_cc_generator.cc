@@ -29,6 +29,8 @@ std::vector<std::string> BuildClientStubCCIncludes(
     pb::ServiceDescriptor const* service) {
   return {LocalInclude(absl::StrCat(CamelCaseToSnakeCase(service->name()),
                                     "_stub.gapic.h")),
+          LocalInclude("gax/call_context.h"), LocalInclude("gax/Status.h"),
+          LocalInclude("grpcpp/client_context.h"),
           LocalInclude("grpcpp/channel.h"),
           LocalInclude("grpcpp/create_channel.h")};
 }
@@ -61,12 +63,12 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
 
   DataModel::PrintMethods(
       service, vars, p,
-      "grpc::Status\n"
+      "google::gax::Status\n"
       "$stub_class_name$::$method_name$(\n"
-      "  grpc::ClientContext*,\n"
+      "  google::gax::CallContext&,\n"
       "  $request_object$ const&,\n"
       "  $response_object$*) {\n"
-      "  return grpc::Status(grpc::StatusCode::kUnimplemented,\n"
+      "  return google::gax::Status(google::gax::StatusCode::kUnimplemented,\n"
       "    \"$method_name$ not implemented\");\n"
       "}\n"
       "\n",
@@ -93,11 +95,14 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
 
   DataModel::PrintMethods(
       service, vars, p,
-      "  grpc::Status\n"
-      "  $method_name$(grpc::ClientContext* context,\n"
+      "  google::gax::Status\n"
+      "  $method_name$(google::gax::CallContext& context,\n"
       "    $request_object$ const& request,\n"
       "    $response_object$* response) override {\n"
-      "    return grpc_stub_->$method_name$(context, request, response);\n"
+      "    grpc::ClientContext grpc_ctx;\n"
+      "    context->PrepareGrpcContext(&grpc_context);\n"
+      "    return google::gax::GrpcStatusToGaxStatus("
+      "grpc_stub_->$method_name$(&grpc_ctx, request, response));\n"
       "  }\n"
       "\n",
       NoStreamingPredicate);

@@ -36,7 +36,8 @@ std::vector<std::string> BuildClientCCIncludes(
           internal::ServiceNameToFilePath(service->name()), ".gapic.h")),
       LocalInclude(absl::StrCat(
           internal::ServiceNameToFilePath(service->name()), "_stub.gapic.h")),
-      LocalInclude("gax/status.h"), LocalInclude("gax/status_or.h"),
+      LocalInclude("gax/call_context.h"), LocalInclude("gax/status.h"),
+      LocalInclude("gax/status_or.h"),
   };
 }
 
@@ -67,22 +68,27 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
 
   DataModel::PrintMethods(
       service, vars, p,
-      "gax::StatusOr<$response_object$>\n"
+      "google::gax::StatusOr<$response_object$>\n"
       "$class_name$::$method_name$(\n"
       "$request_object$ const& request) {\n"
       "  // TODO: actual useful work, e.g. retry, backoff, metadata, "
       "pagination, etc.\n"
-      "  grpc::ClientContext context;\n"
+      "  google::gax::CallContext context($method_name$_info_);\n"
       "  $response_object$ response;\n"
-      "  grpc::Status status = stub_->$method_name$(&context, request, "
+      "  google::gax::Status status = stub_->$method_name$(context, request, "
       "&response);\n"
-      "  if (status.ok()) {\n"
+      "  if (status.IsOk()) {\n"
       "    return response;\n"
       "  } else {\n"
-      "    return gax::GrpcStatusToGaxStatus(status);\n"
+      "    return status;\n"
       "  }\n"
       "}\n"
       "\n",
+      NoStreamingPredicate);
+
+  DataModel::PrintMethods(
+      service, vars, p,
+      "constexpr MethodInfo $class_name$::$method_name$_info_;\n",
       NoStreamingPredicate);
 
   for (auto nspace : namespaces) {

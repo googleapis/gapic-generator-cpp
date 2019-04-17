@@ -28,30 +28,30 @@ class LibraryService final {
 
   std::shared_ptr<LibraryServiceStub> Stub() { return stub_; }
 
-  gax::StatusOr<::google::example::library::v1::Book> 
+  google::gax::StatusOr<::google::example::library::v1::Book> 
   CreateBook(::google::example::library::v1::CreateBookRequest const& request);
 
-  gax::StatusOr<::google::example::library::v1::Book> 
+  google::gax::StatusOr<::google::example::library::v1::Book> 
   GetBook(::google::example::library::v1::GetBookRequest const& request);
 
-  gax::StatusOr<::google::example::library::v1::ListBooksResponse> 
+  google::gax::StatusOr<::google::example::library::v1::ListBooksResponse> 
   ListBooks(::google::example::library::v1::ListBooksRequest const& request);
 
-  gax::StatusOr<::google::example::library::v1::Empty> 
+  google::gax::StatusOr<::google::example::library::v1::Empty> 
   DeleteBook(::google::example::library::v1::DeleteBookRequest const& request);
 
-  gax::StatusOr<::google::example::library::v1::Book> 
+  google::gax::StatusOr<::google::example::library::v1::Book> 
   UpdateBook(::google::example::library::v1::UpdateBookRequest const& request);
 
-  gax::StatusOr<::google::example::library::v1::Book> 
+  google::gax::StatusOr<::google::example::library::v1::Book> 
   GetBigBook(::google::example::library::v1::GetBookRequest const& request);
 
 
  private:
-  void ChangePolicy(gax::RetryPolicy const& policy) {
+  void ChangePolicy(google::gax::RetryPolicy const& policy) {
     retry_policy_ = policy.clone();
   }
-  void ChangePolicy(gax::BackoffPolicy const& policy) {
+  void ChangePolicy(google::gax::BackoffPolicy const& policy) {
     backoff_policy_ = policy.clone();
   }
   void ChangePolicies() {}
@@ -63,8 +63,27 @@ class LibraryService final {
   }
 
   std::shared_ptr<LibraryServiceStub> stub_;
-  std::unique_ptr<gax::RetryPolicy> retry_policy_;
-  std::unique_ptr<gax::BackoffPolicy> backoff_policy_;
+  std::unique_ptr<google::gax::RetryPolicy> retry_policy_;
+  std::unique_ptr<google::gax::BackoffPolicy> backoff_policy_;
+
+  // Note: conservatively assume no methods are idempotent.
+  //       This will eventually be set from annotations.
+  static constexpr google::gax::MethodInfo CreateBook_info_ = {"CreateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  // Note: conservatively assume no methods are idempotent.
+  //       This will eventually be set from annotations.
+  static constexpr google::gax::MethodInfo GetBook_info_ = {"GetBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  // Note: conservatively assume no methods are idempotent.
+  //       This will eventually be set from annotations.
+  static constexpr google::gax::MethodInfo ListBooks_info_ = {"ListBooks", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  // Note: conservatively assume no methods are idempotent.
+  //       This will eventually be set from annotations.
+  static constexpr google::gax::MethodInfo DeleteBook_info_ = {"DeleteBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  // Note: conservatively assume no methods are idempotent.
+  //       This will eventually be set from annotations.
+  static constexpr google::gax::MethodInfo UpdateBook_info_ = {"UpdateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  // Note: conservatively assume no methods are idempotent.
+  //       This will eventually be set from annotations.
+  static constexpr google::gax::MethodInfo GetBigBook_info_ = {"GetBigBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
 }; // LibraryService
 
 #endif // LibraryService_H_

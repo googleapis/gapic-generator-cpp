@@ -15,8 +15,17 @@
 workspace(name = "com_google_gapic_generator_cpp")
 
 load(
+    "//gax:repositories.bzl",
+    "com_google_gapic_generator_cpp_gax_repositories",
+)
+load(
     "//:repositories.bzl",
     "com_google_gapic_generator_cpp_repositories",
 )
 
+com_google_gapic_generator_cpp_gax_repositories()
 com_google_gapic_generator_cpp_repositories()
+
+load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
+
+grpc_deps()

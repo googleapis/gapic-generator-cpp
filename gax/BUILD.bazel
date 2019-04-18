@@ -20,21 +20,25 @@ cc_library(
     name = "gax",
     srcs = [
         "backoff_policy.cc",
+        "call_context.cc",
         "internal/gtest_prod.h",
         "status.cc",
     ],
     hdrs = [
         "backoff_policy.h",
+        "call_context.h",
         "retry_policy.h",
         "status.h",
         "status_or.h",
     ],
     deps = [
+        "@com_github_grpc_grpc//:grpc++",
     ],
 )
 
 gax_unit_tests = [
     "backoff_policy_unittest.cc",
+    "call_context_unittest.cc",
     "retry_policy_unittest.cc",
     "status_unittest.cc",
     "status_or_unittest.cc",

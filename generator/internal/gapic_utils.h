@@ -23,7 +23,7 @@
 #include "absl/strings/str_replace.h"
 #include "absl/strings/str_split.h"
 
-#include "src/google/protobuf/descriptor.h"
+#include <google/protobuf/descriptor.h>
 
 namespace google {
 namespace api {

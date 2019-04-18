@@ -19,7 +19,7 @@
 #include <string>
 
 #include "printer.h"
-#include "src/google/protobuf/descriptor.h"
+#include <google/protobuf/descriptor.h>
 
 namespace pb = google::protobuf;
 

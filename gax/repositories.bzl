@@ -12,17 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-workspace(name = "com_google_gapic_generator_cpp")
+def com_google_gapic_generator_cpp_gax_repositories():
+    _maybe(
+        http_archive,
+        name = "com_github_grpc_grpc",
+        strip_prefix = "grpc-1.18.0",
+        urls = ["https://github.com/grpc/grpc/archive/v1.18.0.tar.gz"]
+    )
 
-load(
-    "//:repositories.bzl",
-    "com_google_gapic_generator_cpp_gax_repositories",
-    "com_google_gapic_generator_cpp_repositories",
-)
 
-com_google_gapic_generator_cpp_gax_repositories()
-com_google_gapic_generator_cpp_repositories()
-
-load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
-
-grpc_deps()
+def _maybe(repo_rule, name, **kwargs):
+    if name not in native.existing_rules():
+        repo_rule(name = name, **kwargs)

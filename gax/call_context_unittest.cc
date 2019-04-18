@@ -32,8 +32,7 @@ TEST(CallContext, Basic) {
   gax::MethodInfo mi{"TestMethod", MethodInfo::RpcType::CLIENT_STREAMING,
                      MethodInfo::Idempotency::IDEMPOTENT};
   gax::CallContext ctx(mi);
-  EXPECT_EQ(ctx.Deadline(),
-            std::chrono::time_point<std::chrono::system_clock>::max());
+  EXPECT_EQ(ctx.Deadline(), std::chrono::system_clock::time_point::max());
 
   auto info = ctx.Info();
   EXPECT_EQ(std::string(info.rpc_name), "TestMethod");

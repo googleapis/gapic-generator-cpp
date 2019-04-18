@@ -14,12 +14,10 @@
 #ifndef GAPIC_GENERATOR_CPP_GENERATOR_GAPIC_GENERATOR_H_
 #define GAPIC_GENERATOR_CPP_GENERATOR_GAPIC_GENERATOR_H_
 
-#include <memory>
-#include <sstream>
 #include <string>
 
-#include "src/google/protobuf/compiler/code_generator.h"
-#include "src/google/protobuf/descriptor.h"
+#include <google/protobuf/compiler/code_generator.h>
+#include <google/protobuf/descriptor.h>
 
 namespace google {
 namespace api {

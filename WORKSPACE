@@ -34,6 +34,7 @@ grpc_deps()
 
 # WARNING: The java and go segments below are a hack to get
 # C++ operations proto types to build.
+# Tracked by https://github.com/googleapis/gapic-generator-cpp/issues/35
 
 ##############################################################################
 # Java

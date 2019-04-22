@@ -12,18 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "gax/operations_stub.h"
 #include "google/longrunning/operations.pb.h"
-
-#include "call_context.h"
-#include "operations_stub.h"
-#include "status.h"
+#include "gax/call_context.h"
+#include "gax/status.h"
 
 namespace google {
 namespace gax {
 
-constexpr MethodInfo OperationsStub::get_operation_info_;
-constexpr MethodInfo OperationsStub::delete_operation_info_;
-constexpr MethodInfo OperationsStub::cancel_operation_info_;
+constexpr MethodInfo OperationsStub::get_operation_info;
+constexpr MethodInfo OperationsStub::delete_operation_info;
+constexpr MethodInfo OperationsStub::cancel_operation_info;
 
 OperationsStub::~OperationsStub() {}
 

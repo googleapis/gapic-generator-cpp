@@ -16,9 +16,8 @@
 #define GAPIC_GENERATOR_CPP_GAX_OPERATIONS_STUB_H_
 
 #include "google/longrunning/operations.pb.h"
-
-#include "call_context.h"
-#include "status.h"
+#include "gax/call_context.h"
+#include "gax/status.h"
 
 namespace google {
 namespace gax {
@@ -42,13 +41,13 @@ class OperationsStub {
       google::longrunning::CancelOperationRequest const& request,
       google::protobuf::Empty* response);
 
-  static constexpr MethodInfo get_operation_info_ = {
+  static constexpr MethodInfo get_operation_info = {
       "GetOperation", MethodInfo::RpcType::NORMAL_RPC,
       MethodInfo::Idempotency::IDEMPOTENT};
-  static constexpr MethodInfo delete_operation_info_ = {
+  static constexpr MethodInfo delete_operation_info = {
       "DeleteOperation", MethodInfo::RpcType::NORMAL_RPC,
       MethodInfo::Idempotency::IDEMPOTENT};
-  static constexpr MethodInfo cancel_operation_info_ = {
+  static constexpr MethodInfo cancel_operation_info = {
       "CancelOperation", MethodInfo::RpcType::NORMAL_RPC,
       MethodInfo::Idempotency::IDEMPOTENT};
 };

@@ -12,12 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "operation.h"
-#include "status.h"
-
+#include "gax/operation.h"
 #include "google/longrunning/operations.pb.h"
 #include "googletest/include/gtest/gtest.h"
-
+#include "gax/status.h"
 #include <memory>
 #include <string>
 #include <type_traits>
@@ -34,7 +32,7 @@ class DummyOperationsStub : public gax::OperationsStub {
       google::longrunning::GetOperationRequest const& request,
       google::longrunning::Operation* response) override {
     auto info = context.Info();
-    auto get_info = OperationsStub::get_operation_info_;
+    auto get_info = OperationsStub::get_operation_info;
     EXPECT_EQ(std::string(info.rpc_name), std::string(get_info.rpc_name));
     EXPECT_EQ(info.rpc_type, get_info.rpc_type);
     EXPECT_EQ(info.idempotency, get_info.idempotency);
@@ -50,7 +48,7 @@ class DummyOperationsStub : public gax::OperationsStub {
       google::longrunning::DeleteOperationRequest const& request,
       google::protobuf::Empty* response) override {
     auto info = context.Info();
-    auto delete_info = OperationsStub::delete_operation_info_;
+    auto delete_info = OperationsStub::delete_operation_info;
     EXPECT_EQ(std::string(info.rpc_name), std::string(delete_info.rpc_name));
     EXPECT_EQ(info.rpc_type, delete_info.rpc_type);
     EXPECT_EQ(info.idempotency, delete_info.idempotency);
@@ -66,7 +64,7 @@ class DummyOperationsStub : public gax::OperationsStub {
       google::longrunning::CancelOperationRequest const& request,
       google::protobuf::Empty* response) override {
     auto info = context.Info();
-    auto cancel_info = OperationsStub::cancel_operation_info_;
+    auto cancel_info = OperationsStub::cancel_operation_info;
     EXPECT_EQ(std::string(info.rpc_name), std::string(cancel_info.rpc_name));
     EXPECT_EQ(info.rpc_type, cancel_info.rpc_type);
     EXPECT_EQ(info.idempotency, cancel_info.idempotency);
@@ -92,21 +90,31 @@ bool DummyOperationsStub::has_gotten;
 bool DummyOperationsStub::has_deleted;
 bool DummyOperationsStub::has_canceled;
 
-static_assert(!std::is_default_constructible<gax::Operation<int, int>>::value,
-              "Operation should not be default-constructible.");
-static_assert(!std::is_copy_constructible<gax::Operation<int, int>>::value,
-              "Operation should not be copy-constructible.");
-static_assert(std::is_move_constructible<gax::Operation<int, int>>::value,
-              "Operation should be move-constructible.");
+static_assert(
+    !std::is_default_constructible<
+        gax::Operation<google::longrunning::GetOperationRequest,
+                       google::longrunning::GetOperationRequest>>::value,
+    "Operation should not be default-constructible.");
+static_assert(
+    !std::is_copy_constructible<
+        gax::Operation<google::longrunning::GetOperationRequest,
+                       google::longrunning::GetOperationRequest>>::value,
+    "Operation should not be copy-constructible.");
+static_assert(
+    std::is_move_constructible<
+        gax::Operation<google::longrunning::GetOperationRequest,
+                       google::longrunning::GetOperationRequest>>::value,
+    "Operation should be move-constructible.");
 
 // Using GetOperationRequest as the Result and Metadata types to prevent
 // dependencies on additional proto libraries.
 TEST(Operation, Basic) {
   google::longrunning::Operation lro;
   lro.set_name("test");
-  gax::Operation<int, int> op(
-      std::shared_ptr<gax::OperationsStub>(new DummyOperationsStub()),
-      std::move(lro));
+  gax::Operation<google::longrunning::GetOperationRequest,
+                 google::longrunning::GetOperationRequest>
+      op(std::shared_ptr<gax::OperationsStub>(new DummyOperationsStub()),
+         std::move(lro));
 
   EXPECT_EQ(op.Name(), "test");
   EXPECT_EQ(DummyOperationsStub::has_deleted, false);
@@ -127,9 +135,10 @@ TEST(Operation, Update) {
   google::longrunning::Operation lro;
   lro.set_name("test");
 
-  gax::Operation<int, google::longrunning::GetOperationRequest> op(
-      std::shared_ptr<gax::OperationsStub>(new DummyOperationsStub()),
-      std::move(lro));
+  gax::Operation<google::longrunning::GetOperationRequest,
+                 google::longrunning::GetOperationRequest>
+      op(std::shared_ptr<gax::OperationsStub>(new DummyOperationsStub()),
+         std::move(lro));
 
   EXPECT_EQ(DummyOperationsStub::has_gotten, false);
   op.Update();
@@ -199,9 +208,10 @@ TEST(Operation, Metadata) {
   google::longrunning::Operation lro;
   lro.set_name("test");
 
-  gax::Operation<int, google::longrunning::GetOperationRequest> op(
-      std::shared_ptr<gax::OperationsStub>(new DummyOperationsStub()),
-      std::move(lro));
+  gax::Operation<google::longrunning::GetOperationRequest,
+                 google::longrunning::GetOperationRequest>
+      op(std::shared_ptr<gax::OperationsStub>(new DummyOperationsStub()),
+         std::move(lro));
 
   google::longrunning::GetOperationRequest dummy;
   dummy.set_name("dummy-metadata");

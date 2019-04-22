@@ -75,8 +75,7 @@ class Operation final {
       google::longrunning::GetOperationRequest request;
       request.set_name(op_.name());
       gax::CallContext context(OperationsStub::get_operation_info_);
-      gax::Status result = stub_->GetOperation(context, request, &op_);
-      return result;
+      return stub_->GetOperation(context, request, &op_);
     } else if (op_.has_error()) {
       return gax::Status{static_cast<gax::StatusCode>(op_.error().code()),
                          op_.error().message()};

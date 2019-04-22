@@ -95,7 +95,7 @@ bool DummyOperationsStub::has_canceled;
 static_assert(!std::is_default_constructible<gax::Operation<int, int>>::value,
               "Operation should not be default-constructible.");
 static_assert(!std::is_copy_constructible<gax::Operation<int, int>>::value,
-              "Operation should be move-constructible.");
+              "Operation should not be copy-constructible.");
 static_assert(std::is_move_constructible<gax::Operation<int, int>>::value,
               "Operation should be move-constructible.");
 

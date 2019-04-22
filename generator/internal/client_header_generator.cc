@@ -114,13 +114,14 @@ bool GenerateClientHeader(pb::ServiceDescriptor const* service,
            "  std::shared_ptr<$stub_class_name$> stub_;\n"
            "  std::unique_ptr<google::gax::RetryPolicy> retry_policy_;\n"
            "  std::unique_ptr<google::gax::BackoffPolicy> backoff_policy_;\n"
-           "\n");
+           "\n"
+           "\n"
+           "  // Note: conservatively assume no methods are idempotent.\n"
+           "  //       This will eventually be set from annotations.\n");
 
   DataModel::PrintMethods(
       service, vars, p,
-      "  // Note: conservatively assume no methods are idempotent.\n"
-      "  //       This will eventually be set from annotations.\n"
-      "  static constexpr google::gax::MethodInfo $method_name$_info_ = "
+      "  static constexpr google::gax::MethodInfo $method_name_snake$_info = "
       "{\"$method_name$\", google::gax::MethodInfo::RpcType::NORMAL_RPC};\n",
       NoStreamingPredicate);
 

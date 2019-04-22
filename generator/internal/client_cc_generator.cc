@@ -73,7 +73,7 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
       "$request_object$ const& request) {\n"
       "  // TODO: actual useful work, e.g. retry, backoff, metadata, "
       "pagination, etc.\n"
-      "  google::gax::CallContext context($method_name$_info_);\n"
+      "  google::gax::CallContext context($method_name_snake$_info);\n"
       "  $response_object$ response;\n"
       "  google::gax::Status status = stub_->$method_name$(context, request, "
       "&response);\n"
@@ -88,7 +88,7 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
 
   DataModel::PrintMethods(
       service, vars, p,
-      "constexpr MethodInfo $class_name$::$method_name$_info_;\n",
+      "constexpr MethodInfo $class_name$::$method_name_snake$_info;\n",
       NoStreamingPredicate);
 
   for (auto nspace : namespaces) {

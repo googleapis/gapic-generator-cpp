@@ -66,24 +66,15 @@ class LibraryService final {
   std::unique_ptr<google::gax::RetryPolicy> retry_policy_;
   std::unique_ptr<google::gax::BackoffPolicy> backoff_policy_;
 
+
   // Note: conservatively assume no methods are idempotent.
   //       This will eventually be set from annotations.
-  static constexpr google::gax::MethodInfo CreateBook_info_ = {"CreateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  // Note: conservatively assume no methods are idempotent.
-  //       This will eventually be set from annotations.
-  static constexpr google::gax::MethodInfo GetBook_info_ = {"GetBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  // Note: conservatively assume no methods are idempotent.
-  //       This will eventually be set from annotations.
-  static constexpr google::gax::MethodInfo ListBooks_info_ = {"ListBooks", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  // Note: conservatively assume no methods are idempotent.
-  //       This will eventually be set from annotations.
-  static constexpr google::gax::MethodInfo DeleteBook_info_ = {"DeleteBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  // Note: conservatively assume no methods are idempotent.
-  //       This will eventually be set from annotations.
-  static constexpr google::gax::MethodInfo UpdateBook_info_ = {"UpdateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  // Note: conservatively assume no methods are idempotent.
-  //       This will eventually be set from annotations.
-  static constexpr google::gax::MethodInfo GetBigBook_info_ = {"GetBigBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  static constexpr google::gax::MethodInfo create_book_info = {"CreateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  static constexpr google::gax::MethodInfo get_book_info = {"GetBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  static constexpr google::gax::MethodInfo list_books_info = {"ListBooks", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  static constexpr google::gax::MethodInfo delete_book_info = {"DeleteBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  static constexpr google::gax::MethodInfo update_book_info = {"UpdateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  static constexpr google::gax::MethodInfo get_big_book_info = {"GetBigBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
 }; // LibraryService
 
 #endif // LibraryService_H_

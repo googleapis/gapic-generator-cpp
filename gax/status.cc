@@ -69,5 +69,9 @@ std::ostream& operator<<(std::ostream& os, Status const& rhs) {
   return os << rhs.message() << " [" << rhs.code() << "]";
 }
 
+Status GrpcStatusToGaxStatus(grpc::Status s) {
+  return Status(static_cast<StatusCode>(s.error_code()), s.error_message());
+}
+
 }  // namespace gax
 }  // namespace google

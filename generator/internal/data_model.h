@@ -56,6 +56,7 @@ struct DataModel {
   static void SetMethodVars(pb::MethodDescriptor const* method,
                             std::map<std::string, std::string>& vars) {
     vars["method_name"] = method->name();
+    vars["method_name_snake"] = CamelCaseToSnakeCase(method->name());
     vars["request_object"] =
         internal::ProtoNameToCppName(method->input_type()->full_name());
     vars["response_object"] =

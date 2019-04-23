@@ -15,6 +15,8 @@
 #ifndef GAPIC_GENERATOR_CPP_GAX_STATUS_H_
 #define GAPIC_GENERATOR_CPP_GAX_STATUS_H_
 
+#include "grpcpp/impl/codegen/status.h"
+
 #include <ostream>
 #include <string>
 
@@ -89,6 +91,8 @@ class Status {
 std::string StatusCodeToString(StatusCode code);
 std::ostream& operator<<(std::ostream& os, StatusCode code);
 std::ostream& operator<<(std::ostream& os, Status const& rhs);
+
+Status GrpcStatusToGaxStatus(grpc::Status s);
 
 }  // namespace gax
 }  // namespace google

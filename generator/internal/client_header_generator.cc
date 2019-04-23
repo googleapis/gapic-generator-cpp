@@ -89,7 +89,7 @@ bool GenerateClientHeader(pb::ServiceDescriptor const* service,
            "\n");
 
   DataModel::PrintMethods(service, vars, p,
-                          "  gax::StatusOr<$response_object$> \n"
+                          "  google::gax::StatusOr<$response_object$> \n"
                           "  $method_name$($request_object$ const& request);\n"
                           "\n",
                           NoStreamingPredicate);
@@ -97,10 +97,10 @@ bool GenerateClientHeader(pb::ServiceDescriptor const* service,
   p->Print(vars,
            "\n"
            " private:\n"
-           "  void ChangePolicy(gax::RetryPolicy const& policy) {\n"
+           "  void ChangePolicy(google::gax::RetryPolicy const& policy) {\n"
            "    retry_policy_ = policy.clone();\n"
            "  }\n"
-           "  void ChangePolicy(gax::BackoffPolicy const& policy) {\n"
+           "  void ChangePolicy(google::gax::BackoffPolicy const& policy) {\n"
            "    backoff_policy_ = policy.clone();\n"
            "  }\n"
            "  void ChangePolicies() {}\n"
@@ -112,8 +112,19 @@ bool GenerateClientHeader(pb::ServiceDescriptor const* service,
            "  }\n"
            "\n"
            "  std::shared_ptr<$stub_class_name$> stub_;\n"
-           "  std::unique_ptr<gax::RetryPolicy> retry_policy_;\n"
-           "  std::unique_ptr<gax::BackoffPolicy> backoff_policy_;\n"
+           "  std::unique_ptr<google::gax::RetryPolicy> retry_policy_;\n"
+           "  std::unique_ptr<google::gax::BackoffPolicy> backoff_policy_;\n"
+           "\n"
+           "  // Note: conservatively assume no methods are idempotent.\n"
+           "  //       This will eventually be set from annotations.\n");
+
+  DataModel::PrintMethods(
+      service, vars, p,
+      "  static constexpr google::gax::MethodInfo $method_name_snake$_info = "
+      "{\"$method_name$\", google::gax::MethodInfo::RpcType::NORMAL_RPC};\n",
+      NoStreamingPredicate);
+
+  p->Print(vars,
            "}; // $class_name$\n"
            "\n");
 

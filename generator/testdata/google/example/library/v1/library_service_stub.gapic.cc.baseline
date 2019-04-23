@@ -3,60 +3,63 @@
 // source: generator/testdata/library.proto
 
 #include "library_service_stub.gapic.h"
+#include "gax/call_context.h"
+#include "gax/Status.h"
+#include "grpcpp/client_context.h"
 #include "grpcpp/channel.h"
 #include "grpcpp/create_channel.h"
 
-grpc::Status
+google::gax::Status
 LibraryServiceStub::CreateBook(
-  grpc::ClientContext*,
+  google::gax::CallContext&,
   ::google::example::library::v1::CreateBookRequest const&,
   ::google::example::library::v1::Book*) {
-  return grpc::Status(grpc::StatusCode::kUnimplemented,
+  return google::gax::Status(google::gax::StatusCode::kUnimplemented,
     "CreateBook not implemented");
 }
 
-grpc::Status
+google::gax::Status
 LibraryServiceStub::GetBook(
-  grpc::ClientContext*,
+  google::gax::CallContext&,
   ::google::example::library::v1::GetBookRequest const&,
   ::google::example::library::v1::Book*) {
-  return grpc::Status(grpc::StatusCode::kUnimplemented,
+  return google::gax::Status(google::gax::StatusCode::kUnimplemented,
     "GetBook not implemented");
 }
 
-grpc::Status
+google::gax::Status
 LibraryServiceStub::ListBooks(
-  grpc::ClientContext*,
+  google::gax::CallContext&,
   ::google::example::library::v1::ListBooksRequest const&,
   ::google::example::library::v1::ListBooksResponse*) {
-  return grpc::Status(grpc::StatusCode::kUnimplemented,
+  return google::gax::Status(google::gax::StatusCode::kUnimplemented,
     "ListBooks not implemented");
 }
 
-grpc::Status
+google::gax::Status
 LibraryServiceStub::DeleteBook(
-  grpc::ClientContext*,
+  google::gax::CallContext&,
   ::google::example::library::v1::DeleteBookRequest const&,
   ::google::example::library::v1::Empty*) {
-  return grpc::Status(grpc::StatusCode::kUnimplemented,
+  return google::gax::Status(google::gax::StatusCode::kUnimplemented,
     "DeleteBook not implemented");
 }
 
-grpc::Status
+google::gax::Status
 LibraryServiceStub::UpdateBook(
-  grpc::ClientContext*,
+  google::gax::CallContext&,
   ::google::example::library::v1::UpdateBookRequest const&,
   ::google::example::library::v1::Book*) {
-  return grpc::Status(grpc::StatusCode::kUnimplemented,
+  return google::gax::Status(google::gax::StatusCode::kUnimplemented,
     "UpdateBook not implemented");
 }
 
-grpc::Status
+google::gax::Status
 LibraryServiceStub::GetBigBook(
-  grpc::ClientContext*,
+  google::gax::CallContext&,
   ::google::example::library::v1::GetBookRequest const&,
   ::google::example::library::v1::Book*) {
-  return grpc::Status(grpc::StatusCode::kUnimplemented,
+  return google::gax::Status(google::gax::StatusCode::kUnimplemented,
     "GetBigBook not implemented");
 }
 
@@ -71,46 +74,58 @@ class DefaultLibraryServiceStub : public LibraryServiceStub {
   DefaultLibraryServiceStub(DefaultLibraryServiceStub const&) = delete;
   DefaultLibraryServiceStub& operator=(DefaultLibraryServiceStub const&) = delete;
 
-  grpc::Status
-  CreateBook(grpc::ClientContext* context,
+  google::gax::Status
+  CreateBook(google::gax::CallContext& context,
     ::google::example::library::v1::CreateBookRequest const& request,
     ::google::example::library::v1::Book* response) override {
-    return grpc_stub_->CreateBook(context, request, response);
+    grpc::ClientContext grpc_ctx;
+    context->PrepareGrpcContext(&grpc_context);
+    return google::gax::GrpcStatusToGaxStatus(grpc_stub_->CreateBook(&grpc_ctx, request, response));
   }
 
-  grpc::Status
-  GetBook(grpc::ClientContext* context,
+  google::gax::Status
+  GetBook(google::gax::CallContext& context,
     ::google::example::library::v1::GetBookRequest const& request,
     ::google::example::library::v1::Book* response) override {
-    return grpc_stub_->GetBook(context, request, response);
+    grpc::ClientContext grpc_ctx;
+    context->PrepareGrpcContext(&grpc_context);
+    return google::gax::GrpcStatusToGaxStatus(grpc_stub_->GetBook(&grpc_ctx, request, response));
   }
 
-  grpc::Status
-  ListBooks(grpc::ClientContext* context,
+  google::gax::Status
+  ListBooks(google::gax::CallContext& context,
     ::google::example::library::v1::ListBooksRequest const& request,
     ::google::example::library::v1::ListBooksResponse* response) override {
-    return grpc_stub_->ListBooks(context, request, response);
+    grpc::ClientContext grpc_ctx;
+    context->PrepareGrpcContext(&grpc_context);
+    return google::gax::GrpcStatusToGaxStatus(grpc_stub_->ListBooks(&grpc_ctx, request, response));
   }
 
-  grpc::Status
-  DeleteBook(grpc::ClientContext* context,
+  google::gax::Status
+  DeleteBook(google::gax::CallContext& context,
     ::google::example::library::v1::DeleteBookRequest const& request,
     ::google::example::library::v1::Empty* response) override {
-    return grpc_stub_->DeleteBook(context, request, response);
+    grpc::ClientContext grpc_ctx;
+    context->PrepareGrpcContext(&grpc_context);
+    return google::gax::GrpcStatusToGaxStatus(grpc_stub_->DeleteBook(&grpc_ctx, request, response));
   }
 
-  grpc::Status
-  UpdateBook(grpc::ClientContext* context,
+  google::gax::Status
+  UpdateBook(google::gax::CallContext& context,
     ::google::example::library::v1::UpdateBookRequest const& request,
     ::google::example::library::v1::Book* response) override {
-    return grpc_stub_->UpdateBook(context, request, response);
+    grpc::ClientContext grpc_ctx;
+    context->PrepareGrpcContext(&grpc_context);
+    return google::gax::GrpcStatusToGaxStatus(grpc_stub_->UpdateBook(&grpc_ctx, request, response));
   }
 
-  grpc::Status
-  GetBigBook(grpc::ClientContext* context,
+  google::gax::Status
+  GetBigBook(google::gax::CallContext& context,
     ::google::example::library::v1::GetBookRequest const& request,
     ::google::example::library::v1::Book* response) override {
-    return grpc_stub_->GetBigBook(context, request, response);
+    grpc::ClientContext grpc_ctx;
+    context->PrepareGrpcContext(&grpc_context);
+    return google::gax::GrpcStatusToGaxStatus(grpc_stub_->GetBigBook(&grpc_ctx, request, response));
   }
 
  private:

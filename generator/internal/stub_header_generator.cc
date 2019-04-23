@@ -16,6 +16,7 @@
 #include <string>
 
 #include "data_model.h"
+#include "gapic_utils.h"
 #include "printer.h"
 #include "stub_header_generator.h"
 #include <google/protobuf/descriptor.h>
@@ -29,10 +30,10 @@ namespace internal {
 
 std::vector<std::string> BuildClientStubHeaderIncludes(
     pb::ServiceDescriptor const* service) {
-  return {
-      LocalInclude(absl::StrCat(service->name(), ".pb.h")),
-      LocalInclude("grpcpp/client_context.h"), LocalInclude("grpc/status.h"),
-  };
+  return {LocalInclude(absl::StrCat(service->name(), ".pb.h")),
+          LocalInclude("gax/call_context.h"), LocalInclude("gax/status.h"),
+          LocalInclude("grpcpp/security/credentials.h"),
+          SystemInclude("memory")};
 }
 
 std::vector<std::string> BuildClientStubHeaderNamespaces(
@@ -69,13 +70,13 @@ bool GenerateClientStubHeader(pb::ServiceDescriptor const* service,
            "class $stub_class_name$ {\n"
            " public:\n");
 
-  DataModel::PrintMethods(
-      service, vars, p,
-      "  virtual grpc::Status $method_name$(grpc::ClientContext* context,\n"
-      "    $request_object$ const& request,\n"
-      "    $response_object$* response);\n"
-      "\n",
-      NoStreamingPredicate);
+  DataModel::PrintMethods(service, vars, p,
+                          "  virtual google::gax::Status $method_name$("
+                          "google::gax::CallContext& context,\n"
+                          "    $request_object$ const& request,\n"
+                          "    $response_object$* response);\n"
+                          "\n",
+                          NoStreamingPredicate);
 
   p->Print(vars,
            "  virtual ~$stub_class_name$() = 0;\n"

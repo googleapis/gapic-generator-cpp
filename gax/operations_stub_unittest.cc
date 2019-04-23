@@ -16,6 +16,7 @@
 #include "google/longrunning/operations.pb.h"
 #include "googletest/include/gtest/gtest.h"
 #include "gax/call_context.h"
+#include "gax/operations_client.h"
 #include "gax/status.h"
 
 namespace {
@@ -31,19 +32,19 @@ TEST(OperationsStub, Basic) {
   DummyOperationsStub stub{};
 
   longrunning::GetOperationRequest getOpReq;
-  gax::CallContext getCtx(gax::OperationsStub::get_operation_info);
+  gax::CallContext getCtx(gax::OperationsClient::get_operation_info);
   EXPECT_EQ(stub.GetOperation(getCtx, getOpReq, nullptr),
             gax::Status(gax::StatusCode::kUnimplemented,
                         "GetOperation not implemented"));
 
   longrunning::DeleteOperationRequest delOpReq;
-  gax::CallContext delCtx(gax::OperationsStub::delete_operation_info);
+  gax::CallContext delCtx(gax::OperationsClient::delete_operation_info);
   EXPECT_EQ(stub.DeleteOperation(delCtx, delOpReq, nullptr),
             gax::Status(gax::StatusCode::kUnimplemented,
                         "DeleteOperation not implemented"));
 
   longrunning::CancelOperationRequest canOpReq;
-  gax::CallContext cancelCtx(gax::OperationsStub::cancel_operation_info);
+  gax::CallContext cancelCtx(gax::OperationsClient::cancel_operation_info);
   EXPECT_EQ(stub.CancelOperation(cancelCtx, canOpReq, nullptr),
             gax::Status(gax::StatusCode::kUnimplemented,
                         "CancelOperation not implemented"));

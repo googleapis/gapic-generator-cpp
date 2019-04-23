@@ -20,10 +20,6 @@
 namespace google {
 namespace gax {
 
-constexpr MethodInfo OperationsStub::get_operation_info;
-constexpr MethodInfo OperationsStub::delete_operation_info;
-constexpr MethodInfo OperationsStub::cancel_operation_info;
-
 OperationsStub::~OperationsStub() {}
 
 gax::Status OperationsStub::GetOperation(
@@ -48,5 +44,4 @@ gax::Status OperationsStub::CancelOperation(
 }
 
 }  // namespace gax
-
 }  // namespace google

@@ -40,16 +40,6 @@ class OperationsStub {
       gax::CallContext& context,
       google::longrunning::CancelOperationRequest const& request,
       google::protobuf::Empty* response);
-
-  static constexpr MethodInfo get_operation_info = {
-      "GetOperation", MethodInfo::RpcType::NORMAL_RPC,
-      MethodInfo::Idempotency::IDEMPOTENT};
-  static constexpr MethodInfo delete_operation_info = {
-      "DeleteOperation", MethodInfo::RpcType::NORMAL_RPC,
-      MethodInfo::Idempotency::IDEMPOTENT};
-  static constexpr MethodInfo cancel_operation_info = {
-      "CancelOperation", MethodInfo::RpcType::NORMAL_RPC,
-      MethodInfo::Idempotency::IDEMPOTENT};
 };
 
 }  // namespace gax

@@ -17,11 +17,9 @@
 
 #include "google/longrunning/operations.pb.h"
 #include "gax/call_context.h"
-#include "gax/internal/gtest_prod.h"
 #include "gax/operations_stub.h"
 #include "gax/status.h"
 #include "gax/status_or.h"
-#include <iostream>
 #include <memory>
 
 namespace google {
@@ -43,14 +41,15 @@ namespace gax {
  *
  * @code
  * gax::StatusOr<gax::Operation<Foo, FooMeta>> res =
- * GetBigFoo(getBigFooRequest);
+ * client.GetBigFoo(getBigFooRequest);
  * if(!res) {
  *   ...
  * }
  *
+ * operationsClient = client.OperationsClient();
  * Operation<Foo, FooMeta> op = *std::move(res);
  * while(!op.Done()) {
- *   gax::Status stat = op.Update();
+ *   gax::Status stat = operationsClient.Update(op);
  *   if(isPermanentFailure(stat)) {
  *     ...
  *   }
@@ -76,11 +75,7 @@ class Operation final {
  public:
   // Note: the constructor is intended to be used by GAPIC generated code, not
   // users.
-  Operation(std::shared_ptr<gax::OperationsStub> stub,
-            google::longrunning::Operation op)
-      : stub_(std::move(stub)), op_(std::move(op)) {}
-  Operation() = delete;
-  Operation(Operation&& rhs) = default;
+  Operation(google::longrunning::Operation op) : op_(std::move(op)) {}
 
   /**
    * @name Return the service-provided name of the underlying
@@ -128,65 +123,12 @@ class Operation final {
   }
 
   /**
-   * @name Ping the server and check if the operation has finished. Updates
-   * metadata.
-   *
-   * @return a status indicating whether the update was successful.
-   */
-  gax::Status Update() {
-    if (!Done()) {
-      google::longrunning::GetOperationRequest request;
-      request.set_name(op_.name());
-      gax::CallContext context(OperationsStub::get_operation_info);
-      return stub_->GetOperation(context, request, &op_);
-    } else if (op_.has_error()) {
-      return gax::Status{static_cast<gax::StatusCode>(op_.error().code()),
-                         op_.error().message()};
-    } else {
-      return gax::Status{};
-    }
-  }
-
-  /**
-   * @name Inform the service that the client is no longer interested in the
-   * result.
-   *
-   * @return a status indicating whether the rpc was successful.
-   */
-  gax::Status Delete() {
-    google::longrunning::DeleteOperationRequest request;
-    google::protobuf::Empty empty;
-    request.set_name(op_.name());
-    gax::CallContext context(OperationsStub::delete_operation_info);
-    return stub_->DeleteOperation(context, request, &empty);
-  }
-
-  /**
-   * @name Best-effort cancellation attempt of the operation.
-   *
-   * @return a status indicating whether the rpc was successful.
-   */
-  gax::Status Cancel() {
-    google::longrunning::CancelOperationRequest request;
-    google::protobuf::Empty empty;
-    request.set_name(op_.name());
-    gax::CallContext context(OperationsStub::cancel_operation_info);
-    return stub_->CancelOperation(context, request, &empty);
-  }
-
-  /**
    * @name Indicate whether the operation has completed. If true, the Operation
    * now contains a result or an error status.
    */
   bool Done() const { return op_.done(); }
 
  private:
-  FRIEND_TEST(Operation, Basic);
-  FRIEND_TEST(Operation, Update);
-  FRIEND_TEST(Operation, Result);
-  FRIEND_TEST(Operation, Metadata);
-
-  std::shared_ptr<gax::OperationsStub> stub_;
   google::longrunning::Operation op_;
 };
 

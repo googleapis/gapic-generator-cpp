@@ -14,7 +14,6 @@
 
 workspace(name = "com_google_gapic_generator_cpp")
 
-# WARNING: The http_archive load is a hack to build operation C++ proto types
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load(
     "//gax:repositories.bzl",

@@ -115,7 +115,6 @@ bool GenerateClientHeader(pb::ServiceDescriptor const* service,
            "  std::unique_ptr<google::gax::RetryPolicy> retry_policy_;\n"
            "  std::unique_ptr<google::gax::BackoffPolicy> backoff_policy_;\n"
            "\n"
-           "\n"
            "  // Note: conservatively assume no methods are idempotent.\n"
            "  //       This will eventually be set from annotations.\n");
 

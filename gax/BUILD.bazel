@@ -50,13 +50,13 @@ cc_library(
 )
 
 gax_unit_tests = [
-    "backoff_policy_unittest.cc",
-    "call_context_unittest.cc",
-    "operation_unittest.cc",
-    "operations_stub_unittest.cc",
-    "retry_policy_unittest.cc",
-    "status_unittest.cc",
-    "status_or_unittest.cc",
+    "backoff_policy_test.cc",
+    "call_context_test.cc",
+    "operation_test.cc",
+    "operations_stub_test.cc",
+    "retry_policy_test.cc",
+    "status_test.cc",
+    "status_or_test.cc",
 ]
 
 [cc_test(

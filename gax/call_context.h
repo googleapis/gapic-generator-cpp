@@ -17,10 +17,13 @@
 
 #include "grpcpp/client_context.h"
 #include "internal/gtest_prod.h"
+#include "gax/backoff_policy.h"
+#include "gax/retry_policy.h"
 
 #include <chrono>
 #include <functional>
 #include <map>
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -157,9 +160,21 @@ class CallContext {
    */
   MethodInfo Info() const;
 
+  /**
+   * Setter for call-specific retry policy.
+   */
+  void SetRetryPolicy(gax::RetryPolicy const& retry_policy);
+
+  /**
+   * Setter for call-specific backoff policy.
+   */
+  void SetBackoffPolicy(gax::BackoffPolicy const& backoff_policy);
+
  private:
   FRIEND_TEST(CallContext, Basic);
   std::chrono::system_clock::time_point deadline_;
+  std::unique_ptr<gax::RetryPolicy const> retry_policy_;
+  std::unique_ptr<gax::BackoffPolicy const> backoff_policy_;
   std::vector<GrpcContextPolicyFunc> context_policies_;
   std::multimap<std::string, std::string const> metadata_;
   MethodInfo const method_info_;

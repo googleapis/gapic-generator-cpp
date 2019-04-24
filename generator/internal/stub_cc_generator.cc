@@ -32,7 +32,8 @@ std::vector<std::string> BuildClientStubCCIncludes(
           LocalInclude("gax/call_context.h"), LocalInclude("gax/Status.h"),
           LocalInclude("grpcpp/client_context.h"),
           LocalInclude("grpcpp/channel.h"),
-          LocalInclude("grpcpp/create_channel.h")};
+          LocalInclude("grpcpp/create_channel.h"), SystemInclude("chrono"),
+          SystemInclude("thread")};
 }
 
 std::vector<std::string> BuildClientStubCCNamespaces(
@@ -61,6 +62,7 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
 
   p->Print("\n");
 
+  // Abstract stub method definitions
   DataModel::PrintMethods(
       service, vars, p,
       "google::gax::Status\n"
@@ -79,6 +81,7 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
            "\n"
            "\n");
 
+  // gRPC aware stub class declaration and method definition
   p->Print(vars,
            "namespace {\n"
            "class Default$stub_class_name$ : public $stub_class_name$ {\n"
@@ -100,7 +103,7 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
       "    $request_object$ const& request,\n"
       "    $response_object$* response) override {\n"
       "    grpc::ClientContext grpc_ctx;\n"
-      "    context->PrepareGrpcContext(&grpc_context);\n"
+      "    context->PrepareGrpcContext(&grpc_ctx);\n"
       "    return google::gax::GrpcStatusToGaxStatus("
       "grpc_stub_->$method_name$(&grpc_ctx, request, response));\n"
       "  }\n"
@@ -111,7 +114,57 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
            " private:\n"
            "  std::unique_ptr<$grpc_stub_fqn$::StubInterface> grpc_stub_;\n"
            "}; // Default$stub_class_name$\n"
-           "\n"
+           "\n");
+
+  // Retrying stub that decorates another stub
+  p->Print(
+      vars,
+      "class Retry$stub_class_name$ : public $stub_class_name$ {\n"
+      " public:\n"
+      "  Retry$stub_class_name$(std::unique_ptr<$stub_class_name$> stub_,\n"
+      "                         gax::RetryPolicy const& retry_policy,\n"
+      "                         gax::BackoffPolicy const& backoff_policy) :\n"
+      "            next_stub_(std::move(stub)),\n"
+      "            retry_policy_(retry_policy.clone()),\n"
+      "            backoff_policy_(backoff_policy.clone()) {}\n"
+      "\n");
+
+  DataModel::PrintMethods(
+      service, vars, p,
+      "  google::gax::Status\n"
+      "  $method_name$(google::gax::CallContext& context,\n"
+      "             $request_object$ const& request,\n"
+      "             $response_object$& response) {\n"
+      "    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : "
+      "retry_policy_)->clone();\n"
+      "    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : "
+      "backoff_policy_)->clone();\n"
+      "    gax::MethodInfo info = ctx.Info();\n"
+      "    while (true) {\n"
+      "      retry_policy->Setup(context);\n"
+      "      gax::Status status = next_stub_->$method_name$(context, request, "
+      "response);\n"
+      "      if (status.IsOk() || !retry_policy->OnFailure(status) ||\n"
+      "          !info.idempotency == "
+      "gax::MethodInfo::Idempotency::IDEMPOTENT) {\n"
+      "        return status;\n"
+      "      }\n"
+      "\n"
+      "      auto delay = backoff_policy->OnCompletion();\n"
+      "      std::this_thread::sleep_for(delay);\n"
+      "    }\n"
+      "  }\n"
+      "\n");
+
+  p->Print(
+      vars,
+      " private:\n"
+      "  std::unique_ptr<$stub_class_name$> next_stub_;\n"
+      "  const std::unique_ptr<gax::RetryPolicy const> retry_policy_;\n"
+      "  const std::unique_ptr<gax::BackoffPolicy const>  backoff_policy_;\n"
+      "}; // Retry$stub_class_name$\n");
+
+  p->Print(vars,
            "} // namespace\n"
            "\n"
            "std::unique_ptr<$stub_class_name$> Create$stub_class_name$() {\n"
@@ -125,8 +178,17 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
            "  auto channel = grpc::CreateChannel(\"$service_endpoint$\",\n"
            "    std::move(creds));\n"
            "  auto grpc_stub = $grpc_stub_fqn$::NewStub(std::move(channel));\n"
-           "  return std::unique_ptr<$stub_class_name$>(new \n"
+           "  auto default_stub = std::unique_ptr<$stub_class_name$>(new \n"
            "    Default$stub_class_name$(std::move(grpc_stub)));\n"
+           "  using ms = std::chrono::milliseconds;\n"
+           "  // Note: these retry and backoff times are dummy stand ins.\n"
+           "  // More appopriate default values will be chosen later.\n"
+           "  return std::unique_ptr<$stub_class_name$>(new "
+           "Retry$stub_class_name$(\n"
+           "                       std::move(default_stub),\n"
+           "                       gax::LimitedDurationRetryPolicy(ms(500)),\n"
+           "                       gax::ExponentialBackoffPolicy(ms(20), "
+           "ms(100))));\n"
            "}\n"
            "\n");
 

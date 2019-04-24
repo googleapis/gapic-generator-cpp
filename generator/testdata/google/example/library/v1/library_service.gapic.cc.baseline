@@ -12,6 +12,12 @@ LibraryService::CreateBook(
 ::google::example::library::v1::CreateBookRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(create_book_info);
+  if (retry_policy_) {
+    context.SetRetryPolicy(*retry_policy_);
+  }
+  if (backoff_policy_) {
+    context.SetBackoffPolicy(*backoff_policy_);
+  }
   ::google::example::library::v1::Book response;
   google::gax::Status status = stub_->CreateBook(context, request, &response);
   if (status.IsOk()) {
@@ -26,6 +32,12 @@ LibraryService::GetBook(
 ::google::example::library::v1::GetBookRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(get_book_info);
+  if (retry_policy_) {
+    context.SetRetryPolicy(*retry_policy_);
+  }
+  if (backoff_policy_) {
+    context.SetBackoffPolicy(*backoff_policy_);
+  }
   ::google::example::library::v1::Book response;
   google::gax::Status status = stub_->GetBook(context, request, &response);
   if (status.IsOk()) {
@@ -40,6 +52,12 @@ LibraryService::ListBooks(
 ::google::example::library::v1::ListBooksRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(list_books_info);
+  if (retry_policy_) {
+    context.SetRetryPolicy(*retry_policy_);
+  }
+  if (backoff_policy_) {
+    context.SetBackoffPolicy(*backoff_policy_);
+  }
   ::google::example::library::v1::ListBooksResponse response;
   google::gax::Status status = stub_->ListBooks(context, request, &response);
   if (status.IsOk()) {
@@ -54,6 +72,12 @@ LibraryService::DeleteBook(
 ::google::example::library::v1::DeleteBookRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(delete_book_info);
+  if (retry_policy_) {
+    context.SetRetryPolicy(*retry_policy_);
+  }
+  if (backoff_policy_) {
+    context.SetBackoffPolicy(*backoff_policy_);
+  }
   ::google::example::library::v1::Empty response;
   google::gax::Status status = stub_->DeleteBook(context, request, &response);
   if (status.IsOk()) {
@@ -68,6 +92,12 @@ LibraryService::UpdateBook(
 ::google::example::library::v1::UpdateBookRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(update_book_info);
+  if (retry_policy_) {
+    context.SetRetryPolicy(*retry_policy_);
+  }
+  if (backoff_policy_) {
+    context.SetBackoffPolicy(*backoff_policy_);
+  }
   ::google::example::library::v1::Book response;
   google::gax::Status status = stub_->UpdateBook(context, request, &response);
   if (status.IsOk()) {
@@ -82,6 +112,12 @@ LibraryService::GetBigBook(
 ::google::example::library::v1::GetBookRequest const& request) {
   // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(get_big_book_info);
+  if (retry_policy_) {
+    context.SetRetryPolicy(*retry_policy_);
+  }
+  if (backoff_policy_) {
+    context.SetBackoffPolicy(*backoff_policy_);
+  }
   ::google::example::library::v1::Book response;
   google::gax::Status status = stub_->GetBigBook(context, request, &response);
   if (status.IsOk()) {

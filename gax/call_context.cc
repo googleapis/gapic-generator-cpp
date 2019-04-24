@@ -45,6 +45,14 @@ void CallContext::AddMetadata(std::string key, std::string val) {
 
 MethodInfo CallContext::Info() const { return method_info_; }
 
+void CallContext::SetRetryPolicy(gax::RetryPolicy const& retry_policy) {
+  retry_policy_ = retry_policy.clone();
+}
+
+void CallContext::SetBackoffPolicy(gax::BackoffPolicy const& backoff_policy) {
+  backoff_policy_ = backoff_policy.clone();
+}
+
 std::chrono::system_clock::time_point CallContext::Deadline() const {
   return deadline_;
 }

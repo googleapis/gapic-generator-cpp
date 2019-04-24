@@ -25,6 +25,9 @@
 namespace google {
 namespace gax {
 
+using TestOperation = gax::Operation<google::longrunning::GetOperationRequest,
+                                     google::longrunning::GetOperationRequest>;
+
 class DummyOperationsStub : public gax::OperationsStub {
  public:
   ~DummyOperationsStub() = default;
@@ -120,31 +123,16 @@ class DummyOperationsStub : public gax::OperationsStub {
   std::string response_str = "response";
 };
 
-static_assert(
-    !std::is_default_constructible<
-        gax::Operation<google::longrunning::GetOperationRequest,
-                       google::longrunning::GetOperationRequest>>::value,
-    "Operation should not be default-constructible.");
-static_assert(
-    std::is_copy_constructible<
-        gax::Operation<google::longrunning::GetOperationRequest,
-                       google::longrunning::GetOperationRequest>>::value,
-    "Operation should be copy-constructible.");
-static_assert(
-    std::is_copy_assignable<
-        gax::Operation<google::longrunning::GetOperationRequest,
-                       google::longrunning::GetOperationRequest>>::value,
-    "Operation should be copy-assignable.");
-static_assert(
-    std::is_move_constructible<
-        gax::Operation<google::longrunning::GetOperationRequest,
-                       google::longrunning::GetOperationRequest>>::value,
-    "Operation should be move-constructible.");
-static_assert(
-    std::is_move_assignable<
-        gax::Operation<google::longrunning::GetOperationRequest,
-                       google::longrunning::GetOperationRequest>>::value,
-    "Operation should be move-assignable.");
+static_assert(!std::is_default_constructible<TestOperation>::value,
+              "Operation should not be default-constructible.");
+static_assert(std::is_copy_constructible<TestOperation>::value,
+              "Operation should be copy-constructible.");
+static_assert(std::is_copy_assignable<TestOperation>::value,
+              "Operation should be copy-assignable.");
+static_assert(std::is_move_constructible<TestOperation>::value,
+              "Operation should be move-constructible.");
+static_assert(std::is_move_assignable<TestOperation>::value,
+              "Operation should be move-assignable.");
 
 // Using GetOperationRequest as the Result and Metadata types to prevent
 // dependencies on additional proto libraries.
@@ -153,9 +141,7 @@ TEST(Operation, Basic) {
   std::shared_ptr<DummyOperationsStub> stub(new DummyOperationsStub());
   gax::OperationsClient client(stub);
   lro.set_name("test");
-  gax::Operation<google::longrunning::GetOperationRequest,
-                 google::longrunning::GetOperationRequest>
-      op(std::move(lro));
+  TestOperation op(std::move(lro));
 
   EXPECT_EQ(op.Name(), "test");
 
@@ -174,9 +160,7 @@ TEST(Operation, Update) {
   gax::OperationsClient client(stub);
   lro.set_name("test");
 
-  gax::Operation<google::longrunning::GetOperationRequest,
-                 google::longrunning::GetOperationRequest>
-      op(std::move(lro));
+  TestOperation op(std::move(lro));
 
   stub->return_ok = false;
   EXPECT_EQ(stub->has_gotten, false);
@@ -213,9 +197,7 @@ TEST(Operation, Result) {
 
   google::longrunning::Operation lro;
   lro.set_name("test");
-  gax::Operation<google::longrunning::GetOperationRequest,
-                 google::longrunning::GetOperationRequest>
-      op(std::move(lro));
+  TestOperation op(std::move(lro));
   auto incomplete_res = op.Result();
   EXPECT_EQ(bool(incomplete_res), false);
   EXPECT_EQ(incomplete_res.status(),
@@ -232,7 +214,7 @@ TEST(Operation, Result) {
                                             "This is an error message"));
 
   lro.set_name("test");
-  op = std::move(lro);
+  op = TestOperation(std::move(lro));
   stub->set_error = false;
   client.Update(op);
   auto success_res = op.Result();
@@ -241,7 +223,7 @@ TEST(Operation, Result) {
 
   lro.set_name("test");
   stub->pack_correctly = false;
-  op = std::move(lro);
+  op = TestOperation(std::move(lro));
   client.Update(op);
   auto bad_result = op.Result();
   EXPECT_EQ(bool(bad_result), false);
@@ -256,9 +238,7 @@ TEST(Operation, Metadata) {
   std::shared_ptr<DummyOperationsStub> stub(new DummyOperationsStub());
   gax::OperationsClient client(stub);
 
-  gax::Operation<google::longrunning::GetOperationRequest,
-                 google::longrunning::GetOperationRequest>
-      op(std::move(lro));
+  TestOperation op(std::move(lro));
 
   client.Update(op);
   google::longrunning::GetOperationRequest metadata = op.Metadata();

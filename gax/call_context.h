@@ -135,7 +135,7 @@ class CallContext {
   void PrepareGrpcContext(grpc::ClientContext* context);
 
   /**
-   * @name Register application-specific metadata.
+   * @brief Register application-specific metadata.
    *
    * @param key the metadata key.
    * @param val the metadata value.
@@ -143,17 +143,17 @@ class CallContext {
   void AddMetadata(std::string key, std::string val);
 
   /**
-   * @name Set a deadline for the rpc.
+   * @brief Set a deadline for the rpc.
    */
   void SetDeadline(std::chrono::system_clock::time_point deadline);
 
   /**
-   * @name Accessor for configured rpc deadline.
+   * @brief Accessor for configured rpc deadline.
    */
   std::chrono::system_clock::time_point Deadline() const;
 
   /**
-   * @name Accessor for method info.
+   * @brief Accessor for method info.
    */
   MethodInfo Info() const;
 

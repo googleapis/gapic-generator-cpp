@@ -139,7 +139,7 @@ class StatusOr final {
   }
 
   /**
-   * @name Status accessors.
+   * @brief Status accessors.
    *
    * @return All these member functions return the (properly ref and
    *     const-qualified) status. Iff the object contains a value then
@@ -151,7 +151,7 @@ class StatusOr final {
   explicit inline operator bool() const { return ok(); }
 
   /**
-   * @name Deference operators.
+   * @brief Deference operators.
    *
    * @warning Using these operators when `ok() == false` results in undefined
    *     behavior.
@@ -164,7 +164,7 @@ class StatusOr final {
   T&& operator*() && { return std::move(value_); }
 
   /**
-   * @name Member access operators.
+   * @brief Member access operators.
    *
    * @warning Using these operators when `ok() == false` results in undefined
    *     behavior.
@@ -176,7 +176,7 @@ class StatusOr final {
   T const* operator->() const& { return &value_; }
 
   /**
-   * @name Value accessors.
+   * @brief Value accessors.
    *
    * @return All these member functions return a (properly ref and
    *     const-qualified) reference to the underlying value.

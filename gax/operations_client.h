@@ -23,39 +23,52 @@
 namespace google {
 namespace gax {
 
+/**
+ * A client used to interact with long running operation objects.
+ *
+ * If a GAPIC client method returns a gax::Operation as a result, further
+ * interactions with that result use the corresponding OperationsClient.
+ * Users can poll, cancel, or delete operations.
+ */
 class OperationsClient final {
  public:
+  // Note: the intended generation of an OperationsClient is via a GAPIC client
+  // factory method, NOT by manual construction by the user.
+  // Example:
+  //
+  // LibraryClient client(CreateLibraryServiceStub());
+  // OperationsClient operationsClient = client.OperationsClient();
   OperationsClient(std::shared_ptr<gax::OperationsStub> stub)
       : stub_(std::move(stub)) {}
 
   /**
-   * @name Ping the server and check if the operation has finished.
-   * Updates
-   * metadata.
+   * @brief Ping the server and check if the operation has finished.
+   *
+   * Updates metadata.
    *
    * @return a status indicating whether the update was successful.
    */
   template <typename ResultT, typename MetadataT>
   gax::Status Update(gax::Operation<ResultT, MetadataT>& op) {
-    if (!op.Done()) {
-      google::longrunning::GetOperationRequest request;
-      google::longrunning::Operation tmp;
-      request.set_name(op.Name());
-      gax::CallContext context(get_operation_info);
-      auto status = stub_->GetOperation(context, request, &tmp);
-
-      if (status.IsOk()) {
-        op = std::move(tmp);
-      }
-
-      return status;
-    } else {
+    if (op.Done()) {
       return gax::Status{};
     }
+
+    google::longrunning::GetOperationRequest request;
+    google::longrunning::Operation tmp;
+    request.set_name(op.Name());
+    gax::CallContext context(get_operation_info);
+    auto status = stub_->GetOperation(context, request, &tmp);
+
+    if (status.IsOk()) {
+      op = gax::Operation<ResultT, MetadataT>(std::move(tmp));
+    }
+
+    return status;
   }
 
   /**
-   * @name Inform the service that the client is no longer interested in the
+   * @brief Inform the service that the client is no longer interested in the
    * result.
    *
    * @return a status indicating whether the rpc was successful.
@@ -70,7 +83,7 @@ class OperationsClient final {
   }
 
   /**
-   * @name Best-effort cancellation attempt of the operation.
+   * @brief Best-effort cancellation attempt of the operation.
    *
    * @return a status indicating whether the rpc was successful.
    */

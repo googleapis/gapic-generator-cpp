@@ -27,7 +27,9 @@ namespace gax {
 
 /**
  * Operation is a user-visible primitive used to support Long Running Operations
- * (LROs). LROs are service methods that may take a 'long time' (anywhere from
+ * (LROs).
+ *
+ * LROs are service methods that may take a 'long time' (anywhere from
  * seconds to days), and instead of blocking for that long return an Operation
  * object or an error status. The Operation may contain a result and always
  * contains metadata.
@@ -75,16 +77,16 @@ class Operation final {
  public:
   // Note: the constructor is intended to be used by GAPIC generated code, not
   // users.
-  Operation(google::longrunning::Operation op) : op_(std::move(op)) {}
+  explicit Operation(google::longrunning::Operation op) : op_(std::move(op)) {}
 
   /**
-   * @name Return the service-provided name of the underlying
+   * @brief Return the service-provided name of the underlying
    * google.longrunning.Operation
    */
   std::string const& Name() const { return op_.name(); }
 
   /**
-   * @name If Operation::Done(), return the underlying Response, or an error
+   * @brief If Operation::Done(), return the underlying Response, or an error
    * code if a problem occurred. Otherwise return an error indicating that the
    * Operation has not completed.
    */
@@ -109,7 +111,7 @@ class Operation final {
   }
 
   /**
-   * @name Return the most recent metadata received from the service.
+   * @brief Return the most recent metadata received from the service.
    *
    * The metadata type is application specific. Manipulating it is left to the
    * user.
@@ -123,7 +125,7 @@ class Operation final {
   }
 
   /**
-   * @name Indicate whether the operation has completed. If true, the Operation
+   * @brief Indicate whether the operation has completed. If true, the Operation
    * now contains a result or an error status.
    */
   bool Done() const { return op_.done(); }

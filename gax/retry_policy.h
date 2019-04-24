@@ -48,21 +48,37 @@ class RetryPolicy {
    * @return true if the RPC operation should be retried.
    */
   virtual bool OnFailure(Status const& status) = 0;
+
+  /**
+   * Calculate the deadline for the next RPC operation.
+   *
+   * Any internal state modification, if neccessary, should occur in OnFailure.
+   *
+   * Note: this is different from the deadline in LimitedDurationRetryPolicy,
+   *       which is the deadline after which retry attempts should be abandoned.
+   *
+   * @return the _deadline_ for the next RPC, NOT its maximum _duration_.
+   */
+  virtual std::chrono::system_clock::time_point OperationDeadline() const = 0;
 };
 
 /**
  * Implement a simple "count errors and then stop" retry policy.
  */
+template <typename Clock = std::chrono::system_clock>
 class LimitedErrorCountRetryPolicy : public RetryPolicy {
  public:
-  LimitedErrorCountRetryPolicy(int max_failures)
-      : failure_count_(0), max_failures_(max_failures) {}
+  template <typename duration_t>
+  LimitedErrorCountRetryPolicy(int max_failures, duration_t rpc_duration)
+      : rpc_duration_(rpc_duration),
+        failure_count_(0),
+        max_failures_(max_failures) {}
 
   LimitedErrorCountRetryPolicy(LimitedErrorCountRetryPolicy const& rhs) noexcept
-      : LimitedErrorCountRetryPolicy(rhs.max_failures_) {}
+      : LimitedErrorCountRetryPolicy(rhs.max_failures_, rhs.rpc_duration_) {}
 
   LimitedErrorCountRetryPolicy(LimitedErrorCountRetryPolicy&& rhs) noexcept
-      : LimitedErrorCountRetryPolicy(rhs.max_failures_) {}
+      : LimitedErrorCountRetryPolicy(rhs.max_failures_, rhs.rpc_duration_) {}
 
   std::unique_ptr<RetryPolicy> clone() const override {
     return std::unique_ptr<RetryPolicy>(
@@ -73,7 +89,12 @@ class LimitedErrorCountRetryPolicy : public RetryPolicy {
     return (!status.IsPermanentFailure() && (failure_count_++) < max_failures_);
   }
 
+  std::chrono::system_clock::time_point OperationDeadline() const override {
+    return Clock::now() + rpc_duration_;
+  }
+
  private:
+  std::chrono::milliseconds const rpc_duration_;
   int failure_count_;
   int const max_failures_;
 };
@@ -81,18 +102,20 @@ class LimitedErrorCountRetryPolicy : public RetryPolicy {
 /**
  * Implement a simple "keep trying for this time" retry policy.
  */
-template <typename Clock>
+template <typename Clock = std::chrono::system_clock>
 class LimitedDurationRetryPolicy : public RetryPolicy {
  public:
-  template <typename duration_t>
-  LimitedDurationRetryPolicy(duration_t max_duration)
-      : max_duration_(max_duration), deadline_(max_duration_ + Clock::now()) {}
+  template <typename duration1_t, typename duration2_t>
+  LimitedDurationRetryPolicy(duration1_t max_duration, duration2_t rpc_duration)
+      : rpc_duration_(rpc_duration),
+        max_duration_(max_duration),
+        deadline_(max_duration_ + Clock::now()) {}
 
   LimitedDurationRetryPolicy(LimitedDurationRetryPolicy const& rhs) noexcept
-      : LimitedDurationRetryPolicy(rhs.max_duration_) {}
+      : LimitedDurationRetryPolicy(rhs.max_duration_, rhs.rpc_duration_) {}
 
   LimitedDurationRetryPolicy(LimitedDurationRetryPolicy&& rhs) noexcept
-      : LimitedDurationRetryPolicy(rhs.max_duration_) {}
+      : LimitedDurationRetryPolicy(rhs.max_duration_, rhs.rpc_duration_) {}
 
   std::unique_ptr<RetryPolicy> clone() const override {
     return std::unique_ptr<RetryPolicy>(
@@ -103,7 +126,12 @@ class LimitedDurationRetryPolicy : public RetryPolicy {
     return (!status.IsPermanentFailure() && Clock::now() < deadline_);
   }
 
+  std::chrono::system_clock::time_point OperationDeadline() const override {
+    return Clock::now() + rpc_duration_;
+  }
+
  private:
+  std::chrono::milliseconds const rpc_duration_;
   std::chrono::milliseconds const max_duration_;
   std::chrono::system_clock::time_point const deadline_;
 };

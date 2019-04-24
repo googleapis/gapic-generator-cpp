@@ -80,7 +80,7 @@ bool GenerateClientStubHeader(pb::ServiceDescriptor const* service,
   p->Print(vars,
            "  virtual ~$stub_class_name$() = 0;\n"
            "\n"
-           "}; // $stub_class_name$\n"
+           "};  // $stub_class_name$\n"
            "\n"
            "std::unique_ptr<$stub_class_name$>\n"
            "Create$stub_class_name$();\n"
@@ -89,7 +89,7 @@ bool GenerateClientStubHeader(pb::ServiceDescriptor const* service,
            "Create$stub_class_name$(std::shared_ptr<grpc::ChannelCredentials> "
            "creds);\n"
            "\n"
-           "#endif // $stub_header_include_guard_const$\n");
+           "#endif  // $stub_header_include_guard_const$\n");
 
   return true;
 }

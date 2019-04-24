@@ -39,6 +39,7 @@ gax::Status MakeRetryCall(gax::CallContext& context, RequestT const& request,
     // The next layer stub may add metadata, so create a
     // fresh call context each time through the loop.
     gax::CallContext context_copy(context);
+    context_copy.SetDeadline(retry_policy->OperationDeadline());
     gax::Status status = next_stub(context_copy, request, response);
     if (status.IsOk() || !retry_policy->OnFailure(status)) {
       return status;

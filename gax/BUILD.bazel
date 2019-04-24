@@ -62,12 +62,20 @@ gax_unit_tests = [
     "status_or_test.cc",
 ]
 
+cc_library(
+    name = "gax_testlib",
+    srcs = [],
+    hdrs = [ "internal/test_clock.h"],
+    deps = [],
+)
+
 [cc_test(
     name = "gax_" + test.replace(".cc", ""),
     size = "small",
     srcs = [test],
     deps = [
         "//gax",
+        ":gax_testlib",
         "@gtest//:gtest_main",
     ],
 ) for test in gax_unit_tests]

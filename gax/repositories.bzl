@@ -22,6 +22,13 @@ def com_google_gapic_generator_cpp_gax_repositories():
         urls = ["https://github.com/grpc/grpc/archive/v1.18.0.tar.gz"],
     )
 
+    _maybe(
+        http_archive,
+        name = "com_google_googleapis",
+        strip_prefix = "googleapis-1a479920eb4f6c2bc4c8d8acd9280720540709e4",
+        urls = ["https://github.com/googleapis/googleapis/archive/1a479920eb4f6c2bc4c8d8acd9280720540709e4.tar.gz"],
+    )
+
 def _maybe(repo_rule, name, **kwargs):
     if name not in native.existing_rules():
         repo_rule(name = name, **kwargs)

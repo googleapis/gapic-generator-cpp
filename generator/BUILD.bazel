@@ -57,9 +57,9 @@ cc_binary(
 )
 
 cc_test(
-    name = "gapic_generator_unittest",
+    name = "gapic_generator_test",
     size = "small",
-    srcs = ["gapic_generator_unittest.cc"],
+    srcs = ["gapic_generator_test.cc"],
     data = [
         "//generator/testdata:library_proto",
         "//generator/testdata:library_service_baseline",
@@ -83,5 +83,5 @@ cc_test(
         "@gtest//:gtest_main",
     ],
 ) for test in [
-    "internal/gapic_utils_unittest.cc",
+    "internal/gapic_utils_test.cc",
 ]]

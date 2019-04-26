@@ -10,7 +10,6 @@
 google::gax::StatusOr<::google::example::library::v1::Book>
 LibraryService::CreateBook(
 ::google::example::library::v1::CreateBookRequest const& request) {
-  // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(create_book_info);
   if (retry_policy_) {
     context.SetRetryPolicy(*retry_policy_);
@@ -30,7 +29,6 @@ LibraryService::CreateBook(
 google::gax::StatusOr<::google::example::library::v1::Book>
 LibraryService::GetBook(
 ::google::example::library::v1::GetBookRequest const& request) {
-  // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(get_book_info);
   if (retry_policy_) {
     context.SetRetryPolicy(*retry_policy_);
@@ -50,7 +48,6 @@ LibraryService::GetBook(
 google::gax::StatusOr<::google::example::library::v1::ListBooksResponse>
 LibraryService::ListBooks(
 ::google::example::library::v1::ListBooksRequest const& request) {
-  // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(list_books_info);
   if (retry_policy_) {
     context.SetRetryPolicy(*retry_policy_);
@@ -70,7 +67,6 @@ LibraryService::ListBooks(
 google::gax::StatusOr<::google::example::library::v1::Empty>
 LibraryService::DeleteBook(
 ::google::example::library::v1::DeleteBookRequest const& request) {
-  // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(delete_book_info);
   if (retry_policy_) {
     context.SetRetryPolicy(*retry_policy_);
@@ -90,7 +86,6 @@ LibraryService::DeleteBook(
 google::gax::StatusOr<::google::example::library::v1::Book>
 LibraryService::UpdateBook(
 ::google::example::library::v1::UpdateBookRequest const& request) {
-  // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(update_book_info);
   if (retry_policy_) {
     context.SetRetryPolicy(*retry_policy_);
@@ -110,7 +105,6 @@ LibraryService::UpdateBook(
 google::gax::StatusOr<::google::example::library::v1::Book>
 LibraryService::GetBigBook(
 ::google::example::library::v1::GetBookRequest const& request) {
-  // TODO: actual useful work, e.g. retry, backoff, metadata, pagination, etc.
   google::gax::CallContext context(get_big_book_info);
   if (retry_policy_) {
     context.SetRetryPolicy(*retry_policy_);

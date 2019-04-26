@@ -113,7 +113,7 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
   p->Print(vars,
            " private:\n"
            "  std::unique_ptr<$grpc_stub_fqn$::StubInterface> grpc_stub_;\n"
-           "}; // Default$stub_class_name$\n"
+           "};  // Default$stub_class_name$\n"
            "\n");
 
   // Retrying stub that decorates another stub
@@ -125,8 +125,8 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
       "                         gax::RetryPolicy const& retry_policy,\n"
       "                         gax::BackoffPolicy const& backoff_policy) :\n"
       "            next_stub_(std::move(stub)),\n"
-      "            retry_policy_(retry_policy.clone()),\n"
-      "            backoff_policy_(backoff_policy.clone()) {}\n"
+      "            default_retry_policy_(retry_policy.clone()),\n"
+      "            default_backoff_policy_(backoff_policy.clone()) {}\n"
       "\n");
 
   DataModel::PrintMethods(
@@ -134,16 +134,16 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
       "  google::gax::Status\n"
       "  $method_name$(google::gax::CallContext& context,\n"
       "             $request_object$ const& request,\n"
-      "             $response_object$& response) {\n"
-      "    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : "
-      "retry_policy_)->clone();\n"
-      "    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : "
-      "backoff_policy_)->clone();\n"
-      "    gax::MethodInfo info = ctx.Info();\n"
+      "             $response_object$& response) override {\n"
+      "    auto retry_policy = clone_retry(context);\n"
+      "    auto backoff_policy = clone_backoff(context);\n"
+      "    gax::MethodInfo info = context.Info();\n"
       "    while (true) {\n"
-      "      retry_policy->Setup(context);\n"
-      "      gax::Status status = next_stub_->$method_name$(context, request, "
-      "response);\n"
+      "      // The next layer stub may add metadata, so create a\n"
+      "      // fresh call context each time through the loop.\n"
+      "      gax::CallContext context_copy(context);\n"
+      "      gax::Status status = next_stub_->$method_name$(context_copy, "
+      "request, response);\n"
       "      if (status.IsOk() || !retry_policy->OnFailure(status) ||\n"
       "          !info.idempotency == "
       "gax::MethodInfo::Idempotency::IDEMPOTENT) {\n"
@@ -159,13 +159,28 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
   p->Print(
       vars,
       " private:\n"
+      "  std::unique_ptr<gax::RetryPolicy>\n"
+      "  clone_retry(gax::CallContext const &context) const {\n"
+      "    auto context_retry = context.RetryPolicy();\n"
+      "    return context_retry ? context_retry\n"
+      "                         : default_retry_policy_->clone();\n"
+      "  }\n"
+      "\n"
+      "  std::unique_ptr<gax::BackoffPolicy>\n"
+      "  clone_backoff(gax::CallContext const &context) const {\n"
+      "    auto context_backoff = context.BackoffPolicy();\n"
+      "    return context_backoff ? context_backoff\n"
+      "                           : default_backoff_policy_->clone();\n"
+      "  }\n"
+      "\n"
       "  std::unique_ptr<$stub_class_name$> next_stub_;\n"
-      "  const std::unique_ptr<gax::RetryPolicy const> retry_policy_;\n"
-      "  const std::unique_ptr<gax::BackoffPolicy const>  backoff_policy_;\n"
-      "}; // Retry$stub_class_name$\n");
+      "  const std::unique_ptr<gax::RetryPolicy const> default_retry_policy_;\n"
+      "  const std::unique_ptr<gax::BackoffPolicy const>  "
+      "default_backoff_policy_;\n"
+      "};  // Retry$stub_class_name$\n");
 
   p->Print(vars,
-           "} // namespace\n"
+           "}  // namespace\n"
            "\n"
            "std::unique_ptr<$stub_class_name$> Create$stub_class_name$() {\n"
            "  auto credentials = grpc::GoogleDefaultCredentials();\n"
@@ -193,7 +208,7 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
            "\n");
 
   for (auto const& nspace : namespaces) {
-    p->Print("} // namespace $namespace$\n", "namespace", nspace);
+    p->Print("}  // namespace $namespace$\n", "namespace", nspace);
   }
 
   return true;

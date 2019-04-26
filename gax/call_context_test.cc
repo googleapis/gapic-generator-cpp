@@ -13,7 +13,9 @@
 // limitations under the License.
 
 #include "call_context.h"
+#include "backoff_policy.h"
 #include "googletest/include/gtest/gtest.h"
+#include "retry_policy.h"
 
 #include <chrono>
 #include <set>
@@ -25,6 +27,9 @@ namespace gax {
 
 static_assert(std::is_move_constructible<CallContext>::value,
               "CallContext must be move constructable");
+
+static_assert(std::is_copy_constructible<CallContext>::value,
+              "CallContext must be copy constructable");
 
 TEST(CallContext, Basic) {
   gax::MethodInfo mi{"TestMethod", MethodInfo::RpcType::CLIENT_STREAMING,
@@ -68,5 +73,28 @@ TEST(CallContext, Basic) {
   // There isn't a good way to examine ClientContext metadata without it being
   // sent to a server, so take it on faith that it was properly added.
 }
+
+TEST(CallContext, CopyAndMove) {
+  gax::MethodInfo mi{"TestMethod"};
+  gax::CallContext base(mi);
+
+  gax::CallContext no_policy_copy(base);
+  EXPECT_FALSE(no_policy_copy.RetryPolicy());
+  EXPECT_FALSE(no_policy_copy.BackoffPolicy());
+  gax::CallContext no_policy_move(std::move(no_policy_copy));
+  EXPECT_FALSE(no_policy_move.RetryPolicy());
+  EXPECT_FALSE(no_policy_move.BackoffPolicy());
+
+  base.SetRetryPolicy(gax::LimitedErrorCountRetryPolicy(10));
+  base.SetBackoffPolicy(gax::ExponentialBackoffPolicy(
+      std::chrono::milliseconds(1), std::chrono::milliseconds(10)));
+  gax::CallContext policy_copy(base);
+  EXPECT_TRUE(policy_copy.RetryPolicy());
+  EXPECT_TRUE(policy_copy.BackoffPolicy());
+  gax::CallContext policy_move(std::move(base));
+  EXPECT_TRUE(policy_move.RetryPolicy());
+  EXPECT_TRUE(policy_move.BackoffPolicy());
+}
+
 }  // namespace gax
 }  // namespace google

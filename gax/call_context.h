@@ -120,6 +120,23 @@ class CallContext {
       : deadline_(std::chrono::system_clock::time_point::max()),
         method_info_(std::move(method_info)) {}
 
+  CallContext(CallContext const& rhs)
+      : deadline_(rhs.deadline_),
+        retry_policy_(rhs.retry_policy_ ? rhs.retry_policy_->clone() : nullptr),
+        backoff_policy_(rhs.backoff_policy_ ? rhs.backoff_policy_->clone()
+                                            : nullptr),
+        context_policies_(rhs.context_policies_),
+        metadata_(rhs.metadata_),
+        method_info_(rhs.method_info_) {}
+
+  CallContext(CallContext&& rhs)
+      : deadline_(rhs.deadline_),
+        retry_policy_(std::move(rhs.retry_policy_)),
+        backoff_policy_(std::move(rhs.backoff_policy_)),
+        context_policies_(std::move(rhs.context_policies_)),
+        metadata_(std::move(rhs.metadata_)),
+        method_info_(std::move(rhs.method_info_)) {}
+
   /**
    * Register an arbitrary customization function on grpc::ClientContext.
    * This function could tweak advanced knobs or provide other custom behavior.
@@ -164,6 +181,16 @@ class CallContext {
    * Setter for call-specific retry policy.
    */
   void SetRetryPolicy(gax::RetryPolicy const& retry_policy);
+
+  /**
+   * Getter for retry policy.
+   */
+  std::unique_ptr<gax::RetryPolicy> RetryPolicy() const;
+
+  /**
+   * Getter for backoff policy.
+   */
+  std::unique_ptr<gax::BackoffPolicy> BackoffPolicy() const;
 
   /**
    * Setter for call-specific backoff policy.

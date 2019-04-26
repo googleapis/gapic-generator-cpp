@@ -132,7 +132,7 @@ class DefaultLibraryServiceStub : public LibraryServiceStub {
 
  private:
   std::unique_ptr<::google::example::library::v1::LibraryService::StubInterface> grpc_stub_;
-}; // DefaultLibraryServiceStub
+};  // DefaultLibraryServiceStub
 
 class RetryLibraryServiceStub : public LibraryServiceStub {
  public:
@@ -140,19 +140,21 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
                          gax::RetryPolicy const& retry_policy,
                          gax::BackoffPolicy const& backoff_policy) :
             next_stub_(std::move(stub)),
-            retry_policy_(retry_policy.clone()),
-            backoff_policy_(backoff_policy.clone()) {}
+            default_retry_policy_(retry_policy.clone()),
+            default_backoff_policy_(backoff_policy.clone()) {}
 
   google::gax::Status
   CreateBook(google::gax::CallContext& context,
              ::google::example::library::v1::CreateBookRequest const& request,
-             ::google::example::library::v1::Book& response) {
-    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : retry_policy_)->clone();
-    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : backoff_policy_)->clone();
-    gax::MethodInfo info = ctx.Info();
+             ::google::example::library::v1::Book& response) override {
+    auto retry_policy = clone_retry(context);
+    auto backoff_policy = clone_backoff(context);
+    gax::MethodInfo info = context.Info();
     while (true) {
-      retry_policy->Setup(context);
-      gax::Status status = next_stub_->CreateBook(context, request, response);
+      // The next layer stub may add metadata, so create a
+      // fresh call context each time through the loop.
+      gax::CallContext context_copy(context);
+      gax::Status status = next_stub_->CreateBook(context_copy, request, response);
       if (status.IsOk() || !retry_policy->OnFailure(status) ||
           !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
         return status;
@@ -166,13 +168,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   google::gax::Status
   GetBook(google::gax::CallContext& context,
              ::google::example::library::v1::GetBookRequest const& request,
-             ::google::example::library::v1::Book& response) {
-    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : retry_policy_)->clone();
-    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : backoff_policy_)->clone();
-    gax::MethodInfo info = ctx.Info();
+             ::google::example::library::v1::Book& response) override {
+    auto retry_policy = clone_retry(context);
+    auto backoff_policy = clone_backoff(context);
+    gax::MethodInfo info = context.Info();
     while (true) {
-      retry_policy->Setup(context);
-      gax::Status status = next_stub_->GetBook(context, request, response);
+      // The next layer stub may add metadata, so create a
+      // fresh call context each time through the loop.
+      gax::CallContext context_copy(context);
+      gax::Status status = next_stub_->GetBook(context_copy, request, response);
       if (status.IsOk() || !retry_policy->OnFailure(status) ||
           !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
         return status;
@@ -186,13 +190,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   google::gax::Status
   ListBooks(google::gax::CallContext& context,
              ::google::example::library::v1::ListBooksRequest const& request,
-             ::google::example::library::v1::ListBooksResponse& response) {
-    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : retry_policy_)->clone();
-    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : backoff_policy_)->clone();
-    gax::MethodInfo info = ctx.Info();
+             ::google::example::library::v1::ListBooksResponse& response) override {
+    auto retry_policy = clone_retry(context);
+    auto backoff_policy = clone_backoff(context);
+    gax::MethodInfo info = context.Info();
     while (true) {
-      retry_policy->Setup(context);
-      gax::Status status = next_stub_->ListBooks(context, request, response);
+      // The next layer stub may add metadata, so create a
+      // fresh call context each time through the loop.
+      gax::CallContext context_copy(context);
+      gax::Status status = next_stub_->ListBooks(context_copy, request, response);
       if (status.IsOk() || !retry_policy->OnFailure(status) ||
           !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
         return status;
@@ -206,13 +212,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   google::gax::Status
   DeleteBook(google::gax::CallContext& context,
              ::google::example::library::v1::DeleteBookRequest const& request,
-             ::google::example::library::v1::Empty& response) {
-    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : retry_policy_)->clone();
-    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : backoff_policy_)->clone();
-    gax::MethodInfo info = ctx.Info();
+             ::google::example::library::v1::Empty& response) override {
+    auto retry_policy = clone_retry(context);
+    auto backoff_policy = clone_backoff(context);
+    gax::MethodInfo info = context.Info();
     while (true) {
-      retry_policy->Setup(context);
-      gax::Status status = next_stub_->DeleteBook(context, request, response);
+      // The next layer stub may add metadata, so create a
+      // fresh call context each time through the loop.
+      gax::CallContext context_copy(context);
+      gax::Status status = next_stub_->DeleteBook(context_copy, request, response);
       if (status.IsOk() || !retry_policy->OnFailure(status) ||
           !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
         return status;
@@ -226,13 +234,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   google::gax::Status
   UpdateBook(google::gax::CallContext& context,
              ::google::example::library::v1::UpdateBookRequest const& request,
-             ::google::example::library::v1::Book& response) {
-    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : retry_policy_)->clone();
-    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : backoff_policy_)->clone();
-    gax::MethodInfo info = ctx.Info();
+             ::google::example::library::v1::Book& response) override {
+    auto retry_policy = clone_retry(context);
+    auto backoff_policy = clone_backoff(context);
+    gax::MethodInfo info = context.Info();
     while (true) {
-      retry_policy->Setup(context);
-      gax::Status status = next_stub_->UpdateBook(context, request, response);
+      // The next layer stub may add metadata, so create a
+      // fresh call context each time through the loop.
+      gax::CallContext context_copy(context);
+      gax::Status status = next_stub_->UpdateBook(context_copy, request, response);
       if (status.IsOk() || !retry_policy->OnFailure(status) ||
           !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
         return status;
@@ -246,13 +256,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   google::gax::Status
   StreamShelves(google::gax::CallContext& context,
              ::google::example::library::v1::StreamShelvesRequest const& request,
-             ::google::example::library::v1::StreamShelvesResponse& response) {
-    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : retry_policy_)->clone();
-    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : backoff_policy_)->clone();
-    gax::MethodInfo info = ctx.Info();
+             ::google::example::library::v1::StreamShelvesResponse& response) override {
+    auto retry_policy = clone_retry(context);
+    auto backoff_policy = clone_backoff(context);
+    gax::MethodInfo info = context.Info();
     while (true) {
-      retry_policy->Setup(context);
-      gax::Status status = next_stub_->StreamShelves(context, request, response);
+      // The next layer stub may add metadata, so create a
+      // fresh call context each time through the loop.
+      gax::CallContext context_copy(context);
+      gax::Status status = next_stub_->StreamShelves(context_copy, request, response);
       if (status.IsOk() || !retry_policy->OnFailure(status) ||
           !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
         return status;
@@ -266,13 +278,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   google::gax::Status
   DiscussBook(google::gax::CallContext& context,
              ::google::example::library::v1::DiscussBookRequest const& request,
-             ::google::example::library::v1::Comment& response) {
-    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : retry_policy_)->clone();
-    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : backoff_policy_)->clone();
-    gax::MethodInfo info = ctx.Info();
+             ::google::example::library::v1::Comment& response) override {
+    auto retry_policy = clone_retry(context);
+    auto backoff_policy = clone_backoff(context);
+    gax::MethodInfo info = context.Info();
     while (true) {
-      retry_policy->Setup(context);
-      gax::Status status = next_stub_->DiscussBook(context, request, response);
+      // The next layer stub may add metadata, so create a
+      // fresh call context each time through the loop.
+      gax::CallContext context_copy(context);
+      gax::Status status = next_stub_->DiscussBook(context_copy, request, response);
       if (status.IsOk() || !retry_policy->OnFailure(status) ||
           !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
         return status;
@@ -286,13 +300,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   google::gax::Status
   MonologAboutBook(google::gax::CallContext& context,
              ::google::example::library::v1::DiscussBookRequest const& request,
-             ::google::example::library::v1::Comment& response) {
-    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : retry_policy_)->clone();
-    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : backoff_policy_)->clone();
-    gax::MethodInfo info = ctx.Info();
+             ::google::example::library::v1::Comment& response) override {
+    auto retry_policy = clone_retry(context);
+    auto backoff_policy = clone_backoff(context);
+    gax::MethodInfo info = context.Info();
     while (true) {
-      retry_policy->Setup(context);
-      gax::Status status = next_stub_->MonologAboutBook(context, request, response);
+      // The next layer stub may add metadata, so create a
+      // fresh call context each time through the loop.
+      gax::CallContext context_copy(context);
+      gax::Status status = next_stub_->MonologAboutBook(context_copy, request, response);
       if (status.IsOk() || !retry_policy->OnFailure(status) ||
           !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
         return status;
@@ -306,13 +322,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   google::gax::Status
   GetBigBook(google::gax::CallContext& context,
              ::google::example::library::v1::GetBookRequest const& request,
-             ::google::example::library::v1::Book& response) {
-    auto retry_policy = (ctx.retry_policy_ ? ctx.retry_policy_ : retry_policy_)->clone();
-    auto backoff_policy = (ctx.backoff_policy_ ? ctx.backoff_policy_ : backoff_policy_)->clone();
-    gax::MethodInfo info = ctx.Info();
+             ::google::example::library::v1::Book& response) override {
+    auto retry_policy = clone_retry(context);
+    auto backoff_policy = clone_backoff(context);
+    gax::MethodInfo info = context.Info();
     while (true) {
-      retry_policy->Setup(context);
-      gax::Status status = next_stub_->GetBigBook(context, request, response);
+      // The next layer stub may add metadata, so create a
+      // fresh call context each time through the loop.
+      gax::CallContext context_copy(context);
+      gax::Status status = next_stub_->GetBigBook(context_copy, request, response);
       if (status.IsOk() || !retry_policy->OnFailure(status) ||
           !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
         return status;
@@ -324,11 +342,25 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   }
 
  private:
+  std::unique_ptr<gax::RetryPolicy>
+  clone_retry(gax::CallContext const &context) const {
+    auto context_retry = context.RetryPolicy();
+    return context_retry ? context_retry
+                         : default_retry_policy_->clone();
+  }
+
+  std::unique_ptr<gax::BackoffPolicy>
+  clone_backoff(gax::CallContext const &context) const {
+    auto context_backoff = context.BackoffPolicy();
+    return context_backoff ? context_backoff
+                           : default_backoff_policy_->clone();
+  }
+
   std::unique_ptr<LibraryServiceStub> next_stub_;
-  const std::unique_ptr<gax::RetryPolicy const> retry_policy_;
-  const std::unique_ptr<gax::BackoffPolicy const>  backoff_policy_;
-}; // RetryLibraryServiceStub
-} // namespace
+  const std::unique_ptr<gax::RetryPolicy const> default_retry_policy_;
+  const std::unique_ptr<gax::BackoffPolicy const>  default_backoff_policy_;
+};  // RetryLibraryServiceStub
+}  // namespace
 
 std::unique_ptr<LibraryServiceStub> CreateLibraryServiceStub() {
   auto credentials = grpc::GoogleDefaultCredentials();

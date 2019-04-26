@@ -71,8 +71,6 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
       "google::gax::StatusOr<$response_object$>\n"
       "$class_name$::$method_name$(\n"
       "$request_object$ const& request) {\n"
-      "  // TODO: actual useful work, e.g. retry, backoff, metadata, "
-      "pagination, etc.\n"
       "  google::gax::CallContext context($method_name_snake$_info);\n"
       "  if (retry_policy_) {\n"
       "    context.SetRetryPolicy(*retry_policy_);\n"
@@ -98,7 +96,7 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
       NoStreamingPredicate);
 
   for (auto nspace : namespaces) {
-    p->Print("\n} // namespace $namespace$", "namespace", nspace);
+    p->Print("\n}  // namespace $namespace$", "namespace", nspace);
   }
 
   return true;

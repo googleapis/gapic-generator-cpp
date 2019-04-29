@@ -4,7 +4,8 @@
 
 #include "library_service_stub.gapic.h"
 #include "gax/call_context.h"
-#include "gax/Status.h"
+#include "gax/retry_loop.h"
+#include "gax/status.h"
 #include "grpcpp/client_context.h"
 #include "grpcpp/channel.h"
 #include "grpcpp/create_channel.h"
@@ -136,7 +137,7 @@ class DefaultLibraryServiceStub : public LibraryServiceStub {
 
 class RetryLibraryServiceStub : public LibraryServiceStub {
  public:
-  RetryLibraryServiceStub(std::unique_ptr<LibraryServiceStub> stub_,
+  RetryLibraryServiceStub(std::unique_ptr<LibraryServiceStub> stub,
                          gax::RetryPolicy const& retry_policy,
                          gax::BackoffPolicy const& backoff_policy) :
             next_stub_(std::move(stub)),
@@ -146,199 +147,145 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   google::gax::Status
   CreateBook(google::gax::CallContext& context,
              ::google::example::library::v1::CreateBookRequest const& request,
-             ::google::example::library::v1::Book& response) override {
-    auto retry_policy = clone_retry(context);
-    auto backoff_policy = clone_backoff(context);
-    gax::MethodInfo info = context.Info();
-    while (true) {
-      // The next layer stub may add metadata, so create a
-      // fresh call context each time through the loop.
-      gax::CallContext context_copy(context);
-      gax::Status status = next_stub_->CreateBook(context_copy, request, response);
-      if (status.IsOk() || !retry_policy->OnFailure(status) ||
-          !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
-        return status;
-      }
-
-      auto delay = backoff_policy->OnCompletion();
-      std::this_thread::sleep_for(delay);
-    }
+             ::google::example::library::v1::Book* response) override {
+    return MakeRetryCall<::google::example::library::v1::CreateBookRequest,
+                         ::google::example::library::v1::Book>(
+        context, request, response,
+        [=this](CallContext& c,
+                ::google::example::library::v1::CreateBookRequest const& req,
+                ::google::example::library::v1::Book* resp)
+            ->gax::Status {
+              return this->next_stub_->CreateBook(c, req, resp);
+            },
+        clone_retry(context), clone_backoff(context));
   }
 
   google::gax::Status
   GetBook(google::gax::CallContext& context,
              ::google::example::library::v1::GetBookRequest const& request,
-             ::google::example::library::v1::Book& response) override {
-    auto retry_policy = clone_retry(context);
-    auto backoff_policy = clone_backoff(context);
-    gax::MethodInfo info = context.Info();
-    while (true) {
-      // The next layer stub may add metadata, so create a
-      // fresh call context each time through the loop.
-      gax::CallContext context_copy(context);
-      gax::Status status = next_stub_->GetBook(context_copy, request, response);
-      if (status.IsOk() || !retry_policy->OnFailure(status) ||
-          !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
-        return status;
-      }
-
-      auto delay = backoff_policy->OnCompletion();
-      std::this_thread::sleep_for(delay);
-    }
+             ::google::example::library::v1::Book* response) override {
+    return MakeRetryCall<::google::example::library::v1::GetBookRequest,
+                         ::google::example::library::v1::Book>(
+        context, request, response,
+        [=this](CallContext& c,
+                ::google::example::library::v1::GetBookRequest const& req,
+                ::google::example::library::v1::Book* resp)
+            ->gax::Status {
+              return this->next_stub_->GetBook(c, req, resp);
+            },
+        clone_retry(context), clone_backoff(context));
   }
 
   google::gax::Status
   ListBooks(google::gax::CallContext& context,
              ::google::example::library::v1::ListBooksRequest const& request,
-             ::google::example::library::v1::ListBooksResponse& response) override {
-    auto retry_policy = clone_retry(context);
-    auto backoff_policy = clone_backoff(context);
-    gax::MethodInfo info = context.Info();
-    while (true) {
-      // The next layer stub may add metadata, so create a
-      // fresh call context each time through the loop.
-      gax::CallContext context_copy(context);
-      gax::Status status = next_stub_->ListBooks(context_copy, request, response);
-      if (status.IsOk() || !retry_policy->OnFailure(status) ||
-          !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
-        return status;
-      }
-
-      auto delay = backoff_policy->OnCompletion();
-      std::this_thread::sleep_for(delay);
-    }
+             ::google::example::library::v1::ListBooksResponse* response) override {
+    return MakeRetryCall<::google::example::library::v1::ListBooksRequest,
+                         ::google::example::library::v1::ListBooksResponse>(
+        context, request, response,
+        [=this](CallContext& c,
+                ::google::example::library::v1::ListBooksRequest const& req,
+                ::google::example::library::v1::ListBooksResponse* resp)
+            ->gax::Status {
+              return this->next_stub_->ListBooks(c, req, resp);
+            },
+        clone_retry(context), clone_backoff(context));
   }
 
   google::gax::Status
   DeleteBook(google::gax::CallContext& context,
              ::google::example::library::v1::DeleteBookRequest const& request,
-             ::google::example::library::v1::Empty& response) override {
-    auto retry_policy = clone_retry(context);
-    auto backoff_policy = clone_backoff(context);
-    gax::MethodInfo info = context.Info();
-    while (true) {
-      // The next layer stub may add metadata, so create a
-      // fresh call context each time through the loop.
-      gax::CallContext context_copy(context);
-      gax::Status status = next_stub_->DeleteBook(context_copy, request, response);
-      if (status.IsOk() || !retry_policy->OnFailure(status) ||
-          !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
-        return status;
-      }
-
-      auto delay = backoff_policy->OnCompletion();
-      std::this_thread::sleep_for(delay);
-    }
+             ::google::example::library::v1::Empty* response) override {
+    return MakeRetryCall<::google::example::library::v1::DeleteBookRequest,
+                         ::google::example::library::v1::Empty>(
+        context, request, response,
+        [=this](CallContext& c,
+                ::google::example::library::v1::DeleteBookRequest const& req,
+                ::google::example::library::v1::Empty* resp)
+            ->gax::Status {
+              return this->next_stub_->DeleteBook(c, req, resp);
+            },
+        clone_retry(context), clone_backoff(context));
   }
 
   google::gax::Status
   UpdateBook(google::gax::CallContext& context,
              ::google::example::library::v1::UpdateBookRequest const& request,
-             ::google::example::library::v1::Book& response) override {
-    auto retry_policy = clone_retry(context);
-    auto backoff_policy = clone_backoff(context);
-    gax::MethodInfo info = context.Info();
-    while (true) {
-      // The next layer stub may add metadata, so create a
-      // fresh call context each time through the loop.
-      gax::CallContext context_copy(context);
-      gax::Status status = next_stub_->UpdateBook(context_copy, request, response);
-      if (status.IsOk() || !retry_policy->OnFailure(status) ||
-          !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
-        return status;
-      }
-
-      auto delay = backoff_policy->OnCompletion();
-      std::this_thread::sleep_for(delay);
-    }
+             ::google::example::library::v1::Book* response) override {
+    return MakeRetryCall<::google::example::library::v1::UpdateBookRequest,
+                         ::google::example::library::v1::Book>(
+        context, request, response,
+        [=this](CallContext& c,
+                ::google::example::library::v1::UpdateBookRequest const& req,
+                ::google::example::library::v1::Book* resp)
+            ->gax::Status {
+              return this->next_stub_->UpdateBook(c, req, resp);
+            },
+        clone_retry(context), clone_backoff(context));
   }
 
   google::gax::Status
   StreamShelves(google::gax::CallContext& context,
              ::google::example::library::v1::StreamShelvesRequest const& request,
-             ::google::example::library::v1::StreamShelvesResponse& response) override {
-    auto retry_policy = clone_retry(context);
-    auto backoff_policy = clone_backoff(context);
-    gax::MethodInfo info = context.Info();
-    while (true) {
-      // The next layer stub may add metadata, so create a
-      // fresh call context each time through the loop.
-      gax::CallContext context_copy(context);
-      gax::Status status = next_stub_->StreamShelves(context_copy, request, response);
-      if (status.IsOk() || !retry_policy->OnFailure(status) ||
-          !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
-        return status;
-      }
-
-      auto delay = backoff_policy->OnCompletion();
-      std::this_thread::sleep_for(delay);
-    }
+             ::google::example::library::v1::StreamShelvesResponse* response) override {
+    return MakeRetryCall<::google::example::library::v1::StreamShelvesRequest,
+                         ::google::example::library::v1::StreamShelvesResponse>(
+        context, request, response,
+        [=this](CallContext& c,
+                ::google::example::library::v1::StreamShelvesRequest const& req,
+                ::google::example::library::v1::StreamShelvesResponse* resp)
+            ->gax::Status {
+              return this->next_stub_->StreamShelves(c, req, resp);
+            },
+        clone_retry(context), clone_backoff(context));
   }
 
   google::gax::Status
   DiscussBook(google::gax::CallContext& context,
              ::google::example::library::v1::DiscussBookRequest const& request,
-             ::google::example::library::v1::Comment& response) override {
-    auto retry_policy = clone_retry(context);
-    auto backoff_policy = clone_backoff(context);
-    gax::MethodInfo info = context.Info();
-    while (true) {
-      // The next layer stub may add metadata, so create a
-      // fresh call context each time through the loop.
-      gax::CallContext context_copy(context);
-      gax::Status status = next_stub_->DiscussBook(context_copy, request, response);
-      if (status.IsOk() || !retry_policy->OnFailure(status) ||
-          !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
-        return status;
-      }
-
-      auto delay = backoff_policy->OnCompletion();
-      std::this_thread::sleep_for(delay);
-    }
+             ::google::example::library::v1::Comment* response) override {
+    return MakeRetryCall<::google::example::library::v1::DiscussBookRequest,
+                         ::google::example::library::v1::Comment>(
+        context, request, response,
+        [=this](CallContext& c,
+                ::google::example::library::v1::DiscussBookRequest const& req,
+                ::google::example::library::v1::Comment* resp)
+            ->gax::Status {
+              return this->next_stub_->DiscussBook(c, req, resp);
+            },
+        clone_retry(context), clone_backoff(context));
   }
 
   google::gax::Status
   MonologAboutBook(google::gax::CallContext& context,
              ::google::example::library::v1::DiscussBookRequest const& request,
-             ::google::example::library::v1::Comment& response) override {
-    auto retry_policy = clone_retry(context);
-    auto backoff_policy = clone_backoff(context);
-    gax::MethodInfo info = context.Info();
-    while (true) {
-      // The next layer stub may add metadata, so create a
-      // fresh call context each time through the loop.
-      gax::CallContext context_copy(context);
-      gax::Status status = next_stub_->MonologAboutBook(context_copy, request, response);
-      if (status.IsOk() || !retry_policy->OnFailure(status) ||
-          !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
-        return status;
-      }
-
-      auto delay = backoff_policy->OnCompletion();
-      std::this_thread::sleep_for(delay);
-    }
+             ::google::example::library::v1::Comment* response) override {
+    return MakeRetryCall<::google::example::library::v1::DiscussBookRequest,
+                         ::google::example::library::v1::Comment>(
+        context, request, response,
+        [=this](CallContext& c,
+                ::google::example::library::v1::DiscussBookRequest const& req,
+                ::google::example::library::v1::Comment* resp)
+            ->gax::Status {
+              return this->next_stub_->MonologAboutBook(c, req, resp);
+            },
+        clone_retry(context), clone_backoff(context));
   }
 
   google::gax::Status
   GetBigBook(google::gax::CallContext& context,
              ::google::example::library::v1::GetBookRequest const& request,
-             ::google::example::library::v1::Book& response) override {
-    auto retry_policy = clone_retry(context);
-    auto backoff_policy = clone_backoff(context);
-    gax::MethodInfo info = context.Info();
-    while (true) {
-      // The next layer stub may add metadata, so create a
-      // fresh call context each time through the loop.
-      gax::CallContext context_copy(context);
-      gax::Status status = next_stub_->GetBigBook(context_copy, request, response);
-      if (status.IsOk() || !retry_policy->OnFailure(status) ||
-          !info.idempotency == gax::MethodInfo::Idempotency::IDEMPOTENT) {
-        return status;
-      }
-
-      auto delay = backoff_policy->OnCompletion();
-      std::this_thread::sleep_for(delay);
-    }
+             ::google::example::library::v1::Book* response) override {
+    return MakeRetryCall<::google::example::library::v1::GetBookRequest,
+                         ::google::example::library::v1::Book>(
+        context, request, response,
+        [=this](CallContext& c,
+                ::google::example::library::v1::GetBookRequest const& req,
+                ::google::example::library::v1::Book* resp)
+            ->gax::Status {
+              return this->next_stub_->GetBigBook(c, req, resp);
+            },
+        clone_retry(context), clone_backoff(context));
   }
 
  private:

@@ -29,8 +29,8 @@ std::vector<std::string> BuildClientStubCCIncludes(
     pb::ServiceDescriptor const* service) {
   return {LocalInclude(absl::StrCat(CamelCaseToSnakeCase(service->name()),
                                     "_stub.gapic.h")),
-          LocalInclude("gax/call_context.h"), LocalInclude("gax/Status.h"),
-          LocalInclude("grpcpp/client_context.h"),
+          LocalInclude("gax/call_context.h"), LocalInclude("gax/retry_loop.h"),
+          LocalInclude("gax/status.h"), LocalInclude("grpcpp/client_context.h"),
           LocalInclude("grpcpp/channel.h"),
           LocalInclude("grpcpp/create_channel.h"), SystemInclude("chrono"),
           SystemInclude("thread")};
@@ -121,7 +121,7 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
       vars,
       "class Retry$stub_class_name$ : public $stub_class_name$ {\n"
       " public:\n"
-      "  Retry$stub_class_name$(std::unique_ptr<$stub_class_name$> stub_,\n"
+      "  Retry$stub_class_name$(std::unique_ptr<$stub_class_name$> stub,\n"
       "                         gax::RetryPolicy const& retry_policy,\n"
       "                         gax::BackoffPolicy const& backoff_policy) :\n"
       "            next_stub_(std::move(stub)),\n"
@@ -134,25 +134,17 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
       "  google::gax::Status\n"
       "  $method_name$(google::gax::CallContext& context,\n"
       "             $request_object$ const& request,\n"
-      "             $response_object$& response) override {\n"
-      "    auto retry_policy = clone_retry(context);\n"
-      "    auto backoff_policy = clone_backoff(context);\n"
-      "    gax::MethodInfo info = context.Info();\n"
-      "    while (true) {\n"
-      "      // The next layer stub may add metadata, so create a\n"
-      "      // fresh call context each time through the loop.\n"
-      "      gax::CallContext context_copy(context);\n"
-      "      gax::Status status = next_stub_->$method_name$(context_copy, "
-      "request, response);\n"
-      "      if (status.IsOk() || !retry_policy->OnFailure(status) ||\n"
-      "          !info.idempotency == "
-      "gax::MethodInfo::Idempotency::IDEMPOTENT) {\n"
-      "        return status;\n"
-      "      }\n"
-      "\n"
-      "      auto delay = backoff_policy->OnCompletion();\n"
-      "      std::this_thread::sleep_for(delay);\n"
-      "    }\n"
+      "             $response_object$* response) override {\n"
+      "    return MakeRetryCall<$request_object$,\n"
+      "                         $response_object$>(\n"
+      "        context, request, response,\n"
+      "        [=this](CallContext& c,\n"
+      "                $request_object$ const& req,\n"
+      "                $response_object$* resp)\n"
+      "            ->gax::Status {\n"
+      "              return this->next_stub_->$method_name$(c, req, resp);\n"
+      "            },\n"
+      "        clone_retry(context), clone_backoff(context));\n"
       "  }\n"
       "\n");
 

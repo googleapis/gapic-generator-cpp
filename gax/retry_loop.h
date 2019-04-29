@@ -1,0 +1,52 @@
+// Copyright 2019 Google Inc.  All rights reserved
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#include "gax/backoff_policy.h"
+#include "gax/call_context.h"
+#include "gax/retry_policy.h"
+#include "gax/status.h"
+#include <chrono>
+#include <functional>
+#include <thread>
+#include <type_traits>
+
+#ifndef GAPIC_GENERATOR_CPP_GAX_RETRY_LOOP_H_
+#define GAPIC_GENERATOR_CPP_GAX_RETRY_LOOP_H_
+
+namespace google {
+namespace gax {
+
+template <typename RequestT, typename ResponseT>
+gax::Status MakeRetryCall(
+    CallContext& context, RequestT const& request, ResponseT* response,
+    std::function<Status(CallContext&, RequestT const&, ResponseT*)> next_stub,
+    std::unique_ptr<RetryPolicy> retry_policy,
+    std::unique_ptr<BackoffPolicy> backoff_policy) {
+  while (true) {
+    // The next layer stub may add metadata, so create a
+    // fresh call context each time through the loop.
+    gax::CallContext context_copy(context);
+    gax::Status status = next_stub(context_copy, request, response);
+    if (status.IsOk() || !retry_policy->OnFailure(status)) {
+      return status;
+    }
+
+    std::this_thread::sleep_for(backoff_policy->OnCompletion());
+  }
+}
+
+}  // namespace gax
+}  // namespace google
+
+#endif  // GAPIC_GENERATOR_CPP_GAX_RETRY_LOOP_H_

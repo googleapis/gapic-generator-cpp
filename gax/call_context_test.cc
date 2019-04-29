@@ -75,7 +75,8 @@ TEST(CallContext, Basic) {
 }
 
 TEST(CallContext, CopyAndMove) {
-  gax::MethodInfo mi{"TestMethod"};
+  gax::MethodInfo mi{"TestMethod", MethodInfo::RpcType::CLIENT_STREAMING,
+                     MethodInfo::Idempotency::IDEMPOTENT};
   gax::CallContext base(mi);
 
   gax::CallContext no_policy_copy(base);

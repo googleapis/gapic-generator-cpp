@@ -6,7 +6,7 @@
 
 #include <memory>
 #include "library_service_stub.gapic.h"
-#include "LibraryService.pb.h"
+#include "generator/testdata/library.pb.h"
 #include "gax/status_or.h"
 #include "gax/retry_policy.h"
 #include "gax/backoff_policy.h"

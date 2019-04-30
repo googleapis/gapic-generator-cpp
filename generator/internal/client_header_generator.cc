@@ -35,7 +35,9 @@ std::vector<std::string> BuildClientHeaderIncludes(
       SystemInclude("memory"),
       LocalInclude(absl::StrCat(
           internal::ServiceNameToFilePath(service->name()), "_stub.gapic.h")),
-      LocalInclude(absl::StrCat(service->name(), ".pb.h")),
+      LocalInclude(absl::StrCat(
+          absl::StripSuffix(service->file()->name(), ".proto"), ".pb.h")),
+
       LocalInclude("gax/status_or.h"), LocalInclude("gax/retry_policy.h"),
       LocalInclude("gax/backoff_policy.h"),
   };

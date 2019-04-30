@@ -29,7 +29,7 @@ std::vector<std::string> BuildClientStubCCIncludes(
     pb::ServiceDescriptor const* service) {
   return {LocalInclude(absl::StrCat(CamelCaseToSnakeCase(service->name()),
                                     "_stub.gapic.h")),
-          LocalInclude("gax/call_context.h"), LocalInclude("gax/Status.h"),
+          LocalInclude("gax/call_context.h"), LocalInclude("gax/status.h"),
           LocalInclude("grpcpp/client_context.h"),
           LocalInclude("grpcpp/channel.h"),
           LocalInclude("grpcpp/create_channel.h")};

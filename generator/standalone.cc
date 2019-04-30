@@ -69,7 +69,7 @@ bool ExtractFileNames(std::vector<std::string> const& desc_sets,
 //   below C++17 does not have folder I/O abstraction whatsoever.
 //
 bool ConvertCommandLineArgs(int argc, char const* const argv[],
-                            std::vector<std::string>& args,
+                            std::vector<std::string>* args,
                             std::string* error_msg) {
   // GAPIC Generator Standalone arguments
   std::string const desc_arg("--descriptor");
@@ -85,7 +85,7 @@ bool ConvertCommandLineArgs(int argc, char const* const argv[],
     std::vector<std::string> arg =
         absl::StrSplit(argv[i], absl::MaxSplits('=', 1));
     if (arg.size() <= 1) {
-      args.emplace_back(argv[i]);
+      args->emplace_back(argv[i]);
       continue;
     }
 
@@ -93,18 +93,18 @@ bool ConvertCommandLineArgs(int argc, char const* const argv[],
     std::string const& arg_val = arg[1];
 
     if (arg_name == desc_arg || arg_name == desc_set_in_arg) {
-      args.emplace_back(desc_set_in_arg + arg_val);
+      args->emplace_back(desc_set_in_arg + arg_val);
       std::vector<std::string> const& spl =
           absl::StrSplit(arg_val, absl::ByAnyChar(":;"));
       std::move(spl.begin(), spl.end(), std::back_inserter(desc_set_in));
     } else if (arg_name == output_arg) {
-      args.emplace_back("--cpp_gapic_out=" + arg_val);
+      args->emplace_back("--cpp_gapic_out=" + arg_val);
     } else if (arg_name == package_arg) {
       std::vector<std::string> const& spl =
           absl::StrSplit(arg_val, absl::ByAnyChar(":;"));
       std::move(spl.begin(), spl.end(), std::back_inserter(packages));
     } else {
-      args.emplace_back(argv[i]);
+      args->emplace_back(argv[i]);
     }
   }
 
@@ -113,7 +113,7 @@ bool ConvertCommandLineArgs(int argc, char const* const argv[],
     if (!ExtractFileNames(desc_set_in, packages, &file_names, error_msg)) {
       return false;
     }
-    args.insert(args.end(), std::make_move_iterator(file_names.begin()),
+    args->insert(args->end(), std::make_move_iterator(file_names.begin()),
                 std::make_move_iterator(file_names.end()));
   }
 
@@ -124,7 +124,10 @@ int StandaloneMain(int argc, char const* const argv[],
                    google::protobuf::compiler::CodeGenerator* generator) {
   std::string error_msg;
   std::vector<std::string> args;
-  ConvertCommandLineArgs(argc, argv, args, &error_msg);
+  if (!ConvertCommandLineArgs(argc, argv, &args, &error_msg)) {
+    std::cerr << error_msg << std::endl;
+    return false;
+  }
 
   pb::compiler::CommandLineInterface cli;
   cli.RegisterGenerator("--cpp_gapic_out", generator, "GAPIC C++ Generator");

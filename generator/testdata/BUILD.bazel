@@ -1,8 +1,16 @@
+load("//rules_gapic/cpp:cc_gapic.bzl", "cc_gapic_srcjar", "cc_gapic_library")
+load("@com_google_api_codegen//rules_gapic:gapic.bzl", "proto_library_with_info")
+
 proto_library(
     name = "library_proto",
     srcs = ["library.proto"],
     deps = ["@api_common_protos//google/api:client_proto"],
     visibility = ["//visibility:public"],
+)
+
+proto_library_with_info(
+    name = "library_proto_with_info",
+    deps = [":library_proto"],
 )
 
 cc_proto_library(
@@ -11,6 +19,16 @@ cc_proto_library(
     visibility = ["//visibility:public"],
 )
 
+# TODO: Uncomment once cpp GAPIC artifacts compilation errors are fixed
+#cc_gapic_library(
+#    name = "library_cc_gapic",
+#    src = ":library_proto_with_info",
+#    package = "google.example.library.v1",
+#    deps = [
+#        ":library_cc_proto"
+#    ],
+#    visibility = ["//visibility:public"],
+#)
 
 filegroup(
     name = "library_service_baseline",

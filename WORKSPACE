@@ -42,10 +42,16 @@ grpc_deps()
 #
 # gapic-generator
 #
-http_archive(
+#http_archive(
+#    name = "com_google_api_codegen",
+#    urls = ["https://github.com/googleapis/gapic-generator/archive/96c3c5a4c8397d4bd29a6abce861547a271383e1.zip"],
+#    strip_prefix = "gapic-generator-96c3c5a4c8397d4bd29a6abce861547a271383e1",
+#)
+
+#TODO: update once https://github.com/googleapis/gapic-generator/pull/2743 is merged
+local_repository(
     name = "com_google_api_codegen",
-    urls = ["https://github.com/googleapis/gapic-generator/archive/96c3c5a4c8397d4bd29a6abce861547a271383e1.zip"],
-    strip_prefix = "gapic-generator-96c3c5a4c8397d4bd29a6abce861547a271383e1",
+    path = "/usr/local/google/home/vam/_/projects/github/vam-google/gapic-generator",
 )
 
 #

@@ -87,4 +87,4 @@ TEST(RetryLoop, Basic) {
   EXPECT_EQ(attempts_remaining, 6);
   EXPECT_EQ(delay_count, 3);
 }
-}
+}  // namespace

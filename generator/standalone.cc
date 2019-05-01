@@ -1,9 +1,8 @@
-#include <fstream>
-#include <standalone.h>
-
 #include <google/protobuf/compiler/command_line_interface.h>
 #include <google/protobuf/stubs/io_win32.h>
+#include <fstream>
 #include <gapic_generator.h>
+#include <standalone.h>
 
 #include "absl/strings/str_split.h"
 
@@ -152,7 +151,7 @@ int StandaloneMain(std::vector<std::string> const& descriptors,
                                      package_arg.c_str(), output_arg.c_str()};
 
   return StandaloneMain((int)c_args.size(), c_args.data(), generator);
-};
+}
 
 }  // namespace codegen
 }  // namespace api

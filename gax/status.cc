@@ -15,7 +15,7 @@
 #include <ostream>
 #include <string>
 
-#include "status.h"
+#include "gax/status.h"
 
 namespace google {
 namespace gax {

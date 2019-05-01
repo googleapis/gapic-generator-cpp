@@ -12,17 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <gtest/gtest.h>
 #include <fstream>
+#include <gapic_generator.h>
+#include <iostream>
 #include <memory>
+#include <standalone.h>
 #include <string>
 #include <vector>
-
-#include <iostream>
-
-#include <gtest/gtest.h>
-
-#include <gapic_generator.h>
-#include <standalone.h>
 
 namespace google {
 namespace api {

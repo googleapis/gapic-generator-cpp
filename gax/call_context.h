@@ -16,10 +16,8 @@
 #define GAPIC_GENERATOR_CPP_GAX_CALL_CONTEXT_H_
 
 #include "grpcpp/client_context.h"
-#include "internal/gtest_prod.h"
 #include "gax/backoff_policy.h"
 #include "gax/retry_policy.h"
-
 #include <chrono>
 #include <functional>
 #include <map>
@@ -162,6 +160,8 @@ class CallContext {
    */
   void AddMetadata(std::string key, std::string val);
 
+  std::multimap<std::string, std::string const> const& Metadata() const;
+
   /**
    * @brief Set a deadline for the rpc.
    */
@@ -177,28 +177,12 @@ class CallContext {
    */
   MethodInfo Info() const;
 
-  /**
-   * Setter for call-specific retry policy.
-   */
   void SetRetryPolicy(gax::RetryPolicy const& retry_policy);
-
-  /**
-   * Getter for retry policy.
-   */
   std::unique_ptr<gax::RetryPolicy> RetryPolicy() const;
-
-  /**
-   * Getter for backoff policy.
-   */
+  void SetBackoffPolicy(gax::BackoffPolicy const& backoff_policy);
   std::unique_ptr<gax::BackoffPolicy> BackoffPolicy() const;
 
-  /**
-   * Setter for call-specific backoff policy.
-   */
-  void SetBackoffPolicy(gax::BackoffPolicy const& backoff_policy);
-
  private:
-  FRIEND_TEST(CallContext, Basic);
   std::chrono::system_clock::time_point deadline_;
   std::unique_ptr<gax::RetryPolicy const> retry_policy_;
   std::unique_ptr<gax::BackoffPolicy const> backoff_policy_;
@@ -206,7 +190,8 @@ class CallContext {
   std::multimap<std::string, std::string const> metadata_;
   MethodInfo const method_info_;
 };
-}
-}
+
+}  // namespace gax
+}  // namespace google
 
 #endif  // GAPIC_GENERATOR_CPP_GAX_CALL_CONTEXT_H_

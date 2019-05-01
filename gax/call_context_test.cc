@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "call_context.h"
-#include "backoff_policy.h"
+#include "gax/call_context.h"
 #include "googletest/include/gtest/gtest.h"
-#include "retry_policy.h"
-
+#include "gax/backoff_policy.h"
+#include "gax/retry_policy.h"
 #include <chrono>
 #include <set>
 #include <string>
@@ -47,15 +46,15 @@ TEST(CallContext, Basic) {
   EXPECT_EQ(ctx.Deadline(), now);
 
   ctx.AddMetadata("testKey", "testVal");
-  auto iter = ctx.metadata_.find("testKey");
-  EXPECT_NE(iter, ctx.metadata_.end());
+  auto iter = ctx.Metadata().find("testKey");
+  EXPECT_NE(iter, ctx.Metadata().end());
   EXPECT_EQ(iter->second, "testVal");
 
   std::set<std::string> const vals = {"testVal", "testVal2"};
   std::set<std::string> tmp;
   ctx.AddMetadata("testKey", "testVal2");
-  EXPECT_EQ(ctx.metadata_.count("testKey"), std::size_t(2));
-  auto range = ctx.metadata_.equal_range("testKey");
+  EXPECT_EQ(ctx.Metadata().count("testKey"), std::size_t(2));
+  auto range = ctx.Metadata().equal_range("testKey");
   for (auto i = range.first; i != range.second; ++i) {
     tmp.insert(i->second);
   }

@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "gax/retry_policy.h"
+#include "gax/status.h"
+#include <gtest/gtest.h>
 #include <chrono>
 #include <memory>
-
-#include "retry_policy.h"
-#include "status.h"
-#include <gtest/gtest.h>
 
 namespace {
 using namespace ::google;

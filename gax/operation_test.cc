@@ -199,7 +199,7 @@ TEST(Operation, Result) {
   lro.set_name("test");
   TestOperation op(std::move(lro));
   auto incomplete_res = op.Result();
-  EXPECT_EQ(bool(incomplete_res), false);
+  EXPECT_EQ(static_cast<bool>(incomplete_res), false);
   EXPECT_EQ(incomplete_res.status(),
             gax::Status(gax::StatusCode::kUnknown,
                         "operation has not completed=test"));
@@ -209,7 +209,7 @@ TEST(Operation, Result) {
   client.Update(op);
   EXPECT_TRUE(op.Done());
   auto error_res = op.Result();
-  EXPECT_EQ(bool(error_res), false);
+  EXPECT_EQ(static_cast<bool>(error_res), false);
   EXPECT_EQ(error_res.status(), gax::Status(gax::StatusCode::kNotFound,
                                             "This is an error message"));
 
@@ -218,7 +218,7 @@ TEST(Operation, Result) {
   stub->set_error = false;
   client.Update(op);
   auto success_res = op.Result();
-  EXPECT_EQ(bool(success_res), true);
+  EXPECT_EQ(static_cast<bool>(success_res), true);
   EXPECT_EQ((*success_res).name(), "dummy-response");
 
   lro.set_name("test");
@@ -226,7 +226,7 @@ TEST(Operation, Result) {
   op = TestOperation(std::move(lro));
   client.Update(op);
   auto bad_result = op.Result();
-  EXPECT_EQ(bool(bad_result), false);
+  EXPECT_EQ(static_cast<bool>(bad_result), false);
   EXPECT_EQ(bad_result.status(),
             gax::Status(gax::StatusCode::kUnknown,
                         "invalid result in operation=test-response"));

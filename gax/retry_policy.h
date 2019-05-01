@@ -15,10 +15,9 @@
 #ifndef GAPIC_GENERATOR_CPP_GAX_RETRY_POLICY_H_
 #define GAPIC_GENERATOR_CPP_GAX_RETRY_POLICY_H_
 
+#include "gax/status.h"
 #include <chrono>
 #include <memory>
-
-#include "status.h"
 
 namespace google {
 namespace gax {

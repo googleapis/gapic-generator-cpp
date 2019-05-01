@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "generator/internal/stub_header_generator.h"
+#include "generator/internal/data_model.h"
+#include "generator/internal/gapic_utils.h"
+#include "generator/internal/printer.h"
+#include <google/protobuf/descriptor.h>
 #include <map>
 #include <string>
-
-#include "data_model.h"
-#include "gapic_utils.h"
-#include "printer.h"
-#include "stub_header_generator.h"
-#include <google/protobuf/descriptor.h>
 
 namespace pb = google::protobuf;
 
@@ -94,6 +93,7 @@ bool GenerateClientStubHeader(pb::ServiceDescriptor const* service,
 
   return true;
 }
+
 }  // namespace internal
 }  // namespace codegen
 }  // namespace api

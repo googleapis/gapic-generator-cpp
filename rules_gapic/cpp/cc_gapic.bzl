@@ -25,8 +25,7 @@ def _cc_gapic_postprocessed_srcjar_impl(ctx):
     script = """
     unzip -q {gapic_zip} -d {output_dir_path}
     # TODO: Call formatter here
-    pushd .
-    cd {output_dir_path}
+    pushd {output_dir_path}
     zip -q -r {output_dir_name}-h.srcjar . -i ./*.gapic.h
     popd
     mv {output_dir_path}/{output_dir_name}-h.srcjar {output_main_h}

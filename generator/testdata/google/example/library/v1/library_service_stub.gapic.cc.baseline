@@ -148,15 +148,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   CreateBook(google::gax::CallContext& context,
              ::google::example::library::v1::CreateBookRequest const& request,
              ::google::example::library::v1::Book* response) override {
-    return MakeRetryCall<::google::example::library::v1::CreateBookRequest,
-                         ::google::example::library::v1::Book>(
-        context, request, response,
-        [=this](CallContext& c,
+    auto invoke_stub = [=this](CallContext& c,
                 ::google::example::library::v1::CreateBookRequest const& req,
-                ::google::example::library::v1::Book* resp)
-            ->gax::Status {
+                ::google::example::library::v1::Book* resp) {
               return this->next_stub_->CreateBook(c, req, resp);
-            },
+            };
+    return MakeRetryCall<::google::example::library::v1::CreateBookRequest,
+                         ::google::example::library::v1::Book,
+                         decltype(invoke_stub)>(
+        context, request, response, std::move(invoke_stub),
         clone_retry(context), clone_backoff(context));
   }
 
@@ -164,15 +164,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   GetBook(google::gax::CallContext& context,
              ::google::example::library::v1::GetBookRequest const& request,
              ::google::example::library::v1::Book* response) override {
-    return MakeRetryCall<::google::example::library::v1::GetBookRequest,
-                         ::google::example::library::v1::Book>(
-        context, request, response,
-        [=this](CallContext& c,
+    auto invoke_stub = [=this](CallContext& c,
                 ::google::example::library::v1::GetBookRequest const& req,
-                ::google::example::library::v1::Book* resp)
-            ->gax::Status {
+                ::google::example::library::v1::Book* resp) {
               return this->next_stub_->GetBook(c, req, resp);
-            },
+            };
+    return MakeRetryCall<::google::example::library::v1::GetBookRequest,
+                         ::google::example::library::v1::Book,
+                         decltype(invoke_stub)>(
+        context, request, response, std::move(invoke_stub),
         clone_retry(context), clone_backoff(context));
   }
 
@@ -180,15 +180,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   ListBooks(google::gax::CallContext& context,
              ::google::example::library::v1::ListBooksRequest const& request,
              ::google::example::library::v1::ListBooksResponse* response) override {
-    return MakeRetryCall<::google::example::library::v1::ListBooksRequest,
-                         ::google::example::library::v1::ListBooksResponse>(
-        context, request, response,
-        [=this](CallContext& c,
+    auto invoke_stub = [=this](CallContext& c,
                 ::google::example::library::v1::ListBooksRequest const& req,
-                ::google::example::library::v1::ListBooksResponse* resp)
-            ->gax::Status {
+                ::google::example::library::v1::ListBooksResponse* resp) {
               return this->next_stub_->ListBooks(c, req, resp);
-            },
+            };
+    return MakeRetryCall<::google::example::library::v1::ListBooksRequest,
+                         ::google::example::library::v1::ListBooksResponse,
+                         decltype(invoke_stub)>(
+        context, request, response, std::move(invoke_stub),
         clone_retry(context), clone_backoff(context));
   }
 
@@ -196,15 +196,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   DeleteBook(google::gax::CallContext& context,
              ::google::example::library::v1::DeleteBookRequest const& request,
              ::google::example::library::v1::Empty* response) override {
-    return MakeRetryCall<::google::example::library::v1::DeleteBookRequest,
-                         ::google::example::library::v1::Empty>(
-        context, request, response,
-        [=this](CallContext& c,
+    auto invoke_stub = [=this](CallContext& c,
                 ::google::example::library::v1::DeleteBookRequest const& req,
-                ::google::example::library::v1::Empty* resp)
-            ->gax::Status {
+                ::google::example::library::v1::Empty* resp) {
               return this->next_stub_->DeleteBook(c, req, resp);
-            },
+            };
+    return MakeRetryCall<::google::example::library::v1::DeleteBookRequest,
+                         ::google::example::library::v1::Empty,
+                         decltype(invoke_stub)>(
+        context, request, response, std::move(invoke_stub),
         clone_retry(context), clone_backoff(context));
   }
 
@@ -212,15 +212,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   UpdateBook(google::gax::CallContext& context,
              ::google::example::library::v1::UpdateBookRequest const& request,
              ::google::example::library::v1::Book* response) override {
-    return MakeRetryCall<::google::example::library::v1::UpdateBookRequest,
-                         ::google::example::library::v1::Book>(
-        context, request, response,
-        [=this](CallContext& c,
+    auto invoke_stub = [=this](CallContext& c,
                 ::google::example::library::v1::UpdateBookRequest const& req,
-                ::google::example::library::v1::Book* resp)
-            ->gax::Status {
+                ::google::example::library::v1::Book* resp) {
               return this->next_stub_->UpdateBook(c, req, resp);
-            },
+            };
+    return MakeRetryCall<::google::example::library::v1::UpdateBookRequest,
+                         ::google::example::library::v1::Book,
+                         decltype(invoke_stub)>(
+        context, request, response, std::move(invoke_stub),
         clone_retry(context), clone_backoff(context));
   }
 
@@ -228,15 +228,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   StreamShelves(google::gax::CallContext& context,
              ::google::example::library::v1::StreamShelvesRequest const& request,
              ::google::example::library::v1::StreamShelvesResponse* response) override {
-    return MakeRetryCall<::google::example::library::v1::StreamShelvesRequest,
-                         ::google::example::library::v1::StreamShelvesResponse>(
-        context, request, response,
-        [=this](CallContext& c,
+    auto invoke_stub = [=this](CallContext& c,
                 ::google::example::library::v1::StreamShelvesRequest const& req,
-                ::google::example::library::v1::StreamShelvesResponse* resp)
-            ->gax::Status {
+                ::google::example::library::v1::StreamShelvesResponse* resp) {
               return this->next_stub_->StreamShelves(c, req, resp);
-            },
+            };
+    return MakeRetryCall<::google::example::library::v1::StreamShelvesRequest,
+                         ::google::example::library::v1::StreamShelvesResponse,
+                         decltype(invoke_stub)>(
+        context, request, response, std::move(invoke_stub),
         clone_retry(context), clone_backoff(context));
   }
 
@@ -244,15 +244,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   DiscussBook(google::gax::CallContext& context,
              ::google::example::library::v1::DiscussBookRequest const& request,
              ::google::example::library::v1::Comment* response) override {
-    return MakeRetryCall<::google::example::library::v1::DiscussBookRequest,
-                         ::google::example::library::v1::Comment>(
-        context, request, response,
-        [=this](CallContext& c,
+    auto invoke_stub = [=this](CallContext& c,
                 ::google::example::library::v1::DiscussBookRequest const& req,
-                ::google::example::library::v1::Comment* resp)
-            ->gax::Status {
+                ::google::example::library::v1::Comment* resp) {
               return this->next_stub_->DiscussBook(c, req, resp);
-            },
+            };
+    return MakeRetryCall<::google::example::library::v1::DiscussBookRequest,
+                         ::google::example::library::v1::Comment,
+                         decltype(invoke_stub)>(
+        context, request, response, std::move(invoke_stub),
         clone_retry(context), clone_backoff(context));
   }
 
@@ -260,15 +260,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   MonologAboutBook(google::gax::CallContext& context,
              ::google::example::library::v1::DiscussBookRequest const& request,
              ::google::example::library::v1::Comment* response) override {
-    return MakeRetryCall<::google::example::library::v1::DiscussBookRequest,
-                         ::google::example::library::v1::Comment>(
-        context, request, response,
-        [=this](CallContext& c,
+    auto invoke_stub = [=this](CallContext& c,
                 ::google::example::library::v1::DiscussBookRequest const& req,
-                ::google::example::library::v1::Comment* resp)
-            ->gax::Status {
+                ::google::example::library::v1::Comment* resp) {
               return this->next_stub_->MonologAboutBook(c, req, resp);
-            },
+            };
+    return MakeRetryCall<::google::example::library::v1::DiscussBookRequest,
+                         ::google::example::library::v1::Comment,
+                         decltype(invoke_stub)>(
+        context, request, response, std::move(invoke_stub),
         clone_retry(context), clone_backoff(context));
   }
 
@@ -276,15 +276,15 @@ class RetryLibraryServiceStub : public LibraryServiceStub {
   GetBigBook(google::gax::CallContext& context,
              ::google::example::library::v1::GetBookRequest const& request,
              ::google::example::library::v1::Book* response) override {
-    return MakeRetryCall<::google::example::library::v1::GetBookRequest,
-                         ::google::example::library::v1::Book>(
-        context, request, response,
-        [=this](CallContext& c,
+    auto invoke_stub = [=this](CallContext& c,
                 ::google::example::library::v1::GetBookRequest const& req,
-                ::google::example::library::v1::Book* resp)
-            ->gax::Status {
+                ::google::example::library::v1::Book* resp) {
               return this->next_stub_->GetBigBook(c, req, resp);
-            },
+            };
+    return MakeRetryCall<::google::example::library::v1::GetBookRequest,
+                         ::google::example::library::v1::Book,
+                         decltype(invoke_stub)>(
+        context, request, response, std::move(invoke_stub),
         clone_retry(context), clone_backoff(context));
   }
 

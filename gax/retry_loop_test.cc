@@ -23,30 +23,33 @@
 namespace {
 using namespace ::google;
 
+class DummyBackoffPolicy : public gax::BackoffPolicy {
+ public:
+  // Hack to count the number of backoff attempts.
+  int& delay_count_;
+  DummyBackoffPolicy(int& delay_count) : delay_count_(delay_count) {}
+
+  std::chrono::microseconds OnCompletion() override {
+    delay_count_++;
+    return std::chrono::microseconds(0);
+  }
+  std::unique_ptr<gax::BackoffPolicy> clone() const override {
+    return std::unique_ptr<DummyBackoffPolicy>(
+        new DummyBackoffPolicy(delay_count_));
+  }
+};
+
+std::unique_ptr<gax::BackoffPolicy> DummyBackoffFactory(int& delay_count) {
+  return std::unique_ptr<DummyBackoffPolicy>(
+      new DummyBackoffPolicy(delay_count));
+}
+
 std::unique_ptr<gax::RetryPolicy> ErrCountRetryFactory(int n) {
   return std::unique_ptr<gax::LimitedErrorCountRetryPolicy>(
       new gax::LimitedErrorCountRetryPolicy(n));
 }
 
 TEST(RetryLoop, Basic) {
-  // Hack to count the number of backoff attempts.
-  static int delay_count = 0;
-
-  class DummyBackoffPolicy : public gax::BackoffPolicy {
-   public:
-    std::chrono::microseconds OnCompletion() override {
-      delay_count++;
-      return std::chrono::microseconds(0);
-    }
-    std::unique_ptr<gax::BackoffPolicy> clone() const override {
-      return std::unique_ptr<DummyBackoffPolicy>(new DummyBackoffPolicy());
-    }
-
-    static std::unique_ptr<gax::BackoffPolicy> MakeDummyBackoff() {
-      return std::unique_ptr<DummyBackoffPolicy>(new DummyBackoffPolicy());
-    }
-  };
-
   gax::MethodInfo mi{"TestMethod", gax::MethodInfo::RpcType::CLIENT_STREAMING,
                      gax::MethodInfo::Idempotency::IDEMPOTENT};
   gax::CallContext context(mi);
@@ -56,7 +59,7 @@ TEST(RetryLoop, Basic) {
   int attempts_remaining = 3;
   auto fail_until = [&attempts_remaining, &context](
       gax::CallContext& ctx, longrunning::GetOperationRequest const& req,
-      longrunning::Operation* resp) -> gax::Status {
+      longrunning::Operation* resp) {
     // Make sure each retry has a fresh context.
     EXPECT_NE(&context, &ctx);
     return ((attempts_remaining--) > 1)
@@ -64,10 +67,11 @@ TEST(RetryLoop, Basic) {
                : gax::Status{};
   };
 
+  int delay_count = 0;
   gax::Status succeed = gax::MakeRetryCall<longrunning::GetOperationRequest,
                                            longrunning::Operation>(
       context, req, &resp, fail_until, ErrCountRetryFactory(10),
-      DummyBackoffPolicy::MakeDummyBackoff());
+      DummyBackoffFactory(delay_count));
   EXPECT_EQ(attempts_remaining, 0);
   EXPECT_EQ(succeed, gax::Status());
   EXPECT_EQ(delay_count, 2);
@@ -78,7 +82,7 @@ TEST(RetryLoop, Basic) {
       gax::MakeRetryCall<longrunning::GetOperationRequest,
                          longrunning::Operation>(
           context, req, &resp, fail_until, ErrCountRetryFactory(3),
-          DummyBackoffPolicy::MakeDummyBackoff());
+          DummyBackoffFactory(delay_count));
   EXPECT_EQ(retry_timeout, gax::Status(gax::StatusCode::kAborted, "Aborted"));
   EXPECT_EQ(attempts_remaining, 6);
   EXPECT_EQ(delay_count, 3);

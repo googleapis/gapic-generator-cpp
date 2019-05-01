@@ -12,27 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "gax/backoff_policy.h"
-#include "gax/call_context.h"
-#include "gax/retry_policy.h"
-#include "gax/status.h"
-#include <chrono>
-#include <functional>
-#include <thread>
-#include <type_traits>
-
 #ifndef GAPIC_GENERATOR_CPP_GAX_RETRY_LOOP_H_
 #define GAPIC_GENERATOR_CPP_GAX_RETRY_LOOP_H_
+
+#include "gax/backoff_policy.h"
+#include "gax/call_context.h"
+#include "gax/internal/invoke_result.h"
+#include "gax/retry_policy.h"
+#include "gax/status.h"
+#include <functional>
+#include <thread>
 
 namespace google {
 namespace gax {
 
-template <typename RequestT, typename ResponseT>
-gax::Status MakeRetryCall(
-    CallContext& context, RequestT const& request, ResponseT* response,
-    std::function<Status(CallContext&, RequestT const&, ResponseT*)> next_stub,
-    std::unique_ptr<RetryPolicy> retry_policy,
-    std::unique_ptr<BackoffPolicy> backoff_policy) {
+template <typename RequestT, typename ResponseT, typename FunctorT,
+          typename std::enable_if<
+              gax::internal::is_invocable<FunctorT, gax::CallContext&,
+                                          RequestT const&, ResponseT*>::value,
+              int>::type = 0>
+gax::Status MakeRetryCall(gax::CallContext& context, RequestT const& request,
+                          ResponseT* response, FunctorT&& next_stub,
+                          std::unique_ptr<gax::RetryPolicy> retry_policy,
+                          std::unique_ptr<gax::BackoffPolicy> backoff_policy) {
   while (true) {
     // The next layer stub may add metadata, so create a
     // fresh call context each time through the loop.

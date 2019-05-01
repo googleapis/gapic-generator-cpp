@@ -77,7 +77,7 @@ class BackoffPolicy {
  * Note: The random number generator used when calculating backoff time in
  *       OnCompletion is lazily created.
  */
-class ExponentialBackoffPolicy : BackoffPolicy {
+class ExponentialBackoffPolicy : public BackoffPolicy {
  public:
   /**
    * Constructor for an exponential backoff policy.

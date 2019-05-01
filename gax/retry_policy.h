@@ -54,7 +54,7 @@ class RetryPolicy {
 /**
  * Implement a simple "count errors and then stop" retry policy.
  */
-class LimitedErrorCountRetryPolicy : RetryPolicy {
+class LimitedErrorCountRetryPolicy : public RetryPolicy {
  public:
   LimitedErrorCountRetryPolicy(int max_failures)
       : failure_count_(0), max_failures_(max_failures) {}
@@ -83,7 +83,7 @@ class LimitedErrorCountRetryPolicy : RetryPolicy {
  * Implement a simple "keep trying for this time" retry policy.
  */
 template <typename Clock>
-class LimitedDurationRetryPolicy : RetryPolicy {
+class LimitedDurationRetryPolicy : public RetryPolicy {
  public:
   template <typename duration_t>
   LimitedDurationRetryPolicy(duration_t max_duration)

@@ -29,6 +29,7 @@ cc_library(
         "backoff_policy.cc",
         "call_context.cc",
         "internal/gtest_prod.h",
+        "internal/invoke_result.h",
         "operations_client.cc",
         "operations_stub.cc",
         "status.cc",
@@ -36,6 +37,7 @@ cc_library(
     hdrs = [
         "backoff_policy.h",
         "call_context.h",
+        "retry_loop.h",
         "retry_policy.h",
         "operation.h",
         "operations_client.h",
@@ -54,6 +56,7 @@ gax_unit_tests = [
     "call_context_test.cc",
     "operation_test.cc",
     "operations_stub_test.cc",
+    "retry_loop_test.cc",
     "retry_policy_test.cc",
     "status_test.cc",
     "status_or_test.cc",

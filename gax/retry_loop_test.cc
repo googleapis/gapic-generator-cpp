@@ -21,15 +21,6 @@
 #include <gtest/gtest.h>
 #include <chrono>
 
-namespace google {
-namespace gax {
-namespace internal {
-std::chrono::time_point<std::chrono::system_clock>
-    google::gax::internal::TestClock::now_point;
-}  // namespace internal
-}  // namespace gax
-}  // namespace google
-
 namespace {
 using namespace ::google;
 
@@ -54,11 +45,12 @@ std::unique_ptr<gax::BackoffPolicy> DummyBackoffFactory(int& delay_count) {
       new DummyBackoffPolicy(delay_count));
 }
 
-std::unique_ptr<gax::RetryPolicy> ErrCountRetryFactory(int n) {
+std::unique_ptr<gax::RetryPolicy> ErrCountRetryFactory(
+    int n, std::chrono::system_clock::time_point& now_point) {
   return std::unique_ptr<
       gax::LimitedErrorCountRetryPolicy<gax::internal::TestClock>>(
       new gax::LimitedErrorCountRetryPolicy<gax::internal::TestClock>(
-          n, std::chrono::milliseconds(2)));
+          n, std::chrono::milliseconds(2), now_point));
 }
 
 TEST(RetryLoop, Basic) {
@@ -67,6 +59,7 @@ TEST(RetryLoop, Basic) {
   gax::CallContext context(mi);
   longrunning::GetOperationRequest req;
   longrunning::Operation resp;
+  std::chrono::system_clock::time_point now_point;
 
   int attempts_remaining = 3;
   auto fail_until = [&attempts_remaining, &context](
@@ -82,7 +75,7 @@ TEST(RetryLoop, Basic) {
   int delay_count = 0;
   gax::Status succeed = gax::MakeRetryCall<longrunning::GetOperationRequest,
                                            longrunning::Operation>(
-      context, req, &resp, fail_until, ErrCountRetryFactory(10),
+      context, req, &resp, fail_until, ErrCountRetryFactory(10, now_point),
       DummyBackoffFactory(delay_count));
   EXPECT_EQ(attempts_remaining, 0);
   EXPECT_EQ(succeed, gax::Status());
@@ -93,7 +86,7 @@ TEST(RetryLoop, Basic) {
   gax::Status retry_timeout =
       gax::MakeRetryCall<longrunning::GetOperationRequest,
                          longrunning::Operation>(
-          context, req, &resp, fail_until, ErrCountRetryFactory(3),
+          context, req, &resp, fail_until, ErrCountRetryFactory(3, now_point),
           DummyBackoffFactory(delay_count));
   EXPECT_EQ(retry_timeout, gax::Status(gax::StatusCode::kAborted, "Aborted"));
   EXPECT_EQ(attempts_remaining, 6);
@@ -106,26 +99,27 @@ TEST(RetryLoop, OperationDeadline) {
   gax::CallContext context(mi);
   longrunning::GetOperationRequest req;
   longrunning::Operation resp;
+  int delay_count = 0;
+  std::chrono::system_clock::time_point now_point;
 
-  auto check_updated_deadline = [](gax::CallContext& ctx,
-                                   longrunning::GetOperationRequest const& req,
-                                   longrunning::Operation* resp) {
+  auto check_updated_deadline = [&now_point](
+      gax::CallContext& ctx, longrunning::GetOperationRequest const& req,
+      longrunning::Operation* resp) {
     grpc::ClientContext test_context;
     ctx.PrepareGrpcContext(&test_context);
 
-    EXPECT_EQ(test_context.deadline(), gax::internal::TestClock::now_point +
-                                           std::chrono::milliseconds(2));
+    EXPECT_EQ(test_context.deadline(),
+              now_point + std::chrono::milliseconds(2));
     // Double check that we're not setting the deadline from a static
     // target.
-    gax::internal::TestClock::now_point += std::chrono::milliseconds(30);
+    now_point += std::chrono::milliseconds(30);
     // Need to fail in a retryable manner promote retry.
     return gax::Status(gax::StatusCode::kAborted, "Aborted");
   };
 
-  int delay_count = 0;
   gax::MakeRetryCall<longrunning::GetOperationRequest, longrunning::Operation>(
-      context, req, &resp, check_updated_deadline, ErrCountRetryFactory(3),
-      DummyBackoffFactory(delay_count));
+      context, req, &resp, check_updated_deadline,
+      ErrCountRetryFactory(3, now_point), DummyBackoffFactory(delay_count));
 }
 
 }  // namespace

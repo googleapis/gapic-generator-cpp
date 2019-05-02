@@ -62,23 +62,34 @@ class RetryPolicy {
   virtual std::chrono::system_clock::time_point OperationDeadline() const = 0;
 };
 
+class DefaultClock {
+ public:
+  std::chrono::system_clock::time_point now() const {
+    return std::chrono::system_clock::now();
+  }
+};
+
 /**
  * Implement a simple "count errors and then stop" retry policy.
  */
-template <typename Clock = std::chrono::system_clock>
+template <typename Clock = DefaultClock>
 class LimitedErrorCountRetryPolicy : public RetryPolicy {
  public:
   template <typename duration_t>
-  LimitedErrorCountRetryPolicy(int max_failures, duration_t rpc_duration)
-      : rpc_duration_(rpc_duration),
+  LimitedErrorCountRetryPolicy(int max_failures, duration_t rpc_duration,
+                               Clock c = Clock{})
+      : c_(std::move(c)),
+        rpc_duration_(rpc_duration),
         failure_count_(0),
         max_failures_(max_failures) {}
 
   LimitedErrorCountRetryPolicy(LimitedErrorCountRetryPolicy const& rhs) noexcept
-      : LimitedErrorCountRetryPolicy(rhs.max_failures_, rhs.rpc_duration_) {}
+      : LimitedErrorCountRetryPolicy(rhs.max_failures_, rhs.rpc_duration_,
+                                     rhs.c_) {}
 
   LimitedErrorCountRetryPolicy(LimitedErrorCountRetryPolicy&& rhs) noexcept
-      : LimitedErrorCountRetryPolicy(rhs.max_failures_, rhs.rpc_duration_) {}
+      : LimitedErrorCountRetryPolicy(rhs.max_failures_, rhs.rpc_duration_,
+                                     std::move(rhs.c_)) {}
 
   std::unique_ptr<RetryPolicy> clone() const override {
     return std::unique_ptr<RetryPolicy>(
@@ -90,10 +101,11 @@ class LimitedErrorCountRetryPolicy : public RetryPolicy {
   }
 
   std::chrono::system_clock::time_point OperationDeadline() const override {
-    return Clock::now() + rpc_duration_;
+    return c_.now() + rpc_duration_;
   }
 
  private:
+  Clock c_;
   std::chrono::milliseconds const rpc_duration_;
   int failure_count_;
   int const max_failures_;
@@ -102,20 +114,24 @@ class LimitedErrorCountRetryPolicy : public RetryPolicy {
 /**
  * Implement a simple "keep trying for this time" retry policy.
  */
-template <typename Clock = std::chrono::system_clock>
+template <typename Clock = DefaultClock>
 class LimitedDurationRetryPolicy : public RetryPolicy {
  public:
   template <typename duration1_t, typename duration2_t>
-  LimitedDurationRetryPolicy(duration1_t max_duration, duration2_t rpc_duration)
-      : rpc_duration_(rpc_duration),
+  LimitedDurationRetryPolicy(duration1_t max_duration, duration2_t rpc_duration,
+                             Clock c = Clock{})
+      : c_(std::move(c)),
+        rpc_duration_(rpc_duration),
         max_duration_(max_duration),
-        deadline_(max_duration_ + Clock::now()) {}
+        deadline_(max_duration_ + c_.now()) {}
 
   LimitedDurationRetryPolicy(LimitedDurationRetryPolicy const& rhs) noexcept
-      : LimitedDurationRetryPolicy(rhs.max_duration_, rhs.rpc_duration_) {}
+      : LimitedDurationRetryPolicy(rhs.max_duration_, rhs.rpc_duration_,
+                                   rhs.c_) {}
 
   LimitedDurationRetryPolicy(LimitedDurationRetryPolicy&& rhs) noexcept
-      : LimitedDurationRetryPolicy(rhs.max_duration_, rhs.rpc_duration_) {}
+      : LimitedDurationRetryPolicy(rhs.max_duration_, rhs.rpc_duration_,
+                                   std::move(rhs.c_)) {}
 
   std::unique_ptr<RetryPolicy> clone() const override {
     return std::unique_ptr<RetryPolicy>(
@@ -123,14 +139,15 @@ class LimitedDurationRetryPolicy : public RetryPolicy {
   }
 
   bool OnFailure(Status const& status) override {
-    return (!status.IsPermanentFailure() && Clock::now() < deadline_);
+    return (!status.IsPermanentFailure() && c_.now() < deadline_);
   }
 
   std::chrono::system_clock::time_point OperationDeadline() const override {
-    return Clock::now() + rpc_duration_;
+    return c_.now() + rpc_duration_;
   }
 
  private:
+  Clock c_;
   std::chrono::milliseconds const rpc_duration_;
   std::chrono::milliseconds const max_duration_;
   std::chrono::system_clock::time_point const deadline_;

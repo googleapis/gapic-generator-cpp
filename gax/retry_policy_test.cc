@@ -19,15 +19,6 @@
 #include <chrono>
 #include <memory>
 
-namespace google {
-namespace gax {
-namespace internal {
-std::chrono::time_point<std::chrono::system_clock>
-    google::gax::internal::TestClock::now_point;
-}  // namespace internal
-}  // namespace gax
-}  // namespace google
-
 namespace {
 using namespace ::google;
 
@@ -93,44 +84,51 @@ TEST(LimitedErrorCountRetryPolicy, Clone) {
 }
 
 TEST(LimitedErrorCountRetryPolicy, OperationDeadline) {
+  std::chrono::system_clock::time_point now_point;
   gax::LimitedErrorCountRetryPolicy<gax::internal::TestClock> tested(
-      3, std::chrono::milliseconds(30));
+      3, std::chrono::milliseconds(30), gax::internal::TestClock(now_point));
 
   EXPECT_EQ(tested.OperationDeadline(),
-            gax::internal::TestClock::now() + std::chrono::milliseconds(30));
+            now_point + std::chrono::milliseconds(30));
 
   auto clone = tested.clone();
-  gax::internal::TestClock::now_point += std::chrono::milliseconds(50);
+  now_point += std::chrono::milliseconds(50);
   EXPECT_EQ(tested.OperationDeadline(), clone->OperationDeadline());
 }
 
 TEST(LimitedDurationRetryPolicy, Basic) {
+  std::chrono::system_clock::time_point now_point;
   gax::LimitedDurationRetryPolicy<gax::internal::TestClock> tested(
-      std::chrono::milliseconds(5), std::chrono::milliseconds(30));
+      std::chrono::milliseconds(5), std::chrono::milliseconds(30),
+      gax::internal::TestClock(now_point));
   gax::Status s;
   EXPECT_TRUE(tested.OnFailure(s));
 
-  gax::internal::TestClock::now_point += std::chrono::milliseconds(2);
+  now_point += std::chrono::milliseconds(2);
   EXPECT_TRUE(tested.OnFailure(s));
 
-  gax::internal::TestClock::now_point += std::chrono::milliseconds(10);
+  now_point += std::chrono::milliseconds(10);
   EXPECT_FALSE(tested.OnFailure(s));
 }
 
 TEST(LimitedDurationRetryPolicy, PermanentFailureCheck) {
+  std::chrono::system_clock::time_point now_point;
   gax::LimitedDurationRetryPolicy<gax::internal::TestClock> tested(
-      std::chrono::milliseconds(5), std::chrono::milliseconds(30));
+      std::chrono::milliseconds(5), std::chrono::milliseconds(30),
+      gax::internal::TestClock(now_point));
   gax::Status s{gax::StatusCode::kCancelled, ""};
 
   EXPECT_FALSE(tested.OnFailure(s));
 }
 
 TEST(LimitedDurationRetryPolicy, CopyConstruct) {
+  std::chrono::system_clock::time_point now_point;
   gax::LimitedDurationRetryPolicy<gax::internal::TestClock> tested(
-      std::chrono::milliseconds(5), std::chrono::milliseconds(30));
+      std::chrono::milliseconds(5), std::chrono::milliseconds(30),
+      gax::internal::TestClock(now_point));
   gax::Status s;
 
-  gax::internal::TestClock::now_point += std::chrono::milliseconds(10);
+  now_point += std::chrono::milliseconds(10);
   EXPECT_FALSE(tested.OnFailure(s));
 
   gax::LimitedDurationRetryPolicy<gax::internal::TestClock> copy(tested);
@@ -138,11 +136,13 @@ TEST(LimitedDurationRetryPolicy, CopyConstruct) {
 }
 
 TEST(LimitedDurationRetryPolicy, MoveConstruct) {
+  std::chrono::system_clock::time_point now_point;
   gax::LimitedDurationRetryPolicy<gax::internal::TestClock> tested(
-      std::chrono::milliseconds(5), std::chrono::milliseconds(30));
+      std::chrono::milliseconds(5), std::chrono::milliseconds(30),
+      gax::internal::TestClock(now_point));
   gax::Status s;
 
-  gax::internal::TestClock::now_point += std::chrono::milliseconds(10);
+  now_point += std::chrono::milliseconds(10);
   EXPECT_FALSE(tested.OnFailure(s));
 
   gax::LimitedDurationRetryPolicy<gax::internal::TestClock> copy(
@@ -151,11 +151,13 @@ TEST(LimitedDurationRetryPolicy, MoveConstruct) {
 }
 
 TEST(LimitedDurationRetryPolicy, Clone) {
+  std::chrono::system_clock::time_point now_point;
   gax::LimitedDurationRetryPolicy<gax::internal::TestClock> tested(
-      std::chrono::milliseconds(5), std::chrono::milliseconds(30));
+      std::chrono::milliseconds(5), std::chrono::milliseconds(30),
+      gax::internal::TestClock(now_point));
   gax::Status s;
 
-  gax::internal::TestClock::now_point += std::chrono::milliseconds(10);
+  now_point += std::chrono::milliseconds(10);
   EXPECT_FALSE(tested.OnFailure(s));
 
   std::unique_ptr<gax::RetryPolicy> clone = tested.clone();
@@ -163,14 +165,16 @@ TEST(LimitedDurationRetryPolicy, Clone) {
 }
 
 TEST(LimitedDurationRetryPolicy, OperationDeadline) {
+  std::chrono::system_clock::time_point now_point;
   gax::LimitedDurationRetryPolicy<gax::internal::TestClock> tested(
-      std::chrono::milliseconds(500), std::chrono::milliseconds(30));
+      std::chrono::milliseconds(500), std::chrono::milliseconds(30),
+      gax::internal::TestClock(now_point));
 
   EXPECT_EQ(tested.OperationDeadline(),
-            gax::internal::TestClock::now() + std::chrono::milliseconds(30));
+            now_point + std::chrono::milliseconds(30));
 
   auto clone = tested.clone();
-  gax::internal::TestClock::now_point += std::chrono::milliseconds(50);
+  now_point += std::chrono::milliseconds(50);
   EXPECT_EQ(tested.OperationDeadline(), clone->OperationDeadline());
 }
 

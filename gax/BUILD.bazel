@@ -65,7 +65,7 @@ gax_unit_tests = [
 cc_library(
     name = "gax_testlib",
     srcs = [],
-    hdrs = [ "internal/test_clock.h"],
+    hdrs = ["internal/test_clock.h"],
     deps = [],
 )
 

@@ -21,21 +21,28 @@ namespace google {
 namespace gax {
 namespace internal {
 
-// Each test that uses TestClock defines its own static now_point in the
-// google::gax::internal namespace.
-// The 'now' method and now_point must be static because
-// std::chrono::system_clock::now is static. The alternative would be to store a
-// clock instance in whatever types need a clock, which is unnecessarily
-// heavyweight just to support testing.
-extern std::chrono::time_point<std::chrono::system_clock> now_point;
-
+/*
+ * A clock with an external user-mutable now point.
+ *
+ * Unit tests should be deterministic, but some features and associated tests
+ * rely on clocks. The solution is to use a TestClock as an injected parameter,
+ * with an automatic time_point passed into the constructor.
+ *
+ * E.g.:
+ *
+ * std::chrono::system_clock::time_point n;
+ * ClockUser<TestClock> cu(TestClock(n));
+ * n += std::chrono::milliseconds(20);
+ * cu.CheckElapsedTime();
+ */
 class TestClock {
  public:
-  static inline std::chrono::time_point<std::chrono::system_clock> now() {
-    return now_point;
-  }
+  TestClock(std::chrono::system_clock::time_point& now_point)
+      : now_point_(now_point) {}
+  std::chrono::system_clock::time_point now() const { return now_point_; }
 
-  static std::chrono::time_point<std::chrono::system_clock> now_point;
+ private:
+  std::chrono::system_clock::time_point& now_point_;
 };
 
 }  // namespace internal

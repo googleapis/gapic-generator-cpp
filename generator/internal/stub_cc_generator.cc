@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "stub_cc_generator.h"
-#include "gapic_utils.h"
-#include "printer.h"
+#include "generator/internal/stub_cc_generator.h"
 #include "generator/internal/data_model.h"
+#include "generator/internal/gapic_utils.h"
+#include "generator/internal/printer.h"
 #include <google/protobuf/descriptor.h>
 
 namespace pb = google::protobuf;

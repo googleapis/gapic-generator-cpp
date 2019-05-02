@@ -15,11 +15,10 @@
 #ifndef GAPIC_GENERATOR_CPP_GAX_BACKOFF_POLICY_H_
 #define GAPIC_GENERATOR_CPP_GAX_BACKOFF_POLICY_H_
 
+#include "gax/internal/gtest_prod.h"
 #include <chrono>
 #include <memory>
 #include <random>
-
-#include "internal/gtest_prod.h"
 
 namespace google {
 namespace gax {

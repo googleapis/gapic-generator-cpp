@@ -14,16 +14,14 @@
 #ifndef GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_GAPIC_UTILS_H_
 #define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_GAPIC_UTILS_H_
 
-#include <algorithm>
-#include <cctype>
-#include <string>
-
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_replace.h"
 #include "absl/strings/str_split.h"
-
 #include <google/protobuf/descriptor.h>
+#include <algorithm>
+#include <cctype>
+#include <string>
 
 namespace google {
 namespace api {

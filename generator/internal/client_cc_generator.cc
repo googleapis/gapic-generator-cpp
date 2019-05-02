@@ -16,10 +16,10 @@
 #include <sstream>
 #include <string>
 
-#include "gapic_utils.h"
-#include "printer.h"
 #include "generator/internal/client_cc_generator.h"
 #include "generator/internal/data_model.h"
+#include "generator/internal/gapic_utils.h"
+#include "generator/internal/printer.h"
 #include <google/protobuf/descriptor.h>
 
 namespace pb = google::protobuf;
@@ -100,7 +100,7 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
   }
 
   return true;
-}  // namespace internal
+}
 
 }  // namespace internal
 }  // namespace codegen

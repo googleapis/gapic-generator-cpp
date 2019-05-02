@@ -15,11 +15,10 @@
 #ifndef GAPIC_GENERATOR_CPP_GAX_STATUS_OR_H_
 #define GAPIC_GENERATOR_CPP_GAX_STATUS_OR_H_
 
+#include "gax/status.h"
 #include <cstdlib>
 #include <iostream>
 #include <memory>
-
-#include "status.h"
 
 namespace google {
 namespace gax {

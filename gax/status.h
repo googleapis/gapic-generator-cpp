@@ -16,7 +16,6 @@
 #define GAPIC_GENERATOR_CPP_GAX_STATUS_H_
 
 #include "grpcpp/impl/codegen/status.h"
-
 #include <ostream>
 #include <string>
 

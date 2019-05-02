@@ -14,10 +14,10 @@
 
 #include "gax/retry_loop.h"
 #include "google/longrunning/operations.pb.h"
-#include "googletest/include/gtest/gtest.h"
 #include "gax/backoff_policy.h"
 #include "gax/call_context.h"
 #include "gax/retry_policy.h"
+#include <gtest/gtest.h>
 #include <chrono>
 
 namespace {

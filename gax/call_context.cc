@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "call_context.h"
-
+#include "gax/call_context.h"
 #include <chrono>
 
 namespace google {
@@ -43,6 +42,11 @@ void CallContext::AddMetadata(std::string key, std::string val) {
   metadata_.emplace(std::move(key), std::move(val));
 }
 
+std::multimap<std::string, std::string const> const& CallContext::Metadata()
+    const {
+  return metadata_;
+}
+
 MethodInfo CallContext::Info() const { return method_info_; }
 
 std::unique_ptr<gax::RetryPolicy> CallContext::RetryPolicy() const {
@@ -64,5 +68,6 @@ void CallContext::SetBackoffPolicy(gax::BackoffPolicy const& backoff_policy) {
 std::chrono::system_clock::time_point CallContext::Deadline() const {
   return deadline_;
 }
-}
-}
+
+}  // namespace gax
+}  // namespace google

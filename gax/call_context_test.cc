@@ -13,9 +13,9 @@
 // limitations under the License.
 
 #include "gax/call_context.h"
-#include "googletest/include/gtest/gtest.h"
 #include "gax/backoff_policy.h"
 #include "gax/retry_policy.h"
+#include <gtest/gtest.h>
 #include <chrono>
 #include <set>
 #include <string>

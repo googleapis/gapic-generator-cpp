@@ -14,10 +14,10 @@
 
 #include "gax/operations_stub.h"
 #include "google/longrunning/operations.pb.h"
-#include "googletest/include/gtest/gtest.h"
 #include "gax/call_context.h"
 #include "gax/operations_client.h"
 #include "gax/status.h"
+#include <gtest/gtest.h>
 
 namespace {
 

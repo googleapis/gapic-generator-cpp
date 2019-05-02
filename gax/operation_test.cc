@@ -14,10 +14,10 @@
 
 #include "gax/operation.h"
 #include "google/longrunning/operations.pb.h"
-#include "googletest/include/gtest/gtest.h"
 #include "gax/operations_client.h"
 #include "gax/operations_stub.h"
 #include "gax/status.h"
+#include <gtest/gtest.h>
 #include <memory>
 #include <string>
 #include <type_traits>

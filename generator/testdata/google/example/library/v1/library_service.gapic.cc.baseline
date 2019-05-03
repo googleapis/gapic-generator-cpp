@@ -91,9 +91,9 @@ LibraryService::GetBigBook(
   }
 }
 
-constexpr MethodInfo LibraryService::create_book_info;
-constexpr MethodInfo LibraryService::get_book_info;
-constexpr MethodInfo LibraryService::list_books_info;
-constexpr MethodInfo LibraryService::delete_book_info;
-constexpr MethodInfo LibraryService::update_book_info;
-constexpr MethodInfo LibraryService::get_big_book_info;
+constexpr google::gax::MethodInfo LibraryService::create_book_info;
+constexpr google::gax::MethodInfo LibraryService::get_book_info;
+constexpr google::gax::MethodInfo LibraryService::list_books_info;
+constexpr google::gax::MethodInfo LibraryService::delete_book_info;
+constexpr google::gax::MethodInfo LibraryService::update_book_info;
+constexpr google::gax::MethodInfo LibraryService::get_big_book_info;

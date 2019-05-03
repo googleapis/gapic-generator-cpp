@@ -15,11 +15,18 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def com_google_gapic_generator_cpp_gax_repositories():
+#    _maybe(
+#        http_archive,
+#        name = "com_github_grpc_grpc",
+#        strip_prefix = "grpc-1.18.0",
+#        urls = ["https://github.com/grpc/grpc/archive/v1.18.0.tar.gz"],
+#    )
+
+    #TODO: update once cc_grpc_library update is merged
     _maybe(
-        http_archive,
+        native.local_repository,
         name = "com_github_grpc_grpc",
-        strip_prefix = "grpc-1.18.0",
-        urls = ["https://github.com/grpc/grpc/archive/v1.18.0.tar.gz"],
+        path = "/usr/local/google/home/vam/_/projects/github/vam-google/grpc",
     )
 
     _maybe(

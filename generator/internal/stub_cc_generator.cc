@@ -27,12 +27,14 @@ namespace internal {
 
 std::vector<std::string> BuildClientStubCCIncludes(
     pb::ServiceDescriptor const* service) {
-  return {LocalInclude(absl::StrCat(CamelCaseToSnakeCase(service->name()),
-                                    "_stub.gapic.h")),
-          LocalInclude("gax/call_context.h"), LocalInclude("gax/status.h"),
-          LocalInclude("grpcpp/client_context.h"),
-          LocalInclude("grpcpp/channel.h"),
-          LocalInclude("grpcpp/create_channel.h")};
+  return {
+      LocalInclude(
+          absl::StrCat(CamelCaseToSnakeCase(service->name()), "_stub.gapic.h")),
+      LocalInclude(absl::StrCat(
+          absl::StripSuffix(service->file()->name(), ".proto"), ".grpc.pb.h")),
+      LocalInclude("gax/call_context.h"), LocalInclude("gax/status.h"),
+      LocalInclude("grpcpp/client_context.h"), LocalInclude("grpcpp/channel.h"),
+      LocalInclude("grpcpp/create_channel.h")};
 }
 
 std::vector<std::string> BuildClientStubCCNamespaces(
@@ -83,7 +85,7 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
            "namespace {\n"
            "class Default$stub_class_name$ : public $stub_class_name$ {\n"
            " public:\n"
-           "  Default$stub_class_name$(std::unique_ptr<$class_name$::"
+           "  Default$stub_class_name$(std::unique_ptr<$grpc_stub_fqn$::"
            "StubInterface> grpc_stub)\n"
            "    : grpc_stub_(std::move(grpc_stub)) {}\n"
            "\n"
@@ -100,7 +102,7 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
       "    $request_object$ const& request,\n"
       "    $response_object$* response) override {\n"
       "    grpc::ClientContext grpc_ctx;\n"
-      "    context->PrepareGrpcContext(&grpc_context);\n"
+      "    context.PrepareGrpcContext(&grpc_ctx);\n"
       "    return google::gax::GrpcStatusToGaxStatus("
       "grpc_stub_->$method_name$(&grpc_ctx, request, response));\n"
       "  }\n"

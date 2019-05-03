@@ -3,6 +3,7 @@
 // source: generator/testdata/library.proto
 
 #include "library_service_stub.gapic.h"
+#include "generator/testdata/library.grpc.pb.h"
 #include "gax/call_context.h"
 #include "gax/status.h"
 #include "grpcpp/client_context.h"
@@ -68,7 +69,7 @@ LibraryServiceStub::~LibraryServiceStub() {}
 namespace {
 class DefaultLibraryServiceStub : public LibraryServiceStub {
  public:
-  DefaultLibraryServiceStub(std::unique_ptr<LibraryService::StubInterface> grpc_stub)
+  DefaultLibraryServiceStub(std::unique_ptr<::google::example::library::v1::LibraryService::StubInterface> grpc_stub)
     : grpc_stub_(std::move(grpc_stub)) {}
 
   DefaultLibraryServiceStub(DefaultLibraryServiceStub const&) = delete;
@@ -79,7 +80,7 @@ class DefaultLibraryServiceStub : public LibraryServiceStub {
     ::google::example::library::v1::CreateBookRequest const& request,
     ::google::example::library::v1::Book* response) override {
     grpc::ClientContext grpc_ctx;
-    context->PrepareGrpcContext(&grpc_context);
+    context.PrepareGrpcContext(&grpc_ctx);
     return google::gax::GrpcStatusToGaxStatus(grpc_stub_->CreateBook(&grpc_ctx, request, response));
   }
 
@@ -88,7 +89,7 @@ class DefaultLibraryServiceStub : public LibraryServiceStub {
     ::google::example::library::v1::GetBookRequest const& request,
     ::google::example::library::v1::Book* response) override {
     grpc::ClientContext grpc_ctx;
-    context->PrepareGrpcContext(&grpc_context);
+    context.PrepareGrpcContext(&grpc_ctx);
     return google::gax::GrpcStatusToGaxStatus(grpc_stub_->GetBook(&grpc_ctx, request, response));
   }
 
@@ -97,7 +98,7 @@ class DefaultLibraryServiceStub : public LibraryServiceStub {
     ::google::example::library::v1::ListBooksRequest const& request,
     ::google::example::library::v1::ListBooksResponse* response) override {
     grpc::ClientContext grpc_ctx;
-    context->PrepareGrpcContext(&grpc_context);
+    context.PrepareGrpcContext(&grpc_ctx);
     return google::gax::GrpcStatusToGaxStatus(grpc_stub_->ListBooks(&grpc_ctx, request, response));
   }
 
@@ -106,7 +107,7 @@ class DefaultLibraryServiceStub : public LibraryServiceStub {
     ::google::example::library::v1::DeleteBookRequest const& request,
     ::google::example::library::v1::Empty* response) override {
     grpc::ClientContext grpc_ctx;
-    context->PrepareGrpcContext(&grpc_context);
+    context.PrepareGrpcContext(&grpc_ctx);
     return google::gax::GrpcStatusToGaxStatus(grpc_stub_->DeleteBook(&grpc_ctx, request, response));
   }
 
@@ -115,7 +116,7 @@ class DefaultLibraryServiceStub : public LibraryServiceStub {
     ::google::example::library::v1::UpdateBookRequest const& request,
     ::google::example::library::v1::Book* response) override {
     grpc::ClientContext grpc_ctx;
-    context->PrepareGrpcContext(&grpc_context);
+    context.PrepareGrpcContext(&grpc_ctx);
     return google::gax::GrpcStatusToGaxStatus(grpc_stub_->UpdateBook(&grpc_ctx, request, response));
   }
 
@@ -124,7 +125,7 @@ class DefaultLibraryServiceStub : public LibraryServiceStub {
     ::google::example::library::v1::GetBookRequest const& request,
     ::google::example::library::v1::Book* response) override {
     grpc::ClientContext grpc_ctx;
-    context->PrepareGrpcContext(&grpc_context);
+    context.PrepareGrpcContext(&grpc_ctx);
     return google::gax::GrpcStatusToGaxStatus(grpc_stub_->GetBigBook(&grpc_ctx, request, response));
   }
 

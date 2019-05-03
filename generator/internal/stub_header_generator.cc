@@ -30,8 +30,8 @@ namespace internal {
 
 std::vector<std::string> BuildClientStubHeaderIncludes(
     pb::ServiceDescriptor const* service) {
-  return {LocalInclude(absl::StrCat(absl::StripSuffix(service->file()->name(),
-                                                      ".proto"), ".pb.h")),
+  return {LocalInclude(absl::StrCat(
+              absl::StripSuffix(service->file()->name(), ".proto"), ".pb.h")),
           LocalInclude("gax/call_context.h"), LocalInclude("gax/status.h"),
           LocalInclude("grpcpp/security/credentials.h"),
           SystemInclude("memory")};

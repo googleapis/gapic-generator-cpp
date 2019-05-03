@@ -114,7 +114,7 @@ bool ConvertCommandLineArgs(int argc, char const* const argv[],
       return false;
     }
     args->insert(args->end(), std::make_move_iterator(file_names.begin()),
-                std::make_move_iterator(file_names.end()));
+                 std::make_move_iterator(file_names.end()));
   }
 
   return true;

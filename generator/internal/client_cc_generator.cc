@@ -86,10 +86,10 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
       "\n",
       NoStreamingPredicate);
 
-  DataModel::PrintMethods(
-      service, vars, p,
-      "constexpr MethodInfo $class_name$::$method_name_snake$_info;\n",
-      NoStreamingPredicate);
+  DataModel::PrintMethods(service, vars, p,
+                          "constexpr google::gax::MethodInfo "
+                          "$class_name$::$method_name_snake$_info;\n",
+                          NoStreamingPredicate);
 
   for (auto nspace : namespaces) {
     p->Print("\n} // namespace $namespace$", "namespace", nspace);

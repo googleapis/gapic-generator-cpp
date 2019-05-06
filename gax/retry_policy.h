@@ -16,8 +16,11 @@
 #define GAPIC_GENERATOR_CPP_GAX_RETRY_POLICY_H_
 
 #include "gax/status.h"
+#include <algorithm>
 #include <chrono>
+#include <cstdint>
 #include <memory>
+#include <ratio>
 
 namespace google {
 namespace gax {
@@ -75,11 +78,13 @@ class DefaultClock {
 template <typename Clock = DefaultClock>
 class LimitedErrorCountRetryPolicy : public RetryPolicy {
  public:
-  template <typename duration_t>
-  LimitedErrorCountRetryPolicy(int max_failures, duration_t rpc_duration,
+  template <typename Rep, typename Period>
+  LimitedErrorCountRetryPolicy(int max_failures,
+                               std::chrono::duration<Rep, Period> rpc_duration,
                                Clock c = Clock{})
       : c_(std::move(c)),
-        rpc_duration_(rpc_duration),
+        rpc_duration_(std::chrono::duration_cast<std::chrono::milliseconds>(
+            rpc_duration)),
         failure_count_(0),
         max_failures_(max_failures) {}
 
@@ -97,7 +102,7 @@ class LimitedErrorCountRetryPolicy : public RetryPolicy {
   }
 
   bool OnFailure(Status const& status) override {
-    return (!status.IsPermanentFailure() && (failure_count_++) < max_failures_);
+    return !status.IsPermanentFailure() && failure_count_++ < max_failures_;
   }
 
   std::chrono::system_clock::time_point OperationDeadline() const override {
@@ -117,12 +122,15 @@ class LimitedErrorCountRetryPolicy : public RetryPolicy {
 template <typename Clock = DefaultClock>
 class LimitedDurationRetryPolicy : public RetryPolicy {
  public:
-  template <typename duration1_t, typename duration2_t>
-  LimitedDurationRetryPolicy(duration1_t max_duration, duration2_t rpc_duration,
+  template <typename Rep1, typename Period1, typename Rep2, typename Period2>
+  LimitedDurationRetryPolicy(std::chrono::duration<Rep1, Period1> max_duration,
+                             std::chrono::duration<Rep2, Period2> rpc_duration,
                              Clock c = Clock{})
       : c_(std::move(c)),
-        rpc_duration_(rpc_duration),
-        max_duration_(max_duration),
+        rpc_duration_(std::chrono::duration_cast<std::chrono::milliseconds>(
+            rpc_duration)),
+        max_duration_(std::chrono::duration_cast<std::chrono::milliseconds>(
+            max_duration)),
         deadline_(max_duration_ + c_.now()) {}
 
   LimitedDurationRetryPolicy(LimitedDurationRetryPolicy const& rhs) noexcept
@@ -139,11 +147,11 @@ class LimitedDurationRetryPolicy : public RetryPolicy {
   }
 
   bool OnFailure(Status const& status) override {
-    return (!status.IsPermanentFailure() && c_.now() < deadline_);
+    return !status.IsPermanentFailure() && c_.now() < deadline_;
   }
 
   std::chrono::system_clock::time_point OperationDeadline() const override {
-    return c_.now() + rpc_duration_;
+    return std::min(deadline_, c_.now() + rpc_duration_);
   }
 
  private:

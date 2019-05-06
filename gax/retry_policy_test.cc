@@ -17,6 +17,7 @@
 #include "gax/status.h"
 #include <gtest/gtest.h>
 #include <chrono>
+#include <iostream>
 #include <memory>
 
 namespace {
@@ -176,6 +177,18 @@ TEST(LimitedDurationRetryPolicy, OperationDeadline) {
   auto clone = tested.clone();
   now_point += std::chrono::milliseconds(50);
   EXPECT_EQ(tested.OperationDeadline(), clone->OperationDeadline());
+}
+
+TEST(LimitedDurationRetryPolicy, OperationDeadlineCap) {
+  std::chrono::system_clock::time_point now_point;
+  gax::LimitedDurationRetryPolicy<gax::internal::TestClock> tested(
+      std::chrono::milliseconds(500), std::chrono::milliseconds(30),
+      gax::internal::TestClock(now_point));
+
+  // Don't exceed the overarching timeout
+  now_point += std::chrono::milliseconds(490);
+  EXPECT_EQ(tested.OperationDeadline(),
+            now_point + std::chrono::milliseconds(10));
 }
 
 }  // namespace

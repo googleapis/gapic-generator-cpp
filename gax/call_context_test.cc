@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "gax/call_context.h"
+#include "grpcpp/client_context.h"
 #include "gax/backoff_policy.h"
 #include "gax/retry_policy.h"
 #include <gtest/gtest.h>
@@ -85,7 +86,8 @@ TEST(CallContext, CopyAndMove) {
   EXPECT_FALSE(no_policy_move.RetryPolicy());
   EXPECT_FALSE(no_policy_move.BackoffPolicy());
 
-  base.SetRetryPolicy(gax::LimitedErrorCountRetryPolicy(10));
+  base.SetRetryPolicy(
+      gax::LimitedErrorCountRetryPolicy<>(10, std::chrono::milliseconds(2)));
   base.SetBackoffPolicy(gax::ExponentialBackoffPolicy(
       std::chrono::milliseconds(1), std::chrono::milliseconds(10)));
   gax::CallContext policy_copy(base);

@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "call_context.h"
-#include "googletest/include/gtest/gtest.h"
-
+#include "gax/call_context.h"
+#include "grpcpp/client_context.h"
+#include "gax/backoff_policy.h"
+#include "gax/retry_policy.h"
+#include <gtest/gtest.h>
 #include <chrono>
 #include <set>
 #include <string>
@@ -25,6 +27,7 @@ namespace gax {
 
 static_assert(std::is_move_constructible<CallContext>::value,
               "CallContext must be move constructable");
+
 static_assert(std::is_copy_constructible<CallContext>::value,
               "CallContext must be copy constructable");
 
@@ -44,15 +47,15 @@ TEST(CallContext, Basic) {
   EXPECT_EQ(ctx.Deadline(), now);
 
   ctx.AddMetadata("testKey", "testVal");
-  auto iter = ctx.metadata_.find("testKey");
-  EXPECT_NE(iter, ctx.metadata_.end());
+  auto iter = ctx.Metadata().find("testKey");
+  EXPECT_NE(iter, ctx.Metadata().end());
   EXPECT_EQ(iter->second, "testVal");
 
   std::set<std::string> const vals = {"testVal", "testVal2"};
   std::set<std::string> tmp;
   ctx.AddMetadata("testKey", "testVal2");
-  EXPECT_EQ(ctx.metadata_.count("testKey"), std::size_t(2));
-  auto range = ctx.metadata_.equal_range("testKey");
+  EXPECT_EQ(ctx.Metadata().count("testKey"), std::size_t(2));
+  auto range = ctx.Metadata().equal_range("testKey");
   for (auto i = range.first; i != range.second; ++i) {
     tmp.insert(i->second);
   }
@@ -70,5 +73,30 @@ TEST(CallContext, Basic) {
   // There isn't a good way to examine ClientContext metadata without it being
   // sent to a server, so take it on faith that it was properly added.
 }
+
+TEST(CallContext, CopyAndMove) {
+  gax::MethodInfo mi{"TestMethod", MethodInfo::RpcType::CLIENT_STREAMING,
+                     MethodInfo::Idempotency::IDEMPOTENT};
+  gax::CallContext base(mi);
+
+  gax::CallContext no_policy_copy(base);
+  EXPECT_FALSE(no_policy_copy.RetryPolicy());
+  EXPECT_FALSE(no_policy_copy.BackoffPolicy());
+  gax::CallContext no_policy_move(std::move(no_policy_copy));
+  EXPECT_FALSE(no_policy_move.RetryPolicy());
+  EXPECT_FALSE(no_policy_move.BackoffPolicy());
+
+  base.SetRetryPolicy(
+      gax::LimitedErrorCountRetryPolicy<>(10, std::chrono::milliseconds(2)));
+  base.SetBackoffPolicy(gax::ExponentialBackoffPolicy(
+      std::chrono::milliseconds(1), std::chrono::milliseconds(10)));
+  gax::CallContext policy_copy(base);
+  EXPECT_TRUE(policy_copy.RetryPolicy());
+  EXPECT_TRUE(policy_copy.BackoffPolicy());
+  gax::CallContext policy_move(std::move(base));
+  EXPECT_TRUE(policy_move.RetryPolicy());
+  EXPECT_TRUE(policy_move.BackoffPolicy());
+}
+
 }  // namespace gax
 }  // namespace google

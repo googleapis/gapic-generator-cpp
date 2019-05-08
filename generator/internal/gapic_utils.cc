@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "generator/internal/gapic_utils.h"
 #include <string>
-
-#include "gapic_utils.h"
 
 namespace google {
 namespace api {

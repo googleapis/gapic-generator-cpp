@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "gax/backoff_policy.h"
 #include <algorithm>
 #include <chrono>
 #include <memory>
 #include <random>
-
-#include "backoff_policy.h"
 
 namespace google {
 namespace gax {

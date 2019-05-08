@@ -38,7 +38,7 @@ class LibraryServiceStub {
 
   virtual ~LibraryServiceStub() = 0;
 
-}; // LibraryServiceStub
+};  // LibraryServiceStub
 
 std::unique_ptr<LibraryServiceStub>
 CreateLibraryServiceStub();
@@ -46,4 +46,4 @@ CreateLibraryServiceStub();
 std::unique_ptr<LibraryServiceStub>
 CreateLibraryServiceStub(std::shared_ptr<grpc::ChannelCredentials> creds);
 
-#endif // LibraryService_Stub_H_
+#endif  // LibraryService_Stub_H_

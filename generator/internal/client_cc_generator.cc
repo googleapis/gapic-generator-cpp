@@ -16,10 +16,10 @@
 #include <sstream>
 #include <string>
 
-#include "gapic_utils.h"
-#include "printer.h"
 #include "generator/internal/client_cc_generator.h"
 #include "generator/internal/data_model.h"
+#include "generator/internal/gapic_utils.h"
+#include "generator/internal/printer.h"
 #include <google/protobuf/descriptor.h>
 
 namespace pb = google::protobuf;
@@ -71,9 +71,13 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
       "google::gax::StatusOr<$response_object$>\n"
       "$class_name$::$method_name$(\n"
       "$request_object$ const& request) {\n"
-      "  // TODO: actual useful work, e.g. retry, backoff, metadata, "
-      "pagination, etc.\n"
       "  google::gax::CallContext context($method_name_snake$_info);\n"
+      "  if (retry_policy_) {\n"
+      "    context.SetRetryPolicy(*retry_policy_);\n"
+      "  }\n"
+      "  if (backoff_policy_) {\n"
+      "    context.SetBackoffPolicy(*backoff_policy_);\n"
+      "  }\n"
       "  $response_object$ response;\n"
       "  google::gax::Status status = stub_->$method_name$(context, request, "
       "&response);\n"
@@ -92,11 +96,11 @@ bool GenerateClientCC(pb::ServiceDescriptor const* service,
                           NoStreamingPredicate);
 
   for (auto nspace : namespaces) {
-    p->Print("\n} // namespace $namespace$", "namespace", nspace);
+    p->Print("\n}  // namespace $namespace$", "namespace", nspace);
   }
 
   return true;
-}  // namespace internal
+}
 
 }  // namespace internal
 }  // namespace codegen

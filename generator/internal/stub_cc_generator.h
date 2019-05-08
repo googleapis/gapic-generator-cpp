@@ -15,11 +15,10 @@
 #ifndef GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_STUB_CC_GENERATOR_H_
 #define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_STUB_CC_GENERATOR_H_
 
+#include "generator/internal/printer.h"
+#include <google/protobuf/descriptor.h>
 #include <map>
 #include <string>
-
-#include "printer.h"
-#include <google/protobuf/descriptor.h>
 
 namespace pb = google::protobuf;
 

@@ -14,22 +14,20 @@
 #ifndef GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_DATA_MODEL_H_
 #define GAPIC_GENERATOR_CPP_GENERATOR_INTERNAL_DATA_MODEL_H_
 
-#include <algorithm>
-#include <cctype>
-#include <functional>
-#include <string>
-
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
 #include "absl/strings/str_replace.h"
 #include "absl/strings/str_split.h"
 #include "google/api/client.pb.h"
+#include "generator/internal/gapic_utils.h"
+#include "generator/internal/printer.h"
 #include <google/protobuf/compiler/code_generator.h>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/descriptor.pb.h>
-
-#include "gapic_utils.h"
-#include "printer.h"
+#include <algorithm>
+#include <cctype>
+#include <functional>
+#include <string>
 
 namespace pb = google::protobuf;
 

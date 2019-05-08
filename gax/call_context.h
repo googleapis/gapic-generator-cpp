@@ -16,11 +16,12 @@
 #define GAPIC_GENERATOR_CPP_GAX_CALL_CONTEXT_H_
 
 #include "grpcpp/client_context.h"
-#include "internal/gtest_prod.h"
-
+#include "gax/backoff_policy.h"
+#include "gax/retry_policy.h"
 #include <chrono>
 #include <functional>
 #include <map>
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -117,6 +118,23 @@ class CallContext {
       : deadline_(std::chrono::system_clock::time_point::max()),
         method_info_(std::move(method_info)) {}
 
+  CallContext(CallContext const& rhs)
+      : deadline_(rhs.deadline_),
+        retry_policy_(rhs.retry_policy_ ? rhs.retry_policy_->clone() : nullptr),
+        backoff_policy_(rhs.backoff_policy_ ? rhs.backoff_policy_->clone()
+                                            : nullptr),
+        context_policies_(rhs.context_policies_),
+        metadata_(rhs.metadata_),
+        method_info_(rhs.method_info_) {}
+
+  CallContext(CallContext&& rhs)
+      : deadline_(rhs.deadline_),
+        retry_policy_(std::move(rhs.retry_policy_)),
+        backoff_policy_(std::move(rhs.backoff_policy_)),
+        context_policies_(std::move(rhs.context_policies_)),
+        metadata_(std::move(rhs.metadata_)),
+        method_info_(std::move(rhs.method_info_)) {}
+
   /**
    * Register an arbitrary customization function on grpc::ClientContext.
    * This function could tweak advanced knobs or provide other custom behavior.
@@ -142,6 +160,8 @@ class CallContext {
    */
   void AddMetadata(std::string key, std::string val);
 
+  std::multimap<std::string, std::string const> const& Metadata() const;
+
   /**
    * @brief Set a deadline for the rpc.
    */
@@ -157,14 +177,21 @@ class CallContext {
    */
   MethodInfo Info() const;
 
+  void SetRetryPolicy(gax::RetryPolicy const& retry_policy);
+  std::unique_ptr<gax::RetryPolicy> RetryPolicy() const;
+  void SetBackoffPolicy(gax::BackoffPolicy const& backoff_policy);
+  std::unique_ptr<gax::BackoffPolicy> BackoffPolicy() const;
+
  private:
-  FRIEND_TEST(CallContext, Basic);
   std::chrono::system_clock::time_point deadline_;
+  std::unique_ptr<gax::RetryPolicy const> retry_policy_;
+  std::unique_ptr<gax::BackoffPolicy const> backoff_policy_;
   std::vector<GrpcContextPolicyFunc> context_policies_;
   std::multimap<std::string, std::string const> metadata_;
   MethodInfo const method_info_;
 };
-}
-}
+
+}  // namespace gax
+}  // namespace google
 
 #endif  // GAPIC_GENERATOR_CPP_GAX_CALL_CONTEXT_H_

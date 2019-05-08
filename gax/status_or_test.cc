@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "status_or.h"
-#include "status.h"
+#include "gax/status_or.h"
+#include "gax/status.h"
 #include <gtest/gtest.h>
 
 #include <memory>

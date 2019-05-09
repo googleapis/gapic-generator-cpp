@@ -70,7 +70,7 @@ TEST(GapicGeneratorBaselineTest, StandaloneTest) {
 
     EXPECT_EQ(expected_file_content, actual_file_content)
         << "\nexpected_file: " << expected_file
-        << "\nactual_file: " << actual_file;
+        << "\nactual_file: " << actual_file_content;
   }
 }
 

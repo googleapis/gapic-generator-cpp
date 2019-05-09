@@ -34,9 +34,8 @@ std::vector<std::string> BuildClientStubCCIncludes(
           absl::StripSuffix(service->file()->name(), ".proto"), ".grpc.pb.h")),
       LocalInclude("gax/call_context.h"), LocalInclude("gax/retry_loop.h"),
       LocalInclude("gax/status.h"), LocalInclude("grpcpp/client_context.h"),
-      LocalInclude("grpcpp/channel.h"),
-      LocalInclude("grpcpp/create_channel.h"), SystemInclude("chrono"),
-      SystemInclude("thread")};
+      LocalInclude("grpcpp/channel.h"), LocalInclude("grpcpp/create_channel.h"),
+      SystemInclude("chrono"), SystemInclude("thread")};
 }
 
 std::vector<std::string> BuildClientStubCCNamespaces(
@@ -120,17 +119,18 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
            "\n");
 
   // Retrying stub that decorates another stub
-  p->Print(
-      vars,
-      "class Retry$stub_class_name$ : public $stub_class_name$ {\n"
-      " public:\n"
-      "  Retry$stub_class_name$(std::unique_ptr<$stub_class_name$> stub,\n"
-      "                         gax::RetryPolicy const& retry_policy,\n"
-      "                         gax::BackoffPolicy const& backoff_policy) :\n"
-      "            next_stub_(std::move(stub)),\n"
-      "            default_retry_policy_(retry_policy.clone()),\n"
-      "            default_backoff_policy_(backoff_policy.clone()) {}\n"
-      "\n");
+  p->Print(vars,
+           "class Retry$stub_class_name$ : public $stub_class_name$ {\n"
+           " public:\n"
+           "  Retry$stub_class_name$(std::unique_ptr<$stub_class_name$> stub,\n"
+           "                          google::gax::RetryPolicy const& "
+           "retry_policy,\n"
+           "                          google::gax::BackoffPolicy const& "
+           "backoff_policy) :\n"
+           "            next_stub_(std::move(stub)),\n"
+           "            default_retry_policy_(retry_policy.clone()),\n"
+           "            default_backoff_policy_(backoff_policy.clone()) {}\n"
+           "\n");
 
   DataModel::PrintMethods(
       service, vars, p,
@@ -138,39 +138,42 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
       "  $method_name$(google::gax::CallContext& context,\n"
       "             $request_object$ const& request,\n"
       "             $response_object$* response) override {\n"
-      "    auto invoke_stub = [=this](CallContext& c,\n"
+      "    auto invoke_stub = [this](google::gax::CallContext& c,\n"
       "                $request_object$ const& req,\n"
       "                $response_object$* resp) {\n"
       "              return this->next_stub_->$method_name$(c, req, resp);\n"
       "            };\n"
-      "    return MakeRetryCall<$request_object$,\n"
-      "                         $response_object$,\n"
-      "                         decltype(invoke_stub)>(\n"
+      "    return google::gax::MakeRetryCall<$request_object$,\n"
+      "                                      $response_object$,\n"
+      "                                      decltype(invoke_stub)>(\n"
       "        context, request, response, std::move(invoke_stub),\n"
       "        clone_retry(context), clone_backoff(context));\n"
       "  }\n"
-      "\n");
+      "\n",
+      NoStreamingPredicate);
 
   p->Print(
       vars,
       " private:\n"
-      "  std::unique_ptr<gax::RetryPolicy>\n"
-      "  clone_retry(gax::CallContext const &context) const {\n"
+      "  std::unique_ptr<google::gax::RetryPolicy>\n"
+      "  clone_retry(google::gax::CallContext const &context) const {\n"
       "    auto context_retry = context.RetryPolicy();\n"
-      "    return context_retry ? context_retry\n"
-      "                         : default_retry_policy_->clone();\n"
+      "    return context_retry ? std::move(context_retry)\n"
+      "                         : std::move(default_retry_policy_->clone());\n"
       "  }\n"
       "\n"
-      "  std::unique_ptr<gax::BackoffPolicy>\n"
-      "  clone_backoff(gax::CallContext const &context) const {\n"
+      "  std::unique_ptr<google::gax::BackoffPolicy>\n"
+      "  clone_backoff(google::gax::CallContext const &context) const {\n"
       "    auto context_backoff = context.BackoffPolicy();\n"
-      "    return context_backoff ? context_backoff\n"
-      "                           : default_backoff_policy_->clone();\n"
+      "    return context_backoff ? std::move(context_backoff)\n"
+      "                           : "
+      "std::move(default_backoff_policy_->clone());\n"
       "  }\n"
       "\n"
       "  std::unique_ptr<$stub_class_name$> next_stub_;\n"
-      "  const std::unique_ptr<gax::RetryPolicy const> default_retry_policy_;\n"
-      "  const std::unique_ptr<gax::BackoffPolicy const>  "
+      "  const std::unique_ptr<google::gax::RetryPolicy const> "
+      "default_retry_policy_;\n"
+      "  const std::unique_ptr<google::gax::BackoffPolicy const>  "
       "default_backoff_policy_;\n"
       "};  // Retry$stub_class_name$\n");
 
@@ -188,17 +191,20 @@ bool GenerateClientStubCC(pb::ServiceDescriptor const* service,
            "  auto channel = grpc::CreateChannel(\"$service_endpoint$\",\n"
            "    std::move(creds));\n"
            "  auto grpc_stub = $grpc_stub_fqn$::NewStub(std::move(channel));\n"
-           "  auto default_stub = std::unique_ptr<$stub_class_name$>(new \n"
+           "  auto default_stub = std::unique_ptr<$stub_class_name$>(new\n"
            "    Default$stub_class_name$(std::move(grpc_stub)));\n"
            "  using ms = std::chrono::milliseconds;\n"
            "  // Note: these retry and backoff times are dummy stand ins.\n"
            "  // More appopriate default values will be chosen later.\n"
+           "  google::gax::LimitedDurationRetryPolicy<> retry_policy(ms(500), "
+           "ms(500));\n"
+           "  google::gax::ExponentialBackoffPolicy backoff_policy(ms(20), "
+           "ms(100));\n"
            "  return std::unique_ptr<$stub_class_name$>(new "
            "Retry$stub_class_name$(\n"
            "                       std::move(default_stub),\n"
-           "                       gax::LimitedDurationRetryPolicy(ms(500)),\n"
-           "                       gax::ExponentialBackoffPolicy(ms(20), "
-           "ms(100))));\n"
+           "                       retry_policy,\n"
+           "                       backoff_policy));\n"
            "}\n"
            "\n");
 

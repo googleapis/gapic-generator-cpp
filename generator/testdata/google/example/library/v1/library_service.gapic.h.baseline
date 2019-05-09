@@ -6,7 +6,7 @@
 
 #include <memory>
 #include "library_service_stub.gapic.h"
-#include "LibraryService.pb.h"
+#include "generator/testdata/library.pb.h"
 #include "gax/status_or.h"
 #include "gax/retry_policy.h"
 #include "gax/backoff_policy.h"
@@ -68,12 +68,24 @@ class LibraryService final {
 
   // Note: conservatively assume no methods are idempotent.
   //       This will eventually be set from annotations.
-  static constexpr google::gax::MethodInfo create_book_info = {"CreateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  static constexpr google::gax::MethodInfo get_book_info = {"GetBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  static constexpr google::gax::MethodInfo list_books_info = {"ListBooks", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  static constexpr google::gax::MethodInfo delete_book_info = {"DeleteBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  static constexpr google::gax::MethodInfo update_book_info = {"UpdateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  static constexpr google::gax::MethodInfo get_big_book_info = {"GetBigBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  static constexpr google::gax::MethodInfo create_book_info = {
+      "CreateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::NON_IDEMPOTENT};
+  static constexpr google::gax::MethodInfo get_book_info = {
+      "GetBook", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::NON_IDEMPOTENT};
+  static constexpr google::gax::MethodInfo list_books_info = {
+      "ListBooks", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::NON_IDEMPOTENT};
+  static constexpr google::gax::MethodInfo delete_book_info = {
+      "DeleteBook", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::NON_IDEMPOTENT};
+  static constexpr google::gax::MethodInfo update_book_info = {
+      "UpdateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::NON_IDEMPOTENT};
+  static constexpr google::gax::MethodInfo get_big_book_info = {
+      "GetBigBook", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::NON_IDEMPOTENT};
 }; // LibraryService
 
 #endif // LibraryService_H_

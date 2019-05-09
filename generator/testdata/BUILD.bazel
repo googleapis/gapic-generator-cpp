@@ -1,16 +1,42 @@
+load("//rules_gapic/cpp:cc_gapic.bzl", "cc_gapic_srcjar", "cc_gapic_library")
+load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
+load("@com_google_api_codegen//rules_gapic:gapic.bzl", "proto_library_with_info")
+
 proto_library(
     name = "library_proto",
     srcs = ["library.proto"],
-    deps = ["@api_common_protos//google/api:client_proto"],
     visibility = ["//visibility:public"],
+    deps = ["@api_common_protos//google/api:client_proto"],
+)
+
+proto_library_with_info(
+    name = "library_proto_with_info",
+    deps = [":library_proto"],
 )
 
 cc_proto_library(
     name = "library_cc_proto",
-    deps = [":library_proto"],
     visibility = ["//visibility:public"],
+    deps = [":library_proto"],
 )
 
+cc_grpc_library(
+    name = "library_cc_grpc",
+    srcs = [":library_proto"],
+    grpc_only = True,
+    deps = [":library_cc_proto"],
+)
+
+cc_gapic_library(
+    name = "library_cc_gapic",
+    src = ":library_proto_with_info",
+    package = "google.example.library.v1",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_cc_grpc",
+        ":library_cc_proto",
+    ],
+)
 
 filegroup(
     name = "library_service_baseline",

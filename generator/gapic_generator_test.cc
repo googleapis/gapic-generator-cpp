@@ -68,7 +68,9 @@ TEST(GapicGeneratorBaselineTest, StandaloneTest) {
     std::string const& expected_file_content = LoadContent(expected_file);
     std::string const& actual_file_content = LoadContent(actual_file);
 
-    EXPECT_EQ(expected_file_content, actual_file_content);
+    EXPECT_EQ(expected_file_content, actual_file_content)
+        << "\nexpected_file: " << expected_file
+        << "\nactual_file: " << actual_file;
   }
 }
 

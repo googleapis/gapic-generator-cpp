@@ -4,7 +4,7 @@
 #ifndef LibraryService_Stub_H_
 #define LibraryService_Stub_H_
 
-#include "LibraryService.pb.h"
+#include "generator/testdata/library.pb.h"
 #include "gax/call_context.h"
 #include "gax/status.h"
 #include "grpcpp/security/credentials.h"

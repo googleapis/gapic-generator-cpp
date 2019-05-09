@@ -54,6 +54,7 @@ cc_binary(
     srcs = ["main.cc"],
     includes = ["."],
     deps = [":gapic_generator"],
+    visibility = ["//visibility:public"],
 )
 
 cc_test(

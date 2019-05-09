@@ -34,7 +34,9 @@ std::vector<std::string> BuildClientHeaderIncludes(
       SystemInclude("memory"),
       LocalInclude(absl::StrCat(
           internal::ServiceNameToFilePath(service->name()), "_stub.gapic.h")),
-      LocalInclude(absl::StrCat(service->name(), ".pb.h")),
+      LocalInclude(absl::StrCat(
+          absl::StripSuffix(service->file()->name(), ".proto"), ".pb.h")),
+
       LocalInclude("gax/status_or.h"), LocalInclude("gax/retry_policy.h"),
       LocalInclude("gax/backoff_policy.h"),
   };
@@ -119,8 +121,10 @@ bool GenerateClientHeader(pb::ServiceDescriptor const* service,
 
   DataModel::PrintMethods(
       service, vars, p,
-      "  static constexpr google::gax::MethodInfo $method_name_snake$_info = "
-      "{\"$method_name$\", google::gax::MethodInfo::RpcType::NORMAL_RPC};\n",
+      "  static constexpr google::gax::MethodInfo $method_name_snake$_info = {"
+      "\n"
+      "      \"$method_name$\", google::gax::MethodInfo::RpcType::NORMAL_RPC,\n"
+      "      google::gax::MethodInfo::Idempotency::NON_IDEMPOTENT};\n",
       NoStreamingPredicate);
 
   p->Print(vars,

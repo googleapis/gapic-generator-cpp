@@ -44,8 +44,8 @@ grpc_deps()
 #
 http_archive(
     name = "com_google_api_codegen",
-    urls = ["https://github.com/googleapis/gapic-generator/archive/96c3c5a4c8397d4bd29a6abce861547a271383e1.zip"],
-    strip_prefix = "gapic-generator-96c3c5a4c8397d4bd29a6abce861547a271383e1",
+    urls = ["https://github.com/googleapis/gapic-generator/archive/025ebdbb3d14609be938900a538418858b0ecfb7.zip"],
+    strip_prefix = "gapic-generator-025ebdbb3d14609be938900a538418858b0ecfb7",
 )
 
 #

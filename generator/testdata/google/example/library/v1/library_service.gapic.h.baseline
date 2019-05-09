@@ -68,12 +68,24 @@ class LibraryService final {
 
   // Note: conservatively assume no methods are idempotent.
   //       This will eventually be set from annotations.
-  static constexpr google::gax::MethodInfo create_book_info = {"CreateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  static constexpr google::gax::MethodInfo get_book_info = {"GetBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  static constexpr google::gax::MethodInfo list_books_info = {"ListBooks", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  static constexpr google::gax::MethodInfo delete_book_info = {"DeleteBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  static constexpr google::gax::MethodInfo update_book_info = {"UpdateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
-  static constexpr google::gax::MethodInfo get_big_book_info = {"GetBigBook", google::gax::MethodInfo::RpcType::NORMAL_RPC};
+  static constexpr google::gax::MethodInfo create_book_info = {
+      "CreateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::IDEMPOTENT};
+  static constexpr google::gax::MethodInfo get_book_info = {
+      "GetBook", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::IDEMPOTENT};
+  static constexpr google::gax::MethodInfo list_books_info = {
+      "ListBooks", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::IDEMPOTENT};
+  static constexpr google::gax::MethodInfo delete_book_info = {
+      "DeleteBook", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::IDEMPOTENT};
+  static constexpr google::gax::MethodInfo update_book_info = {
+      "UpdateBook", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::IDEMPOTENT};
+  static constexpr google::gax::MethodInfo get_big_book_info = {
+      "GetBigBook", google::gax::MethodInfo::RpcType::NORMAL_RPC,
+      google::gax::MethodInfo::Idempotency::IDEMPOTENT};
 }; // LibraryService
 
 #endif // LibraryService_H_

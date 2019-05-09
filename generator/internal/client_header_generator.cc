@@ -121,8 +121,10 @@ bool GenerateClientHeader(pb::ServiceDescriptor const* service,
 
   DataModel::PrintMethods(
       service, vars, p,
-      "  static constexpr google::gax::MethodInfo $method_name_snake$_info = "
-      "{\"$method_name$\", google::gax::MethodInfo::RpcType::NORMAL_RPC};\n",
+      "  static constexpr google::gax::MethodInfo $method_name_snake$_info = {"
+      "\n"
+      "      \"$method_name$\", google::gax::MethodInfo::RpcType::NORMAL_RPC,\n"
+      "      google::gax::MethodInfo::Idempotency::IDEMPOTENT};\n",
       NoStreamingPredicate);
 
   p->Print(vars,

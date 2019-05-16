@@ -61,8 +61,6 @@ TEST(PageResult, RawPage) {
   EXPECT_EQ(page_result.NextPageToken(),
             page_result.RawPage().next_page_token());
   EXPECT_EQ(page_result.RawPage().operations_size(), 10);
-
-  // Move iteration test
 }
 
 TEST(PageResult, Accessors) {

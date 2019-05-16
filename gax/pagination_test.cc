@@ -1,10 +1,10 @@
-// Copyright 2019 Google Inc.  All rights reserved
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,8 @@
 
 #include "gax/pagination.h"
 #include "google/longrunning/operations.pb.h"
+#include <google/protobuf/util/message_differencer.h>
+#include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 #include <iterator>
 #include <sstream>
@@ -23,50 +25,74 @@ namespace {
 
 using namespace ::google;
 
-TEST(PageResult, Basic) {
-  // Note: I think Carlos is going to want begin(), end() and member access to
-  // be done with templates.
-  longrunning::ListOperationsResponse tmp;
-  tmp.set_next_page_token("NextPage");
+// Protobuf messages are not equality comparible by default.
+// This complicates testing, so just define a comparison function here.
+bool Equal(longrunning::Operation const& lhs,
+           longrunning::Operation const& rhs) {
+  return protobuf::util::MessageDifferencer::Equals(lhs, rhs);
+}
+
+auto constexpr accessor = [](longrunning::ListOperationsResponse& lor) {
+  return lor.mutable_operations();
+};
+
+using TestedPageResult =
+    gax::PageResult<longrunning::Operation, longrunning::ListOperationsResponse,
+                    decltype(accessor)>;
+
+TestedPageResult MakeTestedPageResult() {
+  longrunning::ListOperationsResponse response;
+  response.set_next_page_token("NextPage");
 
   for (int i = 0; i < 10; i++) {
     std::stringstream ss;
     ss << "TestOperation" << i;
-    auto operation = tmp.add_operations();
+    auto operation = response.add_operations();
     operation->set_name(ss.str());
   }
 
-  // Make a copy so we can test making move iterators below.
-  longrunning::ListOperationsResponse response(tmp);
+  return TestedPageResult(std::move(response), accessor);
+}
 
-  gax::PageResult<longrunning::Operation, longrunning::ListOperationsResponse>
-  pageResult(std::move(tmp), [](longrunning::ListOperationsResponse& lor) {
-    return lor.mutable_operations();
-  });
+TEST(PageResult, RawPage) {
+  TestedPageResult page_result = MakeTestedPageResult();
 
-  // Tests for raw page access
-  EXPECT_EQ(pageResult.NextPageToken(), "NextPage");
-  EXPECT_EQ(pageResult.RawPage().next_page_token(), response.next_page_token());
-  EXPECT_EQ(pageResult.RawPage().operations_size(), response.operations_size());
-
-  // Quickly test operator*
-  EXPECT_EQ((*pageResult.begin()).name(), "TestOperation0");
-
-  auto prIt = pageResult.begin();
-  auto reIt = response.operations().begin();
-  for (; prIt != pageResult.end() && reIt != response.operations().end();
-       ++prIt, ++reIt) {
-    EXPECT_EQ(prIt->name(), reIt->name());
-  }
-  EXPECT_EQ(prIt, pageResult.end());
-  EXPECT_EQ(reIt, response.operations().end());
+  EXPECT_EQ(page_result.NextPageToken(), "NextPage");
+  EXPECT_EQ(page_result.NextPageToken(),
+            page_result.RawPage().next_page_token());
+  EXPECT_EQ(page_result.RawPage().operations_size(), 10);
 
   // Move iteration test
-  using iter_t = decltype(pageResult)::iterator;
+}
+
+TEST(PageResult, Accessors) {
+  TestedPageResult page_result = MakeTestedPageResult();
+  EXPECT_EQ((*page_result.begin()).name(), "TestOperation0");
+  EXPECT_EQ(page_result.begin()->name(), "TestOperation0");
+}
+
+TEST(PageResult, BasicIteration) {
+  TestedPageResult page_result = MakeTestedPageResult();
+  auto prIt = page_result.begin();
+  auto reIt = page_result.RawPage().operations().begin();
+  for (; prIt != page_result.end() &&
+         reIt != page_result.RawPage().operations().end();
+       ++prIt, ++reIt) {
+    // Note: cannot use EXPECT_EQ for the elements or on vectors constructed
+    // from the respective iterators because messages do not define operator==
+    // as a member function.
+    EXPECT_TRUE(Equal(*prIt, *reIt));
+  }
+  EXPECT_EQ(prIt, page_result.end());
+  EXPECT_EQ(reIt, page_result.RawPage().operations().end());
+}
+
+TEST(PageResult, MoveIteration) {
+  TestedPageResult page_result = MakeTestedPageResult();
   std::vector<longrunning::Operation> ops{
-      std::move_iterator<iter_t>(pageResult.begin()),
-      std::move_iterator<iter_t>(pageResult.end())};
-  EXPECT_EQ(pageResult.begin()->name(), "");
+      std::move_iterator<TestedPageResult::iterator>(page_result.begin()),
+      std::move_iterator<TestedPageResult::iterator>(page_result.end())};
+  EXPECT_EQ(page_result.begin()->name(), "");
 }
 
 }  // namespace

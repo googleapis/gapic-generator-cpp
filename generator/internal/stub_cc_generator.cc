@@ -29,7 +29,8 @@ std::vector<std::string> BuildClientStubCCIncludes(
     pb::ServiceDescriptor const* service) {
   return {
       LocalInclude(
-          absl::StrCat(CamelCaseToSnakeCase(service->name()), "_stub.gapic.h")),
+          absl::StrCat(internal::ServiceNameToFilePath(service->full_name()),
+                       "_stub.gapic.h")),
       LocalInclude(absl::StrCat(
           absl::StripSuffix(service->file()->name(), ".proto"), ".grpc.pb.h")),
       LocalInclude("gax/call_context.h"), LocalInclude("gax/retry_loop.h"),

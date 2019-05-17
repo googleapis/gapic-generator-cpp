@@ -53,8 +53,8 @@ cc_binary(
     name = "protoc-gen-cpp_gapic",
     srcs = ["main.cc"],
     includes = ["."],
-    deps = [":gapic_generator"],
     visibility = ["//visibility:public"],
+    deps = [":gapic_generator"],
 )
 
 cc_test(
@@ -69,6 +69,7 @@ cc_test(
     ],
     deps = [
         ":gapic_generator",
+        "//generator/testdata:library_cc_gapic",
         "@gtest//:gtest_main",
     ],
 )

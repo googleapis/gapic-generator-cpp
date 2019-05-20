@@ -33,9 +33,10 @@ std::vector<std::string> BuildClientCCIncludes(
     pb::ServiceDescriptor const* service) {
   return {
       LocalInclude(absl::StrCat(
-          internal::ServiceNameToFilePath(service->name()), ".gapic.h")),
-      LocalInclude(absl::StrCat(
-          internal::ServiceNameToFilePath(service->name()), "_stub.gapic.h")),
+          internal::ServiceNameToFilePath(service->full_name()), ".gapic.h")),
+      LocalInclude(
+          absl::StrCat(internal::ServiceNameToFilePath(service->full_name()),
+                       "_stub.gapic.h")),
       LocalInclude("gax/call_context.h"), LocalInclude("gax/status.h"),
       LocalInclude("gax/status_or.h"),
   };

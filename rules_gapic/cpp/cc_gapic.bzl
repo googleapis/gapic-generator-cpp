@@ -27,9 +27,12 @@ def _cc_gapic_postprocessed_srcjar_impl(ctx):
     # TODO: Call formatter here
     pushd {output_dir_path}
     zip -q -r {output_dir_name}-h.srcjar . -i ./*.gapic.h
+    find . -name "*.gapic.h" -delete
+    zip -q -r {output_dir_name}.srcjar . -i ./*.cc -i ./*.h
     popd
     mv {output_dir_path}/{output_dir_name}-h.srcjar {output_main_h}
-    cp {gapic_zip} {output_main}
+    mv {output_dir_path}/{output_dir_name}.srcjar {output_main}
+    rm -rf {output_dir_path}
     """.format(
         gapic_zip = gapic_zip.path,
         output_dir_name = output_dir_name,
@@ -55,7 +58,7 @@ _cc_gapic_postprocessed_srcjar = rule(
     },
 )
 
-def cc_gapic_srcjar(name, src, package, visibility = None):
+def cc_gapic_srcjar(name, src, package, **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
     gapic_srcjar(
@@ -63,24 +66,24 @@ def cc_gapic_srcjar(name, src, package, visibility = None):
         src = src,
         package = package,
         output_suffix = ".zip",
-        visibility = visibility,
         gapic_generator = Label("//generator:protoc-gen-cpp_gapic"),
+        **kwargs
     )
 
     _cc_gapic_postprocessed_srcjar(
         name = name,
         gapic_zip = ":%s" % raw_srcjar_name,
-        visibility = visibility,
+        **kwargs
     )
 
-def cc_gapic_library(name, src, package, deps = [], visibility = None):
+def cc_gapic_library(name, src, package, deps = [], **kwargs):
     srcjar_name = "%s_srcjar" % name
 
     cc_gapic_srcjar(
         name = srcjar_name,
         src = src,
         package = package,
-        visibility = visibility,
+        **kwargs
     )
 
     actual_deps = deps + [
@@ -93,7 +96,8 @@ def cc_gapic_library(name, src, package, deps = [], visibility = None):
     unzipped_srcjar(
         name = main_dir,
         srcjar = main_file,
-        extension = ".cc",
+        extension = "",
+        **kwargs
     )
 
     main_h_file = ":%s-h.srcjar" % srcjar_name
@@ -102,7 +106,8 @@ def cc_gapic_library(name, src, package, deps = [], visibility = None):
     unzipped_srcjar(
         name = main_h_dir,
         srcjar = main_h_file,
-        extension = ".h",
+        extension = "",
+        **kwargs
     )
 
     native.cc_library(
@@ -110,4 +115,6 @@ def cc_gapic_library(name, src, package, deps = [], visibility = None):
         srcs = [":%s" % main_dir],
         deps = actual_deps,
         hdrs = [":%s" % main_h_dir],
+        includes = [main_h_dir],
+        **kwargs
     )

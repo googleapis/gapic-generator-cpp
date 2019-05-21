@@ -15,6 +15,8 @@
 #ifndef GAPIC_GENERATOR_CPP_GAX_INTERNAL_INVOKE_RESULT_H_
 #define GAPIC_GENERATOR_CPP_GAX_INTERNAL_INVOKE_RESULT_H_
 
+#include <utility>
+
 namespace google {
 namespace gax {
 namespace internal {

@@ -116,5 +116,9 @@ def cc_gapic_library(name, src, package, deps = [], **kwargs):
         deps = actual_deps,
         hdrs = [":%s" % main_h_dir],
         includes = [main_h_dir],
+        # cc_library generates an empty .so file, making dynamic linking
+        # impossible. This may be caused by us using a directory (instead of
+        # exact files) as srcs input.
+        linkstatic = True,
         **kwargs
     )

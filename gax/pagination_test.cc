@@ -62,11 +62,11 @@ using TestPages =
 
 using TestedPageResult = TestPages::PageResult;
 
-TestedPageResult MakeTestedPageResult() {
+TestedPageResult MakeTestedPageResult(int num_pages = 10) {
   longrunning::ListOperationsResponse response;
   response.set_next_page_token("NextPage");
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < num_pages; i++) {
     std::stringstream ss;
     ss << "TestOperation" << i;
     auto operation = response.add_operations();

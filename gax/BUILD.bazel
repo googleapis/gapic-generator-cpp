@@ -16,13 +16,6 @@ package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])  # Apache 2.0
 
-# Note: googleapis doesn't define a cc_proto_library for operations_proto,
-# so declare one here ourselves.
-cc_proto_library(
-    name = "longrunning_cpp_proto",
-    deps = ["@com_google_googleapis//google/longrunning:operations_proto"],
-)
-
 cc_library(
     name = "gax",
     srcs = [
@@ -48,7 +41,7 @@ cc_library(
     ],
     deps = [
         "@com_github_grpc_grpc//:grpc++",
-        ":longrunning_cpp_proto",
+        "@com_google_googleapis//google/longrunning:longrunning_cc_proto",
     ],
 )
 

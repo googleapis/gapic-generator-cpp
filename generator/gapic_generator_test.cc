@@ -44,7 +44,8 @@ TEST(GapicGeneratorBaselineTest, StandaloneTest) {
           "com_google_gapic_generator_cpp/generator/testdata/"
           "library_proto-descriptor-set.proto.bin",
       input_dir +
-          "com_google_googleapis/google/api/client_proto-descriptor-set.proto.bin",
+          "com_google_googleapis/google/api/"
+          "client_proto-descriptor-set.proto.bin",
       input_dir +
           "com_google_protobuf/descriptor_proto-descriptor-set.proto.bin"};
   std::string package = "google.example.library.v1";

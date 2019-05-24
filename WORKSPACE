@@ -45,7 +45,8 @@ load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
 grpc_deps()
 
 #
-# gapic-generator (contains common definitions for gapic rules)
+# gapic-generator (contains common definitions for gapic rules, see gapic.bzl
+# file in com_google_api_codegen)
 #
 http_archive(
     name = "com_google_api_codegen",

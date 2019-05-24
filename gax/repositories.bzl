@@ -18,15 +18,15 @@ def com_google_gapic_generator_cpp_gax_repositories():
     _maybe(
         http_archive,
         name = "com_github_grpc_grpc",
-        strip_prefix = "grpc-cc75d93818410e2b0edd0fa3009a6def9ac403ca",
-        urls = ["https://github.com/grpc/grpc/archive/cc75d93818410e2b0edd0fa3009a6def9ac403ca.tar.gz"],
+        urls = ["https://github.com/grpc/grpc/archive/v1.21.0.tar.gz"],
+        strip_prefix = "grpc-1.21.0",
     )
 
     _maybe(
         http_archive,
         name = "com_google_googleapis",
-        strip_prefix = "googleapis-1a479920eb4f6c2bc4c8d8acd9280720540709e4",
-        urls = ["https://github.com/googleapis/googleapis/archive/1a479920eb4f6c2bc4c8d8acd9280720540709e4.tar.gz"],
+        strip_prefix = "googleapis-c69355435cf6ae824a21f2bba31c69697733d3d2",
+        urls = ["https://github.com/googleapis/googleapis/archive/c69355435cf6ae824a21f2bba31c69697733d3d2.tar.gz"],
     )
 
 def _maybe(repo_rule, name, **kwargs):

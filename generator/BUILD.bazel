@@ -40,7 +40,7 @@ cc_library(
     deps = [
         "@absl//absl/base",
         "@absl//absl/strings",
-        "@api_common_protos//google/api:client_cc_proto",
+        "@com_google_googleapis//google/api:client_cc_proto",
         "@com_google_protobuf//:protoc_lib",
     ],
 )
@@ -64,7 +64,7 @@ cc_test(
     data = [
         "//generator/testdata:library_proto",
         "//generator/testdata:library_service_baseline",
-        "@api_common_protos//google/api:client_proto",
+        "@com_google_googleapis//google/api:client_proto",
         "@com_google_protobuf//:descriptor_proto",
     ],
     deps = [

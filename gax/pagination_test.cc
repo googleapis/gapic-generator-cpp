@@ -60,7 +60,9 @@ using TestPages =
     gax::Pages<longrunning::Operation, longrunning::ListOperationsResponse,
                OperationsAccessor, PageRetriever>;
 
-using TestedPageResult = TestPages::PageResult;
+using TestedPageResult =
+    gax::PageResult<longrunning::Operation, longrunning::ListOperationsResponse,
+                    OperationsAccessor>;
 
 TestedPageResult MakeTestedPageResult(int num_pages = 10) {
   longrunning::ListOperationsResponse response;
@@ -119,7 +121,7 @@ TEST(Pages, Basic) {
   TestPages terminal(
       // The output param is pristine, which means its next_page_token
       // is empty.
-      PageRetriever(0), 0);
+      PageRetriever(0));
 
   EXPECT_EQ(terminal.begin(), terminal.end());
   EXPECT_EQ(terminal.end()->NextPageToken(), "");
@@ -127,7 +129,7 @@ TEST(Pages, Basic) {
 
 TEST(Pages, Iteration) {
   int i = 1;
-  TestPages pages(PageRetriever(10), 0);
+  TestPages pages(PageRetriever(10));
   for (auto const& p : pages) {
     std::stringstream ss;
     ss << "NextPage" << i;

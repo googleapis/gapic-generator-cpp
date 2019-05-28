@@ -26,7 +26,7 @@ namespace google {
 namespace gax {
 
 /**
- * Wraps a 'page' message with consistent interface that provides an iterator
+ * Wraps a 'page' message with a consistent interface that provides an iterator
  * over its repeated elements and an accessor for its next_page_token field.
  *
  * Picking a repeated field, deducing the type of its elements, and providing an
@@ -144,7 +144,7 @@ class PageResult {
  * };
  *
  * // Only list up to 20 pages, even though there may be more.
- * Pages<EltType, ListElementsResponse, decltype(get_elements),
+ * Pages<EltType, ListElementsResponse, decltype(get_next_page),
  *       ElementsAccessor> pages(std::move(get_next_page), 20);
  * for(auto& page : pages) {
  *   // Do something with the page

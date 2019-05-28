@@ -6,7 +6,7 @@ proto_library(
     name = "library_proto",
     srcs = ["library.proto"],
     visibility = ["//visibility:public"],
-    deps = ["@api_common_protos//google/api:client_proto"],
+    deps = ["@com_google_googleapis//google/api:client_proto"],
 )
 
 proto_library_with_info(

@@ -45,6 +45,9 @@ namespace gax {
 template <
     typename ElementType, typename PageType, typename ElementAccessor,
     typename std::enable_if<
+        gax::internal::is_invocable<ElementAccessor, PageType&>::value,
+        int>::type = 0,
+    typename std::enable_if<
         std::is_default_constructible<ElementAccessor>::value, int>::type = 0>
 class PageResult {
   using FieldIterator =

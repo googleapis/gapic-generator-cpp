@@ -11,6 +11,8 @@ This repository contains two subprojects:
 The generator takes APIs specified by protocol buffers, such as those inside Google,
 and generates a client library.
 
+**Note:** this project has been shelved. See [`STATUS.md`](STATUS.md) for the current status of various features and designs.
+
 ## Versioning
 
 This library follows [Semantic Versioning](http://semver.org/). Please note it

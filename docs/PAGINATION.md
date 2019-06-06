@@ -134,7 +134,7 @@ using ElementAccessor =
 };
 ```
 
-`Pages<ElementType, PageType>`
+`Pages<ElementType, PageType>` - Already implemented, left here for historical purposes
 ----------------------------------
 
 Workhorse structure that engages in rpcs.
@@ -144,8 +144,6 @@ Workhorse structure that engages in rpcs.
 For the `Pages` class, access to the GAPIC stub is necessary in order to retrieve the next page in the sequence, and storing a pointer to it in the Pages struct is necessary to preserve the C++ iterator interface.
 
 In the generated client code, the GAPIC stub will be hidden in the injected `get_next_page` closure.
-
-[Stalled pull request for Pages](https://github.com/googleapis/gapic-generator-cpp/pull/55)
 
 ```cpp
 // Note: we either need to store the accessor function in the Pages struct and

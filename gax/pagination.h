@@ -102,7 +102,8 @@ class PageResult {
   /**
    * @brief Get the underlying page message.
    *
-   * This can be useful if the page has custom metadata fields.
+   * This can be useful if the page has fields other than the repeated field or
+   * next page token.
    *
    * @return a const reference to the underlying raw page.
    */
@@ -191,7 +192,7 @@ class Pages {
     PageResultT const* operator->() const { return &page_result_; }
     iterator& operator++() {
       // Note: if the rpc fails, the page will be untouched,
-      // i.e. will be have an empty page token and element collection.
+      // i.e. will have an empty page token and element collection.
       // This invalidates any iterators on the PageResult.
       page_result_.RawPage().Clear();
       get_next_page_(&(page_result_.RawPage()));

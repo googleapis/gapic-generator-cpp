@@ -14,6 +14,7 @@
 
 #include "gax/pagination.h"
 #include "google/longrunning/operations.pb.h"
+#include "gax/status.h"
 #include <google/protobuf/util/message_differencer.h>
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
@@ -25,33 +26,56 @@ namespace {
 
 using namespace ::google;
 
-// Protobuf messages are not equality comparible by default.
-// This complicates testing, so just define a comparison function here.
-bool Equal(longrunning::Operation const& lhs,
-           longrunning::Operation const& rhs) {
-  return protobuf::util::MessageDifferencer::Equals(lhs, rhs);
-}
-
-auto constexpr accessor = [](longrunning::ListOperationsResponse& lor) {
-  return lor.mutable_operations();
+class OperationsAccessor {
+ public:
+  protobuf::RepeatedPtrField<longrunning::Operation>* operator()(
+      longrunning::ListOperationsResponse& lor) const {
+    return lor.mutable_operations();
+  }
 };
+
+class PageRetriever {
+ public:
+  // Start at 1 to count number of pages seen total, including the first.
+  PageRetriever(int max_pages) : i_(1), max_pages_(max_pages) {}
+  gax::Status operator()(longrunning::ListOperationsResponse* lor) {
+    if (i_ < max_pages_) {
+      std::stringstream ss;
+      ss << "NextPage" << i_;
+      lor->set_next_page_token(ss.str());
+      i_++;
+    } else {
+      lor->clear_next_page_token();
+    }
+
+    return gax::Status{};
+  }
+
+ private:
+  int i_;
+  const int max_pages_;
+};
+
+using TestPages =
+    gax::Pages<longrunning::Operation, longrunning::ListOperationsResponse,
+               OperationsAccessor, PageRetriever>;
 
 using TestedPageResult =
     gax::PageResult<longrunning::Operation, longrunning::ListOperationsResponse,
-                    decltype(accessor)>;
+                    OperationsAccessor>;
 
-TestedPageResult MakeTestedPageResult() {
+TestedPageResult MakeTestedPageResult(int num_pages = 10) {
   longrunning::ListOperationsResponse response;
   response.set_next_page_token("NextPage");
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < num_pages; i++) {
     std::stringstream ss;
     ss << "TestOperation" << i;
     auto operation = response.add_operations();
     operation->set_name(ss.str());
   }
 
-  return TestedPageResult(std::move(response), accessor);
+  return TestedPageResult(std::move(response));
 }
 
 TEST(PageResult, RawPage) {
@@ -79,7 +103,7 @@ TEST(PageResult, BasicIteration) {
     // Note: cannot use EXPECT_EQ for the elements or on vectors constructed
     // from the respective iterators because messages do not define operator==
     // as a member function.
-    EXPECT_TRUE(Equal(*prIt, *reIt));
+    EXPECT_TRUE(protobuf::util::MessageDifferencer::Equals(*prIt, *reIt));
   }
   EXPECT_EQ(prIt, page_result.end());
   EXPECT_EQ(reIt, page_result.RawPage().operations().end());
@@ -91,6 +115,44 @@ TEST(PageResult, MoveIteration) {
       std::move_iterator<TestedPageResult::iterator>(page_result.begin()),
       std::move_iterator<TestedPageResult::iterator>(page_result.end())};
   EXPECT_EQ(page_result.begin()->name(), "");
+}
+
+TEST(Pages, Basic) {
+  TestPages terminal(
+      // The output param is pristine, which means its next_page_token
+      // is empty.
+      PageRetriever(0));
+
+  EXPECT_EQ(terminal.begin(), terminal.end());
+  EXPECT_EQ(terminal.end()->NextPageToken(), "");
+}
+
+TEST(Pages, Iteration) {
+  int i = 1;
+  TestPages pages(PageRetriever(10));
+  for (auto const& p : pages) {
+    std::stringstream ss;
+    ss << "NextPage" << i;
+
+    EXPECT_EQ(p.NextPageToken(), ss.str());
+    i++;
+  }
+  EXPECT_EQ(i, 10);
+}
+
+TEST(Pages, PageCap) {
+  int i = 1;
+  TestPages pages(PageRetriever(10), 5);
+  auto iter = pages.begin();
+  for (; iter != pages.end(); ++iter) {
+    std::stringstream ss;
+    ss << "NextPage" << i;
+
+    EXPECT_EQ(iter->NextPageToken(), ss.str());
+    i++;
+  }
+  EXPECT_EQ(i, 5);
+  EXPECT_EQ(iter->NextPageToken(), "NextPage5");
 }
 
 }  // namespace

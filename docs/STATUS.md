@@ -106,6 +106,9 @@ Helper types and library code exist that support the following features:
 
 ## In progress designs ##
 
+The generator and generated client surface are expected to follow the strictures of Google's [API Improvement Proposals](https://aip.dev/) (AIPs).
+Requirements for client library generators are available [here](https://aip.dev/client-libraries/4210).
+
 The limitations of the generator require little to no design or discussion: they are straightforward feature implementations and conformance to the standard set by the other microgenerators. The serious design decisions relate to the generated surface and gax-owned helper types and library code.
 
 A tentative, verbal decision was made to support asynchronous method variants by providing client methods that return `gax::future<gax::StatusOr<Response>>`.
@@ -117,6 +120,12 @@ No design work has been made to explicitly support any transport besides gRPC.
 
 ## Misc ##
 No benchmarks or leak check tests have been implemented for either gax code or generated client code.
+
+## Feature specific docs ##
+[High level generated surface view](SURFACE.md)
+[High level generator view](GENERATOR.md)
+[Long running operations](LRO_DESIGN.md)
+[Paginated methods](PAGINATION.md)
 
 ## References ##
 [Google Cloud Cpp repository](https://github.com/googleapis/google-cloud-cpp/)

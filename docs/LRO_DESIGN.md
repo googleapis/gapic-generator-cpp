@@ -63,7 +63,7 @@ This interface provides a thin wrapper over the Operation message type with thes
 
 -   The response and metadata types are strong; the types are obtained from proto annotations and reified by the GAPIC generator.
 
--   Calls to the Operations service, e.g. GetOperation and DeleteOperation, are wrapped by methods of gax::Operation.
+-   Calls to the Operations service, e.g. GetOperation and DeleteOperation, are wrapped by methods of `gax::Operation`.
 
 The Operation class is move constructable but not copy constructable or default constructable. It has at least one constructor that is hidden from the user and is used by internal code.
 

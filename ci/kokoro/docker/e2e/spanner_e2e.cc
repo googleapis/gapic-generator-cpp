@@ -18,9 +18,7 @@
 using ::google::spanner::admin::instance::v1::ListInstanceConfigsRequest;
 
 int main() {
-  auto creds = grpc::GoogleDefaultCredentials();
-  auto stub = CreateInstanceAdminStub(creds);
-  InstanceAdmin client(std::move(stub));
+  InstanceAdmin client(CreateInstanceAdminStub());
   ListInstanceConfigsRequest request;
   if (const char* project_id = std::getenv("GOOGLE_CLOUD_PROJECT")) {
     std::string proj = "projects/";

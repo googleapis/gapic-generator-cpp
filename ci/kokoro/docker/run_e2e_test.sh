@@ -15,6 +15,16 @@
 
 set -eu
 
+if [[ -z "${NCPU+x}" ]]; then
+  # Mac doesn't have nproc. Run the equivalent.
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    NCPU=$(sysctl -n hw.physicalcpu)
+  else
+    NCPU=$(nproc)
+  fi
+  export NCPU
+fi
+
 if [[ -z "${PROJECT_ROOT+x}" ]]; then
   PROJECT_ROOT="$(cd "$(dirname "$0")/../../.."; pwd)"
   readonly PROJECT_ROOT
@@ -23,6 +33,9 @@ fi
 echo "================================================================"
 echo "Change working directory to project root $(date)."
 cd "${PROJECT_ROOT}"
+
+echo "================================================================"
+echo "Building with ${NCPU} cores $(date) on ${PWD}."
 
 if [[ -n "${PROJECT_ID:-}" ]]; then
   DOCKER_IMAGE_PREFIX="gcr.io/${PROJECT_ID}/gapic-generator"
@@ -36,25 +49,31 @@ readonly DOCKER_IMAGE_PREFIX
 # First build the Docker image
 readonly IMAGE="${DOCKER_IMAGE_PREFIX}/e2e-ubuntu-18.04"
 
+build_flags=(
+  "-t" "${IMAGE}"
+  "--build-arg" "NCPU=${NCPU}"
+  "-f" "${PROJECT_ROOT}/ci/kokoro/docker/e2e/Dockerfile"
+)
+
 echo "================================================================"
 echo "Building a Docker image $(date)."
-docker build -f "${PROJECT_ROOT}/ci/kokoro/docker/e2e/Dockerfile" . \
-  -t "${IMAGE}"
+
+docker build "${build_flags[@]}" .
 
 if [[ -n "${GOOGLE_APPLICATION_CREDENTIALS:-}" \
-  && -n "${TEST_PROJECT_ID:-}" ]]; then
+  && -n "${GOOGLE_CLOUD_PROJECT:-}" ]]; then
   echo "================================================================"
   echo "Executing the binary $(date)."
   # Run the binary
   docker run --rm \
     -v "${GOOGLE_APPLICATION_CREDENTIALS}:/credentials.json" \
     -e "GOOGLE_APPLICATION_CREDENTIALS=/credentials.json" \
-    -e "TEST_PROJECT_ID=${TEST_PROJECT_ID}" \
+    -e "GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}" \
     "${IMAGE}" \
     bash -c "cd /build/gapic-generator-cpp/ci/kokoro/docker/e2e && cmake-out/gapic-generator-e2e"
 else
   echo "================================================================"
-  echo -n "Set GOOGLE_APPLICATION_CREDENTIALS and TEST_PROJECT_ID"
+  echo -n "Set GOOGLE_APPLICATION_CREDENTIALS and GOOGLE_CLOUD_PROJECT"
   echo " environment variables to run the binary."
   echo "Skip executing binary $(date)."
 fi

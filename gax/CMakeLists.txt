@@ -30,28 +30,31 @@ include(GapicGeneratorCommon)
 find_package(googleapis REQUIRED)
 find_package(gRPC REQUIRED)
 
+
 add_library(gax
-        backoff_policy.cc
-        backoff_policy.h
-        call_context.cc
-        call_context.h
-        internal/gtest_prod.h
-        internal/invoke_result.h
-        operation.h
-        operations_client.cc
-        operations_client.h
-        operations_stub.cc
-        operations_stub.h
-        pagination.h
-        retry_loop.h
-        retry_policy.h
-        status.cc
-        status.h
-        status_or.h)
+    # cmake-format: sortable
+    backoff_policy.cc
+    backoff_policy.h
+    call_context.cc
+    call_context.h
+    internal/gtest_prod.h
+    internal/invoke_result.h
+    operation.h
+    operations_client.cc
+    operations_client.h
+    operations_stub.cc
+    operations_stub.h
+    pagination.h
+    retry_loop.h
+    retry_policy.h
+    status.cc
+    status.h
+    status_or.h)
 
 target_include_directories(
-        gax
-        PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
+    gax
+    PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:include>)
 
 set_target_properties(
     gax
@@ -62,7 +65,7 @@ target_link_libraries(gax PUBLIC googleapis-c++::longrunning_operations_protos)
 
 # Export the CMake targets to make it easy to create configuration files.
 install(EXPORT gax-targets
-        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/gax")
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/gax")
 
 install(
     TARGETS gax
@@ -86,18 +89,19 @@ install(
 
 gax_install_headers(gax include/gax)
 
-set(gax_unit_tests
-    backoff_policy_test.cc
-    operations_stub_test.cc
-    operation_test.cc
-    pagination_test.cc
-    retry_loop_test.cc
-    retry_policy_test.cc
-    status_or_test.cc
-    status_test.cc
-)
-
-foreach (fname ${gax_unit_tests})
+if (BUILD_TESTING)
+    set(gax_unit_tests
+        # cmake-format: sortable
+        backoff_policy_test.cc
+        operations_stub_test.cc
+        operation_test.cc
+        pagination_test.cc
+        retry_loop_test.cc
+        retry_policy_test.cc
+        status_or_test.cc
+        status_test.cc
+    )
+    foreach (fname ${gax_unit_tests})
         string(REPLACE "/" "_" target ${fname})
         string(REPLACE ".cc" "" target ${target})
         add_executable(${target} ${fname})
@@ -109,7 +113,8 @@ foreach (fname ${gax_unit_tests})
             target_compile_options(${target} PRIVATE "/bigobj")
         endif ()
         add_test(NAME ${target} COMMAND ${target})
-endforeach ()
+    endforeach ()
+endif()
 
 # Create and install the CMake configuration files.
 configure_file("config.cmake.in" "gax-config.cmake" @ONLY)

@@ -1,4 +1,4 @@
-# Copyright 2020 Google Inc.
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
 # limitations under the License.
 
 FROM ubuntu:18.04
+ARG NCPU=4
 
 # Dependencies
 RUN \
@@ -36,10 +37,6 @@ RUN \
           zip \
           zlib1g-dev
 
-# Build directory
-RUN mkdir -p /build && \
-    chmod 0755 /build
-
 WORKDIR /build
 
 # Install c-ares
@@ -47,9 +44,13 @@ RUN \
   wget -q https://github.com/c-ares/c-ares/archive/cares-1_15_0.tar.gz && \
   tar -xf cares-1_15_0.tar.gz && \
   cd c-ares-cares-1_15_0 && \
-  mkdir build && cd build && \
-  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. && \
-  make install && \
+  cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_SHARED_LIBS=yes \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -H. -Bcmake-out && \
+  cmake --build cmake-out -- -j ${NCPU:-4} && \
+  cmake --build cmake-out --target install && \
   ldconfig
 
 # Install protobuf
@@ -63,31 +64,36 @@ RUN \
         -Dprotobuf_BUILD_TESTS=OFF \
         -H. -Bcmake-out && \
     cmake --build cmake-out -- -j ${NCPU:-4} && \
-    cmake --build cmake-out --target install -- -j ${NCPU:-4} && \
+    cmake --build cmake-out --target install -- && \
     ldconfig
 
-# Install gRPC and abseil
+# Install gRPC
 RUN \
-  git clone https://github.com/grpc/grpc.git && \
-  cd grpc/ && \
-  git checkout v1.26.0 && \
-  git submodule update --init && \
-  mkdir -p cmake/build && \
-  cd cmake/build && \
-  cmake ../.. \
+  wget -q https://github.com/grpc/grpc/archive/v1.26.0.tar.gz && \
+  tar -xf v1.26.0.tar.gz && \
+  cd grpc-1.26.0 && \
+  cmake \
     -DgRPC_CARES_PROVIDER=package \
     -DgRPC_PROTOBUF_PROVIDER=package \
     -DgRPC_SSL_PROVIDER=package \
     -DgRPC_ZLIB_PROVIDER=package \
-    -DgRPC_INSTALL=on && \
-  CONFIG=dbg make -j ${NCPU} && \
-  CONFIG=dbg make install && \
-  cd /build/grpc/third_party/abseil-cpp && \
-  mkdir -p build && \
-  cd build && \
-  cmake .. && \
-  make -j ${NCPU} && \
-  make install
+    -DgRPC_INSTALL=on \
+    -H. -Bcmake-out && \
+  cd cmake-out && \
+  CONFIG=dbg make -j ${NCPU:-4} && \
+  CONFIG=dbg make install
+
+# Install abseil
+RUN \
+  wget -q https://github.com/abseil/abseil-cpp/archive/20190808.tar.gz && \
+  tar -xf 20190808.tar.gz && \
+  cd abseil-cpp-20190808 && \
+  cmake \
+        -DBUILD_SHARED_LIBS=yes \
+        -H. -Bcmake-out && \
+  cmake --build cmake-out -- -j ${NCPU:-4} && \
+  cmake --build cmake-out --target install && \
+  ldconfig
 
 # Install cpp-cmakefiles
 RUN \
@@ -95,9 +101,11 @@ RUN \
        https://github.com/googleapis/cpp-cmakefiles/archive/v0.2.1.tar.gz && \
   tar zxvf v0.2.1.tar.gz && \
   cd cpp-cmakefiles-0.2.1 && \
-  cmake -H. -Bcmake-out && \
+  cmake \
+        -DBUILD_SHARED_LIBS=yes \
+        -H. -Bcmake-out && \
   cmake --build cmake-out -- -j ${NCPU:-4} && \
-  cmake --build cmake-out --target install -- -j ${NCPU:-4} && \
+  cmake --build cmake-out --target install && \
   ldconfig
 
 # Install GTest
@@ -106,8 +114,10 @@ RUN \
          https://github.com/google/googletest/archive/release-1.10.0.tar.gz && \
     tar -xf release-1.10.0.tar.gz && \
     cd googletest-release-1.10.0 && \
-    cmake -DCMAKE_BUILD_TYPE="Release" -DBUILD_SHARED_LIBS=yes -H. \
-          -Bcmake-out && \
+    cmake \
+          -DCMAKE_BUILD_TYPE="Release" \
+          -DBUILD_SHARED_LIBS=yes \
+          -H. -Bcmake-out && \
     cmake --build cmake-out -- -j ${NCPU:-4} && \
     cmake --build cmake-out --target install -- -j ${NCPU:-4} && \
     ldconfig
@@ -116,7 +126,9 @@ RUN \
 COPY . /build/gapic-generator-cpp/
 RUN \
     cd /build/gapic-generator-cpp && \
-    cmake -DBUILD_SHARED_LIBS=on -H. -Bcmake-out && \
+    cmake \
+          -DBUILD_SHARED_LIBS=on \
+          -H. -Bcmake-out && \
     cmake --build cmake-out -- -j ${NCPU:-4} && \
     (cd cmake-out; ctest) && \
     cmake --build cmake-out --target install && \

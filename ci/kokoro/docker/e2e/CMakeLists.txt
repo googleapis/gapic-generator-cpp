@@ -50,7 +50,7 @@ target_link_libraries(google-cloud-cpp-spanner-gapic PUBLIC
 )
 
 add_executable(gapic-generator-e2e
-  spanner-e2e.cc
+  spanner_e2e.cc
 )
 
 target_link_libraries(gapic-generator-e2e PUBLIC

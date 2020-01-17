@@ -1,5 +1,5 @@
 # ~~~
-# Copyright 2020 Google Inc.
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -99,7 +99,7 @@ elseif (NOT BUILD_TESTING)
     # Tests are turned off via -DBUILD_TESTING, do not load the googletest or
     # googlemock dependency.
 else ()
-    # Try to find the config package first. If that is not found
+    # Try to find the config package first.
     find_package(GTest CONFIG QUIET)
     find_package(GMock CONFIG QUIET)
     if (NOT GTest_FOUND)
